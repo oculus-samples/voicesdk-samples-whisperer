@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f44cbd819f0e3e46ad89be9f10d976e, type: 3}
+  m_Name: Move Tooltips
+  m_EditorClassIdentifier: 
+  exampleUtterances:
+  - Move right.
+  - Push to the left a little.
+  - Push up a lot.
+  - Move here a little.
+  - Move here.
+  - Push away.
+  - Move toward me a little.
+  - Move away a little.
+  - Move it closer.
+  - Jump up a little.
+  - Jump up a lot.
+  - Come here.
+  - Push toward me.
+  - Go away.
+  - Move left.
+  - Pull to the right.
+  - Move it away from me.
+  - Nudge it to the left.
+  - Nudge it a little closer to me.
+  - Jump toward me.
+  - Pull away.

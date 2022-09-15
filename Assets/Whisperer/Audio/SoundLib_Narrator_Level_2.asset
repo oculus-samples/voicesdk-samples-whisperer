@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8219d3a10da645a501ae6f723c617, type: 3}
+  m_Name: SoundLib_Narrator_Level_2
+  m_EditorClassIdentifier: 
+  ClipsData:
+  - PlayID: Narrator_GainTrust
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: adb345a837520f7449cbaa0521f04c29, type: 3}
+  - PlayID: Narrator_DistractBea
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 0b21167756b10ac4ebdbde98500cdfcb, type: 3}
+  - PlayID: Narrator_SpookWarning
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 9171d7a51b415f642abbeca5484302b3, type: 3}
+  - PlayID: Narrator_RadioHint1
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 05e4acb5f6ff20b478a3a05016ac1298, type: 3}
+  - PlayID: Narrator_RadioHint2
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: a539f71b146ca0044b53be54881fd1a0, type: 3}
+  - PlayID: Narrator_GetToWork
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 86aef84c5c68d844f8136d326f45bb89, type: 3}
+  - PlayID: Narrator_OneDown
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: a07185808e0de8d4390f1aaff429682c, type: 3}
+  - PlayID: Narrator_LastOne
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: e23e6a5c1f9df724db131e3d899c8cc1, type: 3}
+  - PlayID: Narrator_WakeUpBea
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: b770ca8d787266c41bc0eb00b608e089, type: 3}
+  - PlayID: Narrator_WellDone
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: b2ee1ffc42974514e8f0fe5270457b00, type: 3}

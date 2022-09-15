@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8219d3a10da645a501ae6f723c617, type: 3}
+  m_Name: SoundLib_Narrator_Level_1
+  m_EditorClassIdentifier: 
+  ClipsData:
+  - PlayID: Narrator_Intro
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 1c7b4482468963942b87f9a4ceb43695, type: 3}
+  - PlayID: Narrator_Intro_2
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: d7f960d4993040a4987a816a5e345cbc, type: 3}
+  - PlayID: Narrator_Hands1
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 9a37520c5455db3459451cb54502be97, type: 3}
+  - PlayID: Narrator_Hands2
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 510cb63607a94354d82f6c8d63c8e0e0, type: 3}
+  - PlayID: Narrator_MoveDirection
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 231b08d9fd380ae4ab0c9deb9b229cb6, type: 3}
+  - PlayID: Narrator_BirdWake
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 1da4f40f95162ac4cadc64100a73615c, type: 3}
+  - PlayID: Narrator_ShowingOff
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 4bb9fe1f44d9327428c1c8562f4a5c28, type: 3}
+  - PlayID: Narrator_Ruckus
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 9310500e0272fc74990ffd2030a634a7, type: 3}
+  - PlayID: Narrator_Mess
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 450f4f82338a3b94e93984159b8b818b, type: 3}

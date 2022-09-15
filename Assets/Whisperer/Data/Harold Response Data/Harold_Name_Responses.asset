@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0620d69a187abc54183c7d21ea94f5cb, type: 3}
+  m_Name: Harold_Name_Responses
+  m_EditorClassIdentifier: 
+  Responses:
+  - Phrases:
+    - Harold!
+    - Nice to meet you!
+  - Phrases:
+    - Harold!
+    - Thanks for asking.
+  - Phrases:
+    - "It\u2019s Harold..."
+    - "but \u201CBugsy\u201D if anyone asks, Capeesh?"
+  - Phrases:
+    - "Harold \u2013 a pleasure."
+  - Phrases:
+    - "Harold. I\u2019d ask for yours,"
+    - but, you know...bird brain!
+  - Phrases:
+    - Harold Feathersby!
+  - Phrases:
+    - Harold, but my friends call me Banana.
+  - Phrases:
+    - Harold Indigo Feathersby IV...
+    - ...at your service.
+  - Phrases:
+    - If I told you my true name...
+    - ...it would unravel your mind.
+  - Phrases:
+    - "I\u2019m Harold!"
+  - Phrases:
+    - Who me? Call me Harold.
+  - Phrases:
+    - Harold, the Destroyer of Worlds...
+  - Phrases:
+    - If only they gave me a name tag...
+  - Phrases:
+    - Listen, I know who I am...
+    - ...Do you know who you are?

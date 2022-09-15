@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Loader.unity
+    guid: 1f001d2b7097d1144b735c879255ed66
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Logos/Logos.unity
+    guid: 6cd018a5fd65c524ea19d3dfa43b6a1b
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Level 0/Level_0.unity
+    guid: 50e164f6b5711bd46a1571e798ccd17e
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Level 1/Level_1.unity
+    guid: 20b134ad2e25b3747a48fa972a302355
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Level 2/Level_2.unity
+    guid: e8882aa03edda6740874d2215617c202
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Level 3/Level_3.unity
+    guid: 6e2b9eba87a922745be373132aa6fa54
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/Level 4/Level_4.unity
+    guid: a3ffb1a3b29bff74e8fbe0cd098ce50d
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/BaseLayout_Night/BaseLayout_Night.unity
+    guid: 10cd696e47aa2694bbdfe50bffd070ef
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/BaseLayout_Day/BaseLayout_Day.unity
+    guid: 5c0b710afddf54a458d5d4baaf4c74b7
+  - enabled: 1
+    path: Assets/Whisperer/Scenes/BaseLayout_CreditsScene/BaseLayout_CreditsScene.unity
+    guid: 05d09e36d1a2f8f4eb9315db07491d52
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d68ae1bece6c1b24684e48bf415523e6, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: c73b900e4bace6d4db2eee9dbcce6484, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 8b289e2bef109ff4eafdf35c41cc11b4, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: a80cff90767141147b3888d0220190be, type: 2}
