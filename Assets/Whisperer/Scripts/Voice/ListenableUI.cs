@@ -30,7 +30,7 @@ namespace Whisperer
 			_micInputValue = FindObjectOfType<MicInputValue>();
 			_speakGestureWatcher = FindObjectOfType<SpeakGestureWatcher>();
 
-			_appVoiceExperience.events.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
+			_appVoiceExperience.VoiceEvents.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
 
 			SetOpacity(0);
 			Reset();
@@ -49,7 +49,7 @@ namespace Whisperer
 
 		private void OnDestroy()
 		{
-			_appVoiceExperience.events.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
+			_appVoiceExperience.VoiceEvents.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
 		}
 
 	}
