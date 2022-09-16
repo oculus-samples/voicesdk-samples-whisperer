@@ -10,7 +10,7 @@ Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer
 
 ## Getting Started
 
-Ensure you have Git LFS installed: 
+Ensure you have [Git LFS](https://git-lfs.github.com/) installed: 
 
 ```
 git lfs install
