@@ -51,7 +51,7 @@ For more information on setting up an App, check out the [Wit.ai Quickstart](htt
 
 To determine when to activate and deactivate Wit.ai, the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component checks the position of the tracked hand controllers and raycasts for objects that contain the [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) class. If the player's hands are in position and an object is found, [`AppVoiceExperience.Activate()`](Assets/Oculus/Voice/Scripts/Runtime/Service/AppVoiceExperience.cs#L104-L113) is called. If at any time the player breaks the pose, Wit.ai is deactivated.
 
-The AppVoiceExperience class itself is initated in the [`LevelManager.cs`](Assets/Whisperer/Scripts/Logic/LevelManager.cs) parent class which all subsequent levels inherit from.
+The `AppVoiceExperience` class itself is initated in the [`LevelManager.cs`](Assets/Whisperer/Scripts/Logic/LevelManager.cs) parent class which all subsequent levels inherit from.
 
 If an object derived from [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) is selected and the player says something, the *Whisperer* will wait for a response from Wit.ai, then read the ```WitResponseNode``` to determine the action to be taken.
 
