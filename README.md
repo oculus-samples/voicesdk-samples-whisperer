@@ -10,7 +10,7 @@ Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer
 
 ## Getting Started
 
-Ensure you have Git LFS installed: 
+Ensure you have [Git LFS](https://git-lfs.github.com/) installed: 
 
 ```
 git lfs install
@@ -18,7 +18,7 @@ git lfs install
 
 Then, clone this repo using the "Code" button above, or with:
 ```
-git clone git@github.com:buck-co/meta-auricle.git
+git clone git@github.com:wit-ai/voicesdk_samples_whisperer.git
 ```
 
 All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v45 of the Voice SDK.
@@ -29,13 +29,14 @@ To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the pro
 
 Using *Whisperer* reqiures a [Wit.ai](https://wit.ai) account.
 
-1. Once logged in, on [wit.ai/apps](https://wit.ai/apps), click *New App* and import the [zipped app backup](https://github.com/buck-co/meta-auricle/blob/main/Assets/whisperer-wit-app.zip) included in this repo. 
+
+1. Once logged in, on [wit.ai/apps](https://wit.ai/apps), click *New App* and import the [zipped app backup](https://github.com/wit-ai/voicesdk_samples_whisperer/blob/main/Assets/whisperer-wit-app.zip) included in this repo. 
 
 2. Then find the `Server Access` and `Client Acess Tokens` your app setup under `Managment > Settings`. Enter these values in the appropriate fields on the Wit.ai App Config asset in the unity project. 
 
 For more information on setting up an App, check out the [Wit.ai Quickstart](https://wit.ai/docs/quickstart).
 
-> **Note:** Wit.ai will need to train it's model before it's ready to use. On Wit.ai, the current status of the training is indicated by the dot next to the app name.
+> **Note:** Wit.ai will need to train its model before it's ready to use. On Wit.ai, the current status of the training is indicated by the dot next to the app name.
 
 ## How To Play
 *Whisperer's* introduction will help guide you, through narrative instruction and visual prompts, how to interact with objects using your hands and voice.
@@ -62,16 +63,18 @@ Every level contains a Level Manager prefab and a Listenables prefab. The Level 
 
 AppVoiceExperience is the core component of the Voice SDK. It holds the reference to the Wit.ai App Config asset, sends data to Wit.ai for processing, and responds with the appropriate Unity Events. When an object derived from Listenable.cs is selected and deselected by the player, it subscribes and unsubscribes to the events on AppVoiceExperience.
 
-
 ## Voice SDK
 
 *Whisperer* utilizes several different methods of handling responses from Wit.ai. Depending on the type of interaction (`action`) we're trying to resolve, we use either `intents`, `entities`, or manual parsing of the text transcription. 
 
 To determine when to activate and deactivate Wit.ai, the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component checks the position of the tracked hand controllers and raycasts for objects that contain the [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) class. If the player's hands are in position and an object is found, [`AppVoiceExperience.Activate()`](Assets/Oculus/Voice/Scripts/Runtime/Service/AppVoiceExperience.cs#L104-L113) is called. If at any time the player breaks the pose, Wit.ai is deactivated.
 
+The `AppVoiceExperience` class itself is initated in the [`LevelManager.cs`](Assets/Whisperer/Scripts/Logic/LevelManager.cs) parent class which all subsequent levels inherit from.
+
 If an object derived from [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) is selected and the player says something, the *Whisperer* will wait for a response from Wit.ai, then read the ```WitResponseNode``` to determine the action to be taken.
 
 > Example: If a [`ForceMovable.cs`](Assets/Whisperer/Scripts/Voice/Listenable Objects/ForceMovable.cs) is selected and the utterance "*Move right a lot*" is detected by Wit.ai, we read the intent and entities from the `WitResponseNode` to determine the direction and strength of move force applied. *Whisperer* reads the returned intent (`move`), direction entity (`right`) and strength entity (`strong`) and performs an appropriate action.
+
 
 ## Intents and Entities
 These intents are used to move objects in the scene. The move, pull, push, and jump intents can be used with `strength` and `direction` entities. For example, "*Push away from me a little bit.*"
