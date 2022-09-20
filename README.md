@@ -10,7 +10,7 @@ Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer
 
 ## Getting Started
 
-Ensure you have Git LFS installed: 
+Ensure you have [Git LFS](https://git-lfs.github.com/) installed: 
 
 ```
 git lfs install
@@ -36,7 +36,7 @@ Using *Whisperer* reqiures a [Wit.ai](https://wit.ai) account.
 
 For more information on setting up an App, check out the [Wit.ai Quickstart](https://wit.ai/docs/quickstart).
 
-> **Note:** Wit.ai will need to train it's model before it's ready to use. On Wit.ai, the current status of the training is indicated by the dot next to the app name.
+> **Note:** Wit.ai will need to train its model before it's ready to use. On Wit.ai, the current status of the training is indicated by the dot next to the app name.
 
 ## How To Play
 *Whisperer's* introduction will help guide you, through narrative instruction and visual prompts, how to interact with objects using your hands and voice.
