@@ -20,6 +20,7 @@ namespace Whisperer
 
 		protected override void Start()
 		{
+			PlayerPrefs.DeleteAll();
 			base.Start();
 
 			_speakGestureWatcher.AllowSpeak = !_levelLogicEnabled;
