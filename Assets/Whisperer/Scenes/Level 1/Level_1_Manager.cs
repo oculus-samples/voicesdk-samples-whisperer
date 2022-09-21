@@ -143,7 +143,7 @@ namespace Whisperer
 
 			_lightsMaterials.ForEach(m => m.SetLights(_lightsOnIntensity));
 			AudioManager.Instance.Play("Lightswitch", _checkmarks[2].transform);
-			_appVoiceExperience.VoiceEvents.OnRequestCompleted.RemoveAllListeners();
+			_appVoiceExperience.events.OnRequestCompleted.RemoveAllListeners();
 
 			yield return new WaitForSeconds(1);
 

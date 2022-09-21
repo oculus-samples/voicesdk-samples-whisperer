@@ -7,7 +7,6 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Events;
 
 namespace Whisperer
 {
@@ -45,9 +44,6 @@ namespace Whisperer
 		public bool IsDisplayed { get => _isDisplayed; }
 		public bool IsSceneDisplay { get; set; }
 		public bool UsesHandsRaycast { get => _usesHandsRaycast; }
-
-		public UnityEvent<UXTrackedDisplay> OnStartDisplayed;
-		public UnityEvent<UXTrackedDisplay> OnEndDisplayed;
 
 		protected RigHandsControl _hands;
 		protected Quaternion _rotationTarget;
@@ -170,12 +166,8 @@ namespace Whisperer
 
 				_isDisplayed = set;
 				_toggleObject.gameObject.SetActive(set);
-				if (set)
-				{
-					Recenter();
-					OnStartDisplayed.Invoke(this);
-				}
-				else OnEndDisplayed.Invoke(this);
+
+				if (set) Recenter();
 
 				/// Controllers
 				if (_usesHandsRaycast && !_hands.Hidden)

@@ -15,13 +15,18 @@ namespace Whisperer
 {
 	public class Level_0_Manager : LevelManager
 	{
+		[SerializeField] GameObject _startMenu;
+		[SerializeField] GameObject _consentDialog;
+
 		protected override void Start()
 		{
+			PlayerPrefs.DeleteAll();
 			base.Start();
 
 			_speakGestureWatcher.AllowSpeak = !_levelLogicEnabled;
 
-			UXManager.Instance.SetDisplayEnabled("SettingsMenu", false);
+			_startMenu.SetActive(false);
+			_consentDialog.SetActive(false);
 		}
 
 		public override void StartLevel()
@@ -30,12 +35,34 @@ namespace Whisperer
 
 			FindObjectOfType<CameraColorOverlay>().SetTargetColor(Color.black);
 
-			StartMenu();
+			if (PlayerPrefs.GetInt("VoiceDataConsent", 0) == 1)
+				StartMenu();
+			else
+				ShowConsent();
+		}
+
+		private void ShowConsent()
+		{
+			_consentDialog.SetActive(true);
 		}
 
 		private void StartMenu()
 		{
-			UXManager.Instance.OpenDisplay("StartMenu");
+			_startMenu.SetActive(true);
+		}
+
+		public void ConsentAccept()
+		{
+			PlayerPrefs.SetInt("VoiceDataConsent", 1);
+
+			_consentDialog.SetActive(false);
+
+			StartMenu();
+		}
+
+		public void ConsentDecline()
+		{
+			Application.Quit();
 		}
 	}
 }

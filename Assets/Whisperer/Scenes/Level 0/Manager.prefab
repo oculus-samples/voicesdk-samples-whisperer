@@ -48,8 +48,9 @@ MonoBehaviour:
   _rigStartPosition: {x: 0, y: 0, z: -0.5}
   _transcriptionUIPrefab: {fileID: 8230941770142181604, guid: d4655999978575a458648d0b673fee89, type: 3}
   _appVoiceExperience: {fileID: 0}
+  _hands: {fileID: 0}
   _speakGestureWatcher: {fileID: 0}
-  _allListenableObjects: []
   _allListenableScripts: []
   _allAnimationEvents: []
-  _logs: []
+  _startMenu: {fileID: 0}
+  _consentDialog: {fileID: 0}

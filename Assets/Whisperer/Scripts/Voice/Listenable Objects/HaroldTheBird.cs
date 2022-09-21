@@ -68,7 +68,7 @@ namespace Whisperer
 			RandomizeResponses();
 
 			// Sub to events
-			_appVoiceExperience.VoiceEvents.onFullTranscription.AddListener(CacheTranscription);
+			_appVoiceExperience.events.onFullTranscription.AddListener(CacheTranscription);
 			LevelLoader.Instance.OnLevelLoadComplete.AddListener(FindSceneListenables);
 
 			if (_sleeping) Sleep();

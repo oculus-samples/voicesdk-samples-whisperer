@@ -29,9 +29,6 @@ namespace Whisperer
 		[SerializeField] protected List<Listenable> _allListenableScripts;
 		[SerializeField] protected List<AnimationEvents> _allAnimationEvents;
 
-		[Header("Debug")]
-		[SerializeField] protected List<string> _logs;
-
 		protected bool _loaderReady,
 					   _inTransition;
 
@@ -90,19 +87,13 @@ namespace Whisperer
 		/// <param name="listenable"></param>
 		/// <param name="intent"></param>
 		/// <param name="success"></param>
-		protected virtual void OnListenableResponse(ListenableEventArgs eventArgs)
-		{
-			if (eventArgs.Success) _logs.Add("L: " + eventArgs.Listenable.name + " | " + eventArgs.Action);
-		}
+		protected virtual void OnListenableResponse(ListenableEventArgs eventArgs) { }
 
 		/// <summary>
 		/// Called whenever any animation event in the scene is invoked.
 		/// </summary>
 		/// <param name="eventName"></param>
-		protected virtual void OnAnimationEvent(string eventName)
-		{
-			_logs.Add("AE: " + eventName);
-		}
+		protected virtual void OnAnimationEvent(string eventName) { }
 
 		public void SetLoaderReady()
 		{

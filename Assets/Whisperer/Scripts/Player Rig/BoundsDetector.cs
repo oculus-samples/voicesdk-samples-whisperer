@@ -19,6 +19,7 @@ namespace Whisperer
 		[SerializeField] CameraColorOverlay _cameraColorOverlay;
 
 		public float MaxDistance { get => _maxDistance; set => _maxDistance = value; }
+		public bool Active { get; set; } = false;
 
 		Vector3 _center;
 		float _distance;
@@ -38,7 +39,7 @@ namespace Whisperer
 		{
 			_center.Set(_centerTransform.position.x, Camera.main.transform.position.y, _centerTransform.position.z);
 			_distance = Vector3.Distance(_center, Camera.main.transform.position);
-			SetOutOfBounds(_distance > _maxDistance);
+			SetOutOfBounds(Active && _distance > _maxDistance);
 		}
 
 		private void SetOutOfBounds(bool outOfBounds)
