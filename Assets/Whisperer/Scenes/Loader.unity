@@ -340,6 +340,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1155258624}
   m_CullTransparentMesh: 1
+--- !u!114 &1239112625 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1662979305013210547, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
+  m_PrefabInstance: {fileID: 4997935705569156630}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae32894ec36d9e46b8ff0ca6672de9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1419077457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -929,6 +940,7 @@ MonoBehaviour:
   _fadeTimeDelay: 2
   _pauseLoadDelay: 2
   _overlay: {fileID: 1539524753}
+  _boundsDetector: {fileID: 1239112625}
   _levels:
   - LevelName: Level_0
     Scenes:

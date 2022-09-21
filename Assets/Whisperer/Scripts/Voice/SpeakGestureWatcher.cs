@@ -64,12 +64,12 @@ namespace Whisperer
 
 		private void Start()
 		{
-			_appVoiceExperience.VoiceEvents.onFullTranscription.AddListener(OnTranscription);
+			_appVoiceExperience.events.onFullTranscription.AddListener(OnTranscription);
 		}
 
 		private void OnDestroy()
 		{
-			_appVoiceExperience.VoiceEvents.onFullTranscription.RemoveListener(OnTranscription);
+			_appVoiceExperience.events.onFullTranscription.RemoveListener(OnTranscription);
 		}
 
 		private void Update()

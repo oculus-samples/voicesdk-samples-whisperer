@@ -25,6 +25,7 @@ namespace Whisperer
 		[SerializeField] float _fadeTimeDelay = 2;
 		[SerializeField] float _pauseLoadDelay = 2;
 		[SerializeField] CameraColorOverlay _overlay;
+		[SerializeField] BoundsDetector _boundsDetector;
 		[SerializeField] List<LevelScenes> _levels = new List<LevelScenes>();
 		[SerializeField] bool _use90Hz = true;
 		[SerializeField] bool _forceStartLevel0;
@@ -98,6 +99,7 @@ namespace Whisperer
 		{
 			UnloadAllScenes();
 
+			/// Version check
 			Debug.Log("Application Version: " + Application.version);
 
 			if (Application.version != PlayerPrefs.GetString(VERSION_NAME, ""))
@@ -108,6 +110,7 @@ namespace Whisperer
 			PlayerPrefs.SetString(VERSION_NAME, Application.version);
 			PlayerPrefs.Save();
 
+			_boundsDetector.Active = true;
 			_overlay.SetColor(Color.black);
 
 			int startIndex = _forceStartLevel0 ? 0 : PlayerPrefs.GetInt(COMPLETED_NAME, 0) == 1 ? 4 : 0;
