@@ -651,12 +651,12 @@ namespace Facebook.WitAi.Windows
                 return;
             }
             // Remove delegates
-            v.events.OnRequestCreated.RemoveListener(OnRequestCreated);
-            v.events.OnError.RemoveListener(OnError);
-            v.events.OnResponse.RemoveListener(OnResponse);
-            v.events.OnFullTranscription.RemoveListener(ShowTranscription);
-            v.events.OnPartialTranscription.RemoveListener(ShowTranscription);
-            v.events.OnStoppedListening.RemoveListener(ResetStartTime);
+            v.VoiceEvents.OnRequestCreated.RemoveListener(OnRequestCreated);
+            v.VoiceEvents.OnError.RemoveListener(OnError);
+            v.VoiceEvents.OnResponse.RemoveListener(OnResponse);
+            v.VoiceEvents.OnFullTranscription.RemoveListener(ShowTranscription);
+            v.VoiceEvents.OnPartialTranscription.RemoveListener(ShowTranscription);
+            v.VoiceEvents.OnStoppedListening.RemoveListener(ResetStartTime);
         }
         // Add listeners
         private void AddVoiceListeners(VoiceService v)
@@ -667,12 +667,12 @@ namespace Facebook.WitAi.Windows
                 return;
             }
             // Add delegates
-            v.events.OnRequestCreated.AddListener(OnRequestCreated);
-            v.events.OnError.AddListener(OnError);
-            v.events.OnResponse.AddListener(OnResponse);
-            v.events.OnPartialTranscription.AddListener(ShowTranscription);
-            v.events.OnFullTranscription.AddListener(ShowTranscription);
-            v.events.OnStoppedListening.AddListener(ResetStartTime);
+            v.VoiceEvents.OnRequestCreated.AddListener(OnRequestCreated);
+            v.VoiceEvents.OnError.AddListener(OnError);
+            v.VoiceEvents.OnResponse.AddListener(OnResponse);
+            v.VoiceEvents.OnPartialTranscription.AddListener(ShowTranscription);
+            v.VoiceEvents.OnFullTranscription.AddListener(ShowTranscription);
+            v.VoiceEvents.OnStoppedListening.AddListener(ResetStartTime);
         }
         #endregion
     }

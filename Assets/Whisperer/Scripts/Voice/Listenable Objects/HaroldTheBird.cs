@@ -68,7 +68,7 @@ namespace Whisperer
 			RandomizeResponses();
 
 			// Sub to events
-			_appVoiceExperience.events.onFullTranscription.AddListener(CacheTranscription);
+			_appVoiceExperience.VoiceEvents.onFullTranscription.AddListener(CacheTranscription);
 			LevelLoader.Instance.OnLevelLoadComplete.AddListener(FindSceneListenables);
 
 			if (_sleeping) Sleep();
@@ -79,7 +79,7 @@ namespace Whisperer
 		{
 			LevelLoader.Instance?.OnLevelLoadComplete.RemoveListener(FindSceneListenables);
 			_listenables.ForEach(listenable => UnsubToListenableEvents(listenable));
-			_appVoiceExperience?.events.onFullTranscription.RemoveListener(CacheTranscription);
+			_appVoiceExperience?.VoiceEvents.onFullTranscription.RemoveListener(CacheTranscription);
 
 			base.OnDestroy();
 		}

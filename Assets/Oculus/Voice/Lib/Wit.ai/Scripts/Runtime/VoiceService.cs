@@ -36,7 +36,7 @@ namespace Facebook.WitAi
         private readonly IParameterProvider conduitParameterProvider = new WitConduitParameterProvider();
 
         [Tooltip("Events that will fire before, during and after an activation")] [SerializeField]
-        public VoiceEvents events = new VoiceEvents();
+        internal VoiceEvents events = new VoiceEvents();
 
         /// <summary>
         /// Returns true if this voice service is currently active and listening with the mic

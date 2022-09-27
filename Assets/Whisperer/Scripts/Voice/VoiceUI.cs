@@ -54,7 +54,7 @@ namespace Whisperer
 
 			_initialVoiceStatusScale = _voiceVolumeIndicator.transform.localScale;
 
-			_appVoiceExperience.events.OnPartialTranscription.AddListener(HandlePartialTranscription);
+			_appVoiceExperience.VoiceEvents.OnPartialTranscription.AddListener(HandlePartialTranscription);
 
 			Reset();
 
@@ -156,7 +156,7 @@ namespace Whisperer
 
 		private void DestroySelf(Listenable l)
 		{
-			_appVoiceExperience.events.OnPartialTranscription.RemoveListener(HandlePartialTranscription);
+			_appVoiceExperience.VoiceEvents.OnPartialTranscription.RemoveListener(HandlePartialTranscription);
 			//Destroy(gameObject);
 		}
 
