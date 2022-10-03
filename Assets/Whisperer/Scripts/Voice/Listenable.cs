@@ -138,11 +138,11 @@ namespace Whisperer
 			if (_highlightOnly) return;
 
 			if (selected)
-				_appVoiceExperience?.events.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
+				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
 			else
 			{
 				SetSubscribed(false);
-				_appVoiceExperience?.events.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
+				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
 			}
 		}
 
@@ -189,12 +189,12 @@ namespace Whisperer
 			{
 				_witUI?.SetVisible(true);
 
-				_appVoiceExperience?.events.OnResponse.AddListener(HandleResponse);
-				_appVoiceExperience?.events.OnStoppedListeningDueToInactivity.AddListener(HandleWitFailDueToInactivity);
-				_appVoiceExperience?.events.OnStoppedListeningDueToTimeout.AddListener(HandleWitFailDueToTimeout);
-				_appVoiceExperience?.events.OnAborted.AddListener(HandleWitFailOnAborted);
-				_appVoiceExperience?.events.OnError.AddListener(HandleWitFailOnError);
-				_appVoiceExperience?.events.onFullTranscription.AddListener(LogTranscription);
+				_appVoiceExperience?.VoiceEvents.OnResponse.AddListener(HandleResponse);
+				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToInactivity.AddListener(HandleWitFailDueToInactivity);
+				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToTimeout.AddListener(HandleWitFailDueToTimeout);
+				_appVoiceExperience?.VoiceEvents.OnAborted.AddListener(HandleWitFailOnAborted);
+				_appVoiceExperience?.VoiceEvents.OnError.AddListener(HandleWitFailOnError);
+				_appVoiceExperience?.VoiceEvents.onFullTranscription.AddListener(LogTranscription);
 
 				_subscribed = true;
 
@@ -204,12 +204,12 @@ namespace Whisperer
 			{
 				_witUI?.SetVisible(false);
 
-				_appVoiceExperience?.events.OnResponse.RemoveListener(HandleResponse);
-				_appVoiceExperience?.events.OnStoppedListeningDueToInactivity.RemoveListener(HandleWitFailDueToInactivity);
-				_appVoiceExperience?.events.OnStoppedListeningDueToTimeout.RemoveListener(HandleWitFailDueToTimeout);
-				_appVoiceExperience?.events.OnAborted.RemoveListener(HandleWitFailOnAborted);
-				_appVoiceExperience?.events.OnError.RemoveListener(HandleWitFailOnError);
-				_appVoiceExperience?.events.onFullTranscription.RemoveListener(LogTranscription);
+				_appVoiceExperience?.VoiceEvents.OnResponse.RemoveListener(HandleResponse);
+				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToInactivity.RemoveListener(HandleWitFailDueToInactivity);
+				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToTimeout.RemoveListener(HandleWitFailDueToTimeout);
+				_appVoiceExperience?.VoiceEvents.OnAborted.RemoveListener(HandleWitFailOnAborted);
+				_appVoiceExperience?.VoiceEvents.OnError.RemoveListener(HandleWitFailOnError);
+				_appVoiceExperience?.VoiceEvents.onFullTranscription.RemoveListener(LogTranscription);
 
 				if (_timeoutRoutine != null) StopCoroutine(_timeoutRoutine);
 
