@@ -6,7 +6,7 @@
  */
 
 using UnityEngine;
-using Facebook.WitAi.Lib;
+using Oculus.Voice;
 
 namespace Whisperer
 {
@@ -14,16 +14,18 @@ namespace Whisperer
 	{
 		public bool MicActive;
 		public float AudioLevel;
+		private float _minVol = float.MaxValue;
+		private float _maxVol = float.MinValue;
 
-		Mic _mic;
+		protected AppVoiceExperience _appVoiceExperience;
 
 		private void Start()
 		{
-			_mic = FindObjectOfType<Mic>();
-			_mic.OnSampleReady += _mic_OnSampleReady;
-			_mic.OnStartRecording += _mic_OnStartRecording;
-			_mic.OnStartRecordingFailed += _mic_OnStartRecordingFailed;
-			_mic.OnStopRecording += _mic_OnStopRecording;
+			_appVoiceExperience = FindObjectOfType<AppVoiceExperience>();
+			_appVoiceExperience.VoiceEvents.OnMicLevelChanged.AddListener(_mic_OnSampleReady);
+			_appVoiceExperience.VoiceEvents.OnStartListening.AddListener(_mic_OnStartRecording);
+			_appVoiceExperience.VoiceEvents.OnStoppedListening.AddListener(_mic_OnStopRecording);
+			_appVoiceExperience.VoiceEvents.OnAborted.AddListener(_mic_OnStartRecordingFailed);
 		}
 
 		private void _mic_OnStopRecording()
@@ -41,9 +43,19 @@ namespace Whisperer
 			MicActive = true;
 		}
 
-		private void _mic_OnSampleReady(int sampleCount, float[] sample, float levelMax)
+		private void _mic_OnSampleReady(float levelMax)
 		{
-			AudioLevel = levelMax;
+			// Normalize the mic levels
+			_minVol = Mathf.Min(levelMax, _minVol);
+			_maxVol = Mathf.Max(levelMax, _maxVol);
+			if (_maxVol == _minVol)
+			{
+				AudioLevel = 0;
+			}
+			else
+			{
+				AudioLevel = Mathf.Clamp01((levelMax - _minVol) / (_maxVol - _minVol));
+			}
 		}
 	}
 }
