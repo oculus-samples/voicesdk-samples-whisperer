@@ -5,45 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System;
 using UnityEngine;
 using Facebook.WitAi.Lib;
+using Oculus.Voice;
 
 namespace Whisperer
 {
 	public class MicInputValue : MonoBehaviour
 	{
-		public bool MicActive;
+		[SerializeField] private AppVoiceExperience _appVoiceExperience;
+		
 		public float AudioLevel;
 
-		Mic _mic;
-
-		private void Start()
+		private void OnEnable()
 		{
-			_mic = FindObjectOfType<Mic>();
-			_mic.OnSampleReady += _mic_OnSampleReady;
-			_mic.OnStartRecording += _mic_OnStartRecording;
-			_mic.OnStartRecordingFailed += _mic_OnStartRecordingFailed;
-			_mic.OnStopRecording += _mic_OnStopRecording;
+			_appVoiceExperience.VoiceEvents.OnMicLevelChanged.AddListener(OnMicLevelChanged);
 		}
 
-		private void _mic_OnStopRecording()
+		private void OnDisable()
 		{
-			MicActive = false;
+			_appVoiceExperience.VoiceEvents.OnMicLevelChanged.RemoveListener(OnMicLevelChanged);
 		}
 
-		private void _mic_OnStartRecordingFailed()
+		private void OnMicLevelChanged(float level)
 		{
-			MicActive = false;
-		}
-
-		private void _mic_OnStartRecording()
-		{
-			MicActive = true;
-		}
-
-		private void _mic_OnSampleReady(int sampleCount, float[] sample, float levelMax)
-		{
-			AudioLevel = levelMax;
+			AudioLevel = level;
 		}
 	}
 }

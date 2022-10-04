@@ -1437,7 +1437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d5756eaaf8366f409ce2853e7608371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MicActive: 0
+  _appVoiceExperience: {fileID: 4867744298586720718}
   AudioLevel: 0
 --- !u!114 &4867744298586720718
 MonoBehaviour:

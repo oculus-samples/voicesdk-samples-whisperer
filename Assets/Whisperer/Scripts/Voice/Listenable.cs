@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,6 +88,16 @@ namespace Whisperer
 			OnDestroyed.Invoke(this);
 		}
 
+		private void OnEnable()
+		{
+			SetSubscribed(true);
+		}
+
+		private void OnDisable()
+		{
+			SetSubscribed(false);
+		}
+
 		public void ProcessComplete(string intent, bool success, bool error = false)
 		{
 			string debug = "";
@@ -102,8 +113,6 @@ namespace Whisperer
 			OnResponseProcessed.Invoke(eventArgs);
 
 			_witUI.SetUIState(intent, success, error);
-
-			SetSubscribed(false);
 		}
 
 		public virtual void SetListeningActive(bool active)
@@ -138,11 +147,13 @@ namespace Whisperer
 			if (_highlightOnly) return;
 
 			if (selected)
-				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
+			{
+				SetSubscribed(true);
+			}
 			else
 			{
 				SetSubscribed(false);
-				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
+				_appVoiceExperience.DeactivateAndAbortRequest();
 			}
 		}
 
@@ -179,16 +190,16 @@ namespace Whisperer
 
 		protected void OnMinimumWakeThresholdHit()
 		{
-			SetSubscribed(true);
 			RestartTimer();
 		}
 
-		protected void SetSubscribed(bool sub)
+		private void SetSubscribed(bool sub)
 		{
 			if (sub && !_subscribed)
 			{
 				_witUI?.SetVisible(true);
-
+				
+				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.AddListener(OnMinimumWakeThresholdHit);
 				_appVoiceExperience?.VoiceEvents.OnResponse.AddListener(HandleResponse);
 				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToInactivity.AddListener(HandleWitFailDueToInactivity);
 				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToTimeout.AddListener(HandleWitFailDueToTimeout);
@@ -204,6 +215,7 @@ namespace Whisperer
 			{
 				_witUI?.SetVisible(false);
 
+				_appVoiceExperience?.VoiceEvents.OnMinimumWakeThresholdHit.RemoveListener(OnMinimumWakeThresholdHit);
 				_appVoiceExperience?.VoiceEvents.OnResponse.RemoveListener(HandleResponse);
 				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToInactivity.RemoveListener(HandleWitFailDueToInactivity);
 				_appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToTimeout.RemoveListener(HandleWitFailDueToTimeout);
