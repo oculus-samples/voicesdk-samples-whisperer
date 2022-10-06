@@ -88,16 +88,6 @@ namespace Whisperer
 			OnDestroyed.Invoke(this);
 		}
 
-		private void OnEnable()
-		{
-			SetSubscribed(true);
-		}
-
-		private void OnDisable()
-		{
-			SetSubscribed(false);
-		}
-
 		public void ProcessComplete(string intent, bool success, bool error = false)
 		{
 			string debug = "";
