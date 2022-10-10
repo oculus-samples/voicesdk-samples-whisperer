@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0620d69a187abc54183c7d21ea94f5cb, type: 3}
+  m_Name: Harold_Generic_Responses
+  m_EditorClassIdentifier: 
+  Responses:
+  - Phrases:
+    - Hello!
+  - Phrases:
+    - Who said that!?
+    - ...Kidding, of course I see you.
+  - Phrases:
+    - "Go to any good s\xE9ances lately?"
+  - Phrases:
+    - Boo!
+  - Phrases:
+    - Well well well...not every day
+    - you see an amorphous echo of a human soul.
+  - Phrases:
+    - I thought you'd be scarier...
+  - Phrases:
+    - My agent told me...
+    - ...they were looking for a bird...
+    - ...to talk to <i>goats</i>.
+  - Phrases:
+    - Bust me outta here!
+    - "I\u2019ll make it lucrative\u2013"
+    - ...you like seeds, right?
+  - Phrases:
+    - 'Fun fact: Bea was at Woodstock...'
+    - ...Woodstock '99.
+  - Phrases:
+    - I see right through you.
+  - Phrases:
+    - "What\u2019s that you\u2019ve got on your head?"
+  - Phrases:
+    - "It\u2019s not a perfect translation,"
+    - "but in parrot, \u201CHarold\u201D means..."
+    - Lord of the Underworld.
+  - Phrases:
+    - The president pardoned my uncle-in-law!
+    - "...He\u2019s a turkey."
+  - Phrases:
+    - Sometimes Bea goes into the desert...
+    - ...and is just gone for days...
+    - ...I wonder what she does out there.
+  - Phrases:
+    - Is there an after-afterlife?
+    - Do we ever stop climbing this ladder?
+  - Phrases:
+    - Psst. I never told you this but...
+    - After sundown, you can make things <i>float</i>.
+  - Phrases:
+    - "How\u2019s limbo? They feeding you okay?"
+  - Phrases:
+    - You make a mess,
+    - and the raccoons take the heat.
+    - ...I like your style, Ghosty.
+  - Phrases:
+    - "Wait you\u2019re not <i>actually</i> dead, are you?"
+  - Phrases:
+    - How did an accretion of ectoplasm like you
+    - wind up in a nice place like this?
+  - Phrases:
+    - "Do you ever wonder if we\u2019re just..."
+    - part of some inscrutable experiment?
+  - Phrases:
+    - Are you the ghost of Eric Chang?
+  - Phrases:
+    - "If you run into a \u201CRyan Nelson\u201D out there..."
+    - ...tell him I want my $200!
+  - Phrases:
+    - 'A nilpotent Archimedean t-norm is pointwise smaller than '
+    - the product t-norm
+    - "I don\u2019t know what that means,"
+    - "I\u2019m just a dumb bird!"
+  - Phrases:
+    - I wish Bea would quit erasing my mathematical proofs.

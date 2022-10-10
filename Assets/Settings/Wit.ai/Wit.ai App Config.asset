@@ -1,0 +1,281 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5a46bda3295124c99b0e6537ac7252, type: 3}
+  m_Name: Wit.ai App Config
+  m_EditorClassIdentifier: 
+  application:
+    witConfiguration: {fileID: 11400000}
+    name: meta_auricle
+    id: 574166870726728
+    lang: en
+    isPrivate: 1
+    createdAt: 2022-07-06T09:30:23-0700
+  configId: e185392f015814186a269f502c61ea11
+  clientAccessToken: 
+  timeoutMS: 10000
+  endpointConfiguration:
+    uriScheme: 
+    authority: 
+    port: 0
+    witApiVersion: 
+    speech: 
+    message: 
+    dictation: 
+  entities:
+  - witConfiguration: {fileID: 11400000}
+    id: 1043768039844355
+    name: color
+    lookups:
+    - keywords
+    roles:
+    - id: 1221355305317520
+      name: color
+    keywords:
+    - keyword: blue
+      synonyms:
+      - blue
+    - keyword: red
+      synonyms:
+      - red
+    - keyword: yellow
+      synonyms:
+      - yellow
+  - witConfiguration: {fileID: 11400000}
+    id: 353634896947463
+    name: direction
+    lookups:
+    - keywords
+    roles:
+    - id: 429138422470202
+      name: direction
+    keywords:
+    - keyword: across
+      synonyms:
+      - across
+    - keyword: away
+      synonyms:
+      - away
+      - back
+      - backwards
+    - keyword: left
+      synonyms:
+      - left
+    - keyword: right
+      synonyms:
+      - right
+      - write
+    - keyword: toward
+      synonyms:
+      - closer
+      - forward
+      - here
+      - this way
+      - to me
+      - toward
+    - keyword: up
+      synonyms:
+      - in the air
+      - to the ceiling
+      - to the sky
+      - up
+    - keyword: wall
+      synonyms:
+      - the wall
+  - witConfiguration: {fileID: 11400000}
+    id: 565053125320910
+    name: move_strength
+    lookups:
+    - keywords
+    roles:
+    - id: 573271474328493
+      name: move_strength
+    keywords:
+    - keyword: normal
+      synonyms:
+      - normal
+    - keyword: strong
+      synonyms:
+      - a lot
+      - all the way
+      - blast
+      - fire
+      - high
+      - shoot
+      - shove
+      - strong
+      - throw
+    - keyword: weak
+      synonyms:
+      - a little
+      - a little bit
+      - just a touch
+      - slightly
+      - weak
+  intents:
+  - witConfiguration: {fileID: 11400000}
+    id: 387984673485342
+    name: ask_bird_name
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1020548231967591
+    name: bird_song
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 525123132723332
+    name: change_station
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1407982606390575
+    name: close
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 750367852689309
+    name: drop
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 758218545452394
+    name: hello
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 837866037203541
+    name: hello_there
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 3113025839009782
+    name: help
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1202235533900919
+    name: jump
+    entities:
+    - witConfiguration: {fileID: 11400000}
+      id: 429138422470202
+      name: direction:direction
+      lookups: []
+      roles: []
+      keywords: []
+    - witConfiguration: {fileID: 11400000}
+      id: 573271474328493
+      name: move_strength:move_strength
+      lookups: []
+      roles: []
+      keywords: []
+  - witConfiguration: {fileID: 11400000}
+    id: 580168640475983
+    name: levitate
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 570398581382531
+    name: move
+    entities:
+    - witConfiguration: {fileID: 11400000}
+      id: 429138422470202
+      name: direction:direction
+      lookups: []
+      roles: []
+      keywords: []
+    - witConfiguration: {fileID: 11400000}
+      id: 573271474328493
+      name: move_strength:move_strength
+      lookups: []
+      roles: []
+      keywords: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1661174190923927
+    name: open
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 5544645208936147
+    name: polly_want_cracker
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 906982116925465
+    name: pretty_bird
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 447682923962949
+    name: pull
+    entities:
+    - witConfiguration: {fileID: 11400000}
+      id: 429138422470202
+      name: direction:direction
+      lookups: []
+      roles: []
+      keywords: []
+    - witConfiguration: {fileID: 11400000}
+      id: 573271474328493
+      name: move_strength:move_strength
+      lookups: []
+      roles: []
+      keywords: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1097704877519445
+    name: push
+    entities:
+    - witConfiguration: {fileID: 11400000}
+      id: 429138422470202
+      name: direction:direction
+      lookups: []
+      roles: []
+      keywords: []
+    - witConfiguration: {fileID: 11400000}
+      id: 573271474328493
+      name: move_strength:move_strength
+      lookups: []
+      roles: []
+      keywords: []
+  - witConfiguration: {fileID: 11400000}
+    id: 5428610020556190
+    name: turn_off
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 3213180339010374
+    name: turn_off_radio
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 484732293099746
+    name: turn_off_water
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1712356775815585
+    name: turn_on
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 547373820475737
+    name: turn_on_radio
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 379725674332894
+    name: turn_on_water
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 5278094062245053
+    name: wake_up_bea
+    entities: []
+  traits:
+  - witConfiguration: {fileID: 11400000}
+    id: 398718515700501
+    name: open_close
+    values: []
+  - witConfiguration: {fileID: 11400000}
+    id: 535a80f0-6922-4680-b678-0576f248cdcc
+    name: wit$on_off
+    values:
+    - id: 2701187510165547
+      value: off
+    - id: 882247432292479
+      value: on
+  isDemoOnly: 0
+  useConduit: 0
+  manifestLocalPath: ConduitManifest-4bdbc157-5896-49d4-8d86-093457c644fd.json
+  autoGenerateManifest: 0
+  openManifestOnGeneration: 0

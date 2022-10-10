@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8219d3a10da645a501ae6f723c617, type: 3}
+  m_Name: SoundLib_SFX
+  m_EditorClassIdentifier: 
+  ClipsData:
+  - PlayID: WitSuccess
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 8ee156be5c0433e4face0e1996c3a0e5, type: 3}
+  - PlayID: WitFail
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: ba6ccf7f7e2a60e4f9bf458437abe7d2, type: 3}
+  - PlayID: ChalkX
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 78bb1b16dcd5e1b44ae7881b24239f2c, type: 3}
+  - PlayID: PotBreak
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: bb42e1fd8ad43b74e8bb1da36c04fe71, type: 3}
+    - {fileID: 8300000, guid: beabb7303629e4229859ef6e148632eb, type: 3}
+  - PlayID: Squawk
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: c4751a689555a4b48b03896fa6561fa4, type: 3}
+  - PlayID: HaroldSing
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: ac993e76b16723344b49913d486eb449, type: 3}
+  - PlayID: ChalkWrite
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 3371272e3107957438aace420e5906f6, type: 3}
+  - PlayID: FootStep
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 9e8e0cd7ee9404f249c4460a3aaf8cdc, type: 3}
+    - {fileID: 8300000, guid: 8208f82eca48c42e2b3ce5ded38d44a9, type: 3}
+    - {fileID: 8300000, guid: 35936dfac4041430a8bb0b9a174b6e26, type: 3}
+    - {fileID: 8300000, guid: 8932ed46159c84378b20c8df7c3d4612, type: 3}
+  - PlayID: Opening
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: b41f6ea63a62806459289c5983388774, type: 3}
+  - PlayID: Sparkle
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: bc7c45f8f1fa0d6479585698cafe28fb, type: 3}
+  - PlayID: Door
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: f9e32b8eaa8a45f44bd4e58fb37ebc39, type: 3}
+  - PlayID: Lightswitch
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 6f3dbb30c8c703b48a2e9d977ed8f5ef, type: 3}
+  - PlayID: WaterLoop
+    Spatial: 1
+    Loop: 1
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: b9783afbe731c5d4e830142100925400, type: 3}
+  - PlayID: WaterFill
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 662306391fcd3c840802923df1500fa9, type: 3}
+  - PlayID: Newspaper_Annoy_In
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: df8d06f9ff3c6bc4f9e6ab19f5eda176, type: 3}
+  - PlayID: Newspaper_Annoy_Out
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 184436f646bc7584fbb8189224631035, type: 3}
+  - PlayID: Newspaper_Notices
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: f29c9ddcfeb792546935ae7e5adda3fe, type: 3}
+  - PlayID: Newspaper_Sleep
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: b7489f6baf40c7c4eb68889cb84b3128, type: 3}
+  - PlayID: Newspaper_Wake
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 43b8f125f45046045aa46be7f1fc710a, type: 3}
+  - PlayID: Make_Noise
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: cf4d810ab360722489d5ba3e9f59ff70, type: 3}
+  - PlayID: WindLoop
+    Spatial: 0
+    Loop: 1
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: a790f3aceaf95a7478667c7cd703c25b, type: 3}
+  - PlayID: HeroCactus_Shimmer
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 2ff203ad473078f4f9cfb38bafafbd1b, type: 3}

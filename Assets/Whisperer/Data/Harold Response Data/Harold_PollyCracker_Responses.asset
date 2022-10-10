@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0620d69a187abc54183c7d21ea94f5cb, type: 3}
+  m_Name: Harold_PollyCracker_Responses
+  m_EditorClassIdentifier: 
+  Responses:
+  - Phrases:
+    - Would you believe...
+    - I'm more of a fruits and nuts guy?
+  - Phrases:
+    - Sure, toss one over!
+    - ...
+    - ...Left me on read again.
+  - Phrases:
+    - Laugh it up...
+    - but hardtack cracker sailing rations...
+    - ...made the modern world we see today!
+  - Phrases:
+    - Saltine. In my beak. Stat.
+  - Phrases:
+    - Ha, ha
+    - "Let\u2019s all play with the bird\u2019s emotions."
+  - Phrases:
+    - HAROLD HUNGERS.
+  - Phrases:
+    - I have a thing with wheat...
+  - Phrases:
+    - From you? And bind my soul...
+    - "to your eternal struggle? I\u2019ll pass."
+  - Phrases:
+    - We got ourselves a comedian!
