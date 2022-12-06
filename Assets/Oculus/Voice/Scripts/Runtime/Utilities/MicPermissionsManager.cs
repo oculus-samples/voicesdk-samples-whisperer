@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+using System;
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
@@ -35,12 +36,16 @@ namespace Oculus.VoiceSDK.Utilities
     #endif
         }
     
-        public static void RequestMicPermission()
+        public static void RequestMicPermission(Action<string> permissionGrantedCallback = null)
         {
     #if UNITY_ANDROID
             Permission.RequestUserPermission(Permission.Microphone);
+            var callbacks = new PermissionCallbacks();
+
+            callbacks.PermissionGranted += s => permissionGrantedCallback?.Invoke(s);
     #else
             // Do nothing for now, but eventually we may want to handle IOS/whatever permissions here, too.
+            permissionGrantedCallback?.Invoke(Permission.Microphone.ToString());
     #endif
         }
     }
