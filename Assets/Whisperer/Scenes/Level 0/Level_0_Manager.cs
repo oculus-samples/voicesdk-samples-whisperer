@@ -8,6 +8,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Oculus.VoiceSDK.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,8 @@ namespace Whisperer
 	{
 		[SerializeField] GameObject _startMenu;
 		[SerializeField] GameObject _consentDialog;
-
+		[SerializeField] GameObject _micPermissionsDialog;
+		
 		protected override void Start()
 		{
 			PlayerPrefs.DeleteAll();
@@ -27,6 +29,7 @@ namespace Whisperer
 
 			_startMenu.SetActive(false);
 			_consentDialog.SetActive(false);
+			_micPermissionsDialog.SetActive(false);
 		}
 
 		public override void StartLevel()
@@ -35,10 +38,30 @@ namespace Whisperer
 
 			FindObjectOfType<CameraColorOverlay>().SetTargetColor(Color.black);
 
+			if (MicPermissionsManager.HasMicPermission())
+			{
+				MicPermissionsObtained();
+			}
+			else
+			{
+				ShowMicPermissionsPrompt();
+			}
+		}
+
+		private void MicPermissionsObtained()
+		{
+			Debug.Log("Mic permissions obtained");
+			_micPermissionsDialog.SetActive(false);
 			if (PlayerPrefs.GetInt("VoiceDataConsent", 0) == 1)
 				StartMenu();
 			else
 				ShowConsent();
+		}
+
+		private void ShowMicPermissionsPrompt()
+		{
+			Debug.Log("Showing mic permissions dialog");
+			_micPermissionsDialog.SetActive(true);
 		}
 
 		private void ShowConsent()
@@ -61,6 +84,24 @@ namespace Whisperer
 		}
 
 		public void ConsentDecline()
+		{
+			Application.Quit();
+		}
+
+		public void AcceptPermissionsRequest()
+		{
+			Debug.Log("Showing Android permissions prompt");
+			MicPermissionsManager.RequestMicPermission(PermissionGrantedCallback);
+			Debug.Log("Done showing Android permissions prompt");
+		}
+
+		private void PermissionGrantedCallback(string permission)
+		{
+			Debug.Log("Android permission granted");
+			MicPermissionsObtained();
+		}
+
+		public void RejectPermissions()
 		{
 			Application.Quit();
 		}
