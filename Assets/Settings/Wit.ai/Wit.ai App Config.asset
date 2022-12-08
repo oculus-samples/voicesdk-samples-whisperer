@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   application:
     witConfiguration: {fileID: 11400000}
-    name: meta_auricle
-    id: 574166870726728
+    name: whisperer_private
+    id: 77fbd6bd-ba8b-4701-8751-512dcd0fb703
     lang: en
-    isPrivate: 1
-    createdAt: 2022-07-06T09:30:23-0700
+    isPrivate: 0
+    createdAt: 2022-12-01T12:53:55-0800
   configId: e185392f015814186a269f502c61ea11
-  clientAccessToken: 
+  clientAccessToken: YSNMURXYWWEN43GNLTHUPRWRTSOYGM44
   timeoutMS: 10000
   endpointConfiguration:
     uriScheme: 
@@ -32,12 +32,12 @@ MonoBehaviour:
     dictation: 
   entities:
   - witConfiguration: {fileID: 11400000}
-    id: 1043768039844355
+    id: 3204065509904334
     name: color
     lookups:
     - keywords
     roles:
-    - id: 1221355305317520
+    - id: 863313608346254
       name: color
     keywords:
     - keyword: blue
@@ -50,12 +50,12 @@ MonoBehaviour:
       synonyms:
       - yellow
   - witConfiguration: {fileID: 11400000}
-    id: 353634896947463
+    id: 1863084224073788
     name: direction
     lookups:
     - keywords
     roles:
-    - id: 429138422470202
+    - id: 905982163723908
       name: direction
     keywords:
     - keyword: across
@@ -66,6 +66,27 @@ MonoBehaviour:
       - away
       - back
       - backwards
+    - keyword: back
+      synonyms:
+      - back
+    - keyword: backwards
+      synonyms:
+      - backwards
+    - keyword: closer
+      synonyms:
+      - closer
+    - keyword: closer
+      synonyms:
+      - closer
+    - keyword: forward
+      synonyms:
+      - forward
+    - keyword: here
+      synonyms:
+      - here
+    - keyword: here
+      synonyms:
+      - here
     - keyword: left
       synonyms:
       - left
@@ -73,6 +94,12 @@ MonoBehaviour:
       synonyms:
       - right
       - write
+    - keyword: the wall
+      synonyms:
+      - the wall
+    - keyword: to me
+      synonyms:
+      - to me
     - keyword: toward
       synonyms:
       - closer
@@ -90,18 +117,57 @@ MonoBehaviour:
     - keyword: wall
       synonyms:
       - the wall
+    - keyword: write
+      synonyms:
+      - write
+    - keyword: write
+      synonyms:
+      - write
   - witConfiguration: {fileID: 11400000}
-    id: 565053125320910
+    id: 1271613203395634
     name: move_strength
     lookups:
     - keywords
     roles:
-    - id: 573271474328493
+    - id: 2694098687386800
       name: move_strength
     keywords:
+    - keyword: Blast
+      synonyms:
+      - blast
+    - keyword: Shoot
+      synonyms:
+      - shoot
+    - keyword: Shove
+      synonyms:
+      - shove
+    - keyword: Throw
+      synonyms:
+      - throw
+    - keyword: a little
+      synonyms:
+      - a little
+    - keyword: a little
+      synonyms:
+      - a little
+    - keyword: a lot
+      synonyms:
+      - a lot
+    - keyword: all the way
+      synonyms:
+      - all the way
+    - keyword: high
+      synonyms:
+      - high
     - keyword: normal
       synonyms:
       - normal
+    - keyword: quickly
+      synonyms:
+      - quickly
+    - keyword: slowly
+      synonyms:
+      - slowly
     - keyword: strong
       synonyms:
       - a lot
@@ -122,157 +188,157 @@ MonoBehaviour:
       - weak
   intents:
   - witConfiguration: {fileID: 11400000}
-    id: 387984673485342
+    id: 1500706200396266
     name: ask_bird_name
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 1020548231967591
+    id: 544343943841921
     name: bird_song
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 525123132723332
+    id: 656814109450477
     name: change_station
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 1407982606390575
+    id: 831843781470091
     name: close
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 750367852689309
+    id: 694405152387634
     name: drop
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 758218545452394
+    id: 1346830316087568
     name: hello
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 837866037203541
+    id: 1329995184482906
     name: hello_there
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 3113025839009782
+    id: 6017771238235816
     name: help
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 1202235533900919
+    id: 1301007987328330
     name: jump
     entities:
     - witConfiguration: {fileID: 11400000}
-      id: 429138422470202
+      id: 905982163723908
       name: direction:direction
       lookups: []
       roles: []
       keywords: []
     - witConfiguration: {fileID: 11400000}
-      id: 573271474328493
+      id: 2694098687386800
       name: move_strength:move_strength
       lookups: []
       roles: []
       keywords: []
   - witConfiguration: {fileID: 11400000}
-    id: 580168640475983
+    id: 812099979876977
     name: levitate
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 570398581382531
+    id: 1185936522349872
     name: move
     entities:
     - witConfiguration: {fileID: 11400000}
-      id: 429138422470202
+      id: 905982163723908
       name: direction:direction
       lookups: []
       roles: []
       keywords: []
     - witConfiguration: {fileID: 11400000}
-      id: 573271474328493
+      id: 2694098687386800
       name: move_strength:move_strength
       lookups: []
       roles: []
       keywords: []
   - witConfiguration: {fileID: 11400000}
-    id: 1661174190923927
+    id: 519887726715594
     name: open
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 5544645208936147
+    id: 669261867907149
     name: polly_want_cracker
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 906982116925465
+    id: 1317318352448315
     name: pretty_bird
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 447682923962949
+    id: 1151254782180321
     name: pull
     entities:
     - witConfiguration: {fileID: 11400000}
-      id: 429138422470202
+      id: 905982163723908
       name: direction:direction
       lookups: []
       roles: []
       keywords: []
     - witConfiguration: {fileID: 11400000}
-      id: 573271474328493
+      id: 2694098687386800
       name: move_strength:move_strength
       lookups: []
       roles: []
       keywords: []
   - witConfiguration: {fileID: 11400000}
-    id: 1097704877519445
+    id: 2138511322989621
     name: push
     entities:
     - witConfiguration: {fileID: 11400000}
-      id: 429138422470202
+      id: 905982163723908
       name: direction:direction
       lookups: []
       roles: []
       keywords: []
     - witConfiguration: {fileID: 11400000}
-      id: 573271474328493
+      id: 2694098687386800
       name: move_strength:move_strength
       lookups: []
       roles: []
       keywords: []
   - witConfiguration: {fileID: 11400000}
-    id: 5428610020556190
+    id: 726546905001877
     name: turn_off
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 3213180339010374
+    id: 1312320516257516
     name: turn_off_radio
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 484732293099746
+    id: 2128934080631714
     name: turn_off_water
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 1712356775815585
+    id: 824907472096356
     name: turn_on
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 547373820475737
+    id: 705917134200281
     name: turn_on_radio
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 379725674332894
+    id: 661498788815514
     name: turn_on_water
     entities: []
   - witConfiguration: {fileID: 11400000}
-    id: 5278094062245053
+    id: 1188228795441758
     name: wake_up_bea
     entities: []
   traits:
   - witConfiguration: {fileID: 11400000}
-    id: 398718515700501
+    id: 2194925934020391
     name: open_close
     values: []
   - witConfiguration: {fileID: 11400000}
-    id: 535a80f0-6922-4680-b678-0576f248cdcc
+    id: cc4df6a6-356b-4ce2-bd30-1839c572baaa
     name: wit$on_off
     values:
-    - id: 2701187510165547
+    - id: 248890812932126
       value: off
-    - id: 882247432292479
+    - id: 226370165130804
       value: on
   isDemoOnly: 0
   useConduit: 0

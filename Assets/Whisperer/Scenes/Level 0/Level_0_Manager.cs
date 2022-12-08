@@ -50,7 +50,6 @@ namespace Whisperer
 
 		private void MicPermissionsObtained()
 		{
-			Debug.Log("Mic permissions obtained");
 			_micPermissionsDialog.SetActive(false);
 			if (PlayerPrefs.GetInt("VoiceDataConsent", 0) == 1)
 				StartMenu();
@@ -60,7 +59,6 @@ namespace Whisperer
 
 		private void ShowMicPermissionsPrompt()
 		{
-			Debug.Log("Showing mic permissions dialog");
 			_micPermissionsDialog.SetActive(true);
 		}
 
@@ -90,14 +88,11 @@ namespace Whisperer
 
 		public void AcceptPermissionsRequest()
 		{
-			Debug.Log("Showing Android permissions prompt");
 			MicPermissionsManager.RequestMicPermission(PermissionGrantedCallback);
-			Debug.Log("Done showing Android permissions prompt");
 		}
 
-		private void PermissionGrantedCallback(string permission)
+		private void PermissionGrantedCallback(string obj)
 		{
-			Debug.Log("Android permission granted");
 			MicPermissionsObtained();
 		}
 
