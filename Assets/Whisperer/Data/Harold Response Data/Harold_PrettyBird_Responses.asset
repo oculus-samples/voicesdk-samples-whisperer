@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0620d69a187abc54183c7d21ea94f5cb, type: 3}
+  m_Name: Harold_PrettyBird_Responses
+  m_EditorClassIdentifier: 
+  Responses:
+  - Phrases:
+    - Harold is!
+  - Phrases:
+    - My mother was a pretty bird!
+    - My father was a pretty bird!
+    - Harold is a pretty bird!
+  - Phrases:
+    - Harold is a pretty bird!
+  - Phrases:
+    - You make Harold
+    - Feel comfortable
+    - In his own feathers
+  - Phrases:
+    - It's Harold!
+    - And don't you forget it.
+  - Phrases:
+    - I got a lot more to offer
+    - than just my looks, pal!
+  - Phrases:
+    - You, a bird mid-flight
+    - a form receding from view
+    - while I sit, wings clipped.
+  - Phrases:
+    - "I got a master\u2019s in anthropology..."
+    - "but yeah, sure, I\u2019m pretty."
+  - Phrases:
+    - Who me? Aw, shucks.
+  - Phrases:
+    - "Yes yes, I\u2019m gorgeous, but listen\u2013"
+    - "If the sun\u2019s down, you can make things <i>float</i>!"
+  - Phrases:
+    - Pretty hungry, more like!

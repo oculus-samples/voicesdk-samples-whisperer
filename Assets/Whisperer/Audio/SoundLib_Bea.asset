@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8219d3a10da645a501ae6f723c617, type: 3}
+  m_Name: SoundLib_Bea
+  m_EditorClassIdentifier: 
+  ClipsData:
+  - PlayID: Bea_Confused
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 25a395786e0e86e4bb8c8bba2ce94edd, type: 3}
+  - PlayID: Bea_Excited
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 76346a73b7d419947be43964a24f1e2b, type: 3}
+  - PlayID: Bea_LetsGo
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: a8d1d1d3bb669af47abe6a31b99a68ac, type: 3}
+  - PlayID: Bea_Marvel
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 26f3418c8b6b7ff49b514ce42cdcdee5, type: 3}
+  - PlayID: Bea_Nervous
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: a65c6aecd4f107548a6a37bbac60ba4b, type: 3}
+  - PlayID: Bea_Question
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: eb7e3993fc0f11f40adafc7de5939449, type: 3}
+  - PlayID: Bea_Surprise
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 324ad2f3b0aef884da9ab1a2b6f0c9c6, type: 3}
+  - PlayID: Bea_Wow
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 76346a73b7d419947be43964a24f1e2b, type: 3}
+  - PlayID: Bea_Yawn
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 5ad1bc64237ee3c4ba36247197f23b19, type: 3}
+  - PlayID: Bea_Sigh
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 210bf172806d9c94d9dd3c48c559ce40, type: 3}
+  - PlayID: Bea_Snore
+    Spatial: 1
+    Loop: 1
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: d8230a647d212684899a8db45ad15e4d, type: 3}
+  - PlayID: Bea_Annoyed
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: c72d44f2c0eaa9a41bcaf381bd62255b, type: 3}
+  - PlayID: Bea_Curious
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 14e2fecb21af6a14d80142ac02a52cb6, type: 3}
+  - PlayID: Bea_Sigh_2
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 781a4f845a855ff40a23fb9f1a45eb78, type: 3}
+  - PlayID: Bea_Notices
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 3228a501c31451049883844cff967fa5, type: 3}
+  - PlayID: Bea_Relaxes
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: acdf56938ff7b084692194e3301937a7, type: 3}
+  - PlayID: Bea_Wakes_1
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 43ee2b886af8f7c4abf761eae5454a88, type: 3}
+  - PlayID: Bea_Wakes_2
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 391321a8cc6b92a4b811fe51b4dda5e9, type: 3}
+  - PlayID: Bea_Wakes_3
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 56b0ca859347eeb4eab3921e0329e93e, type: 3}
+  - PlayID: Bea_Wakes_4
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 82afec49ee100234b9166946fce8350e, type: 3}
+  - PlayID: Bea_Starts
+    Spatial: 1
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 25855f23f2439b04dbc4c4c87b0fafd6, type: 3}

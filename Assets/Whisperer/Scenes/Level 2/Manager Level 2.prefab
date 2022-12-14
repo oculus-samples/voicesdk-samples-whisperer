@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1108796315749944203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1108796315749944200}
+  - component: {fileID: 1108796315749944201}
+  m_Layer: 0
+  m_Name: Manager Level 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1108796315749944200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108796315749944203}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1108796315749944201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108796315749944203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e7a582da561f4438d2b787e356ac27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _levelLogicEnabled: 1
+  _rigStartPosition: {x: 0, y: 0, z: -1}
+  _transcriptionUIPrefab: {fileID: 8230941770142181604, guid: d4655999978575a458648d0b673fee89, type: 3}
+  _appVoiceExperience: {fileID: 0}
+  _hands: {fileID: 0}
+  _speakGestureWatcher: {fileID: 0}
+  _allListenableScripts: []
+  _allAnimationEvents: []
+  _logs: []
+  _beaAnimator: {fileID: 0}
+  _beaSpeech: {fileID: 0}
+  _beaNeckJoint: {fileID: 0}
+  _radio: {fileID: 0}
+  _harold: {fileID: 0}
+  _chalkBoard: {fileID: 0}
+  _checkmarks:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _tablePlant: {fileID: 0}
+  _waterPlantAnimator: {fileID: 0}
+  _chestPlantAnimator: {fileID: 0}
+  _chest: {fileID: 0}
+  _water: {fileID: 0}
+  _actionItems: []
+  _plantsMaterial: {fileID: 2100000, guid: c44c484e77e5f8f45863cb4a974b0f0f, type: 2}
+  _hints:
+  - {fileID: 11400000, guid: 73b69d8d3db064f48ae22534d9e0f35b, type: 2}
+  - {fileID: 11400000, guid: 72f787dcad452df46930110cf9963ca2, type: 2}
+  - {fileID: 11400000, guid: 64f24f2ae7f5e324f97912cd7aaf77cf, type: 2}
+  - {fileID: 11400000, guid: d65370bb425f3984a91eb0d230d5e4c0, type: 2}
+  - {fileID: 11400000, guid: 01b2a553d663cb247a1448971d65a5e2, type: 2}
+  _hintNarrationTimeout: 30

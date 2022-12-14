@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8219d3a10da645a501ae6f723c617, type: 3}
+  m_Name: SoundLib_Narrator_Level_3
+  m_EditorClassIdentifier: 
+  ClipsData:
+  - PlayID: Narrator_BirdHint
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 8551afa0ac8618c41a966c429396ec65, type: 3}
+  - PlayID: Narrator_Intro3
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: e1772dfe2aadf654ea7422adc0c3ea64, type: 3}
+  - PlayID: Narrator_BeaTakeover
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 7bd835bf0c055614e827089fbe401aff, type: 3}
+  - PlayID: Narrator_Complete3
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: abb334f5fa733a54bb43e45fa28c0eda, type: 3}
+  - PlayID: Narrator_OtherSide
+    Spatial: 0
+    Loop: 0
+    SelectMethod: 0
+    AudioClips:
+    - {fileID: 8300000, guid: 6d6f5bbc9ece84a4e8ecbedc1bdaba26, type: 3}

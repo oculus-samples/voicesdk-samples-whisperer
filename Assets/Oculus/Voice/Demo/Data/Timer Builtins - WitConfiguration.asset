@@ -1,0 +1,268 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5a46bda3295124c99b0e6537ac7252, type: 3}
+  m_Name: Timer Builtins - WitConfiguration
+  m_EditorClassIdentifier: 
+  application:
+    witConfiguration: {fileID: 11400000}
+    name: Built-in Models
+    id: voiceSDK_en
+    lang: en
+    isPrivate: 0
+    createdAt: 
+  configId: 74f17110584875d438c76cba2242da14
+  clientAccessToken: HOKEABS7HPIQVSRSVWRPTTV75TQJ5QBP
+  timeoutMS: 10000
+  endpointConfiguration:
+    uriScheme: 
+    authority: 
+    port: 0
+    witApiVersion: 
+    speech: 
+    message: 
+    dictation: 
+  entities: []
+  intents:
+  - witConfiguration: {fileID: 11400000}
+    id: 897504424223811
+    name: wit$add_time_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 541438527164499
+    name: wit$add_to_playlist
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 887283025240109
+    name: wit$cancel
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 829935924385746
+    name: wit$check_weather_condition
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 306952631193690
+    name: wit$confirmation
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 377154377139380
+    name: wit$create_alarm
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 418752679692656
+    name: wit$create_playlist
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 365611011710102
+    name: wit$create_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1033582527390432
+    name: wit$decrease_volume
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 883987129203457
+    name: wit$delete_alarm
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 247929240550715
+    name: wit$delete_playlist
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 557555652118025
+    name: wit$delete_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 421700242885150
+    name: wit$dislike_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 270102601621744
+    name: wit$fast_forward_track
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 387498056115658
+    name: wit$get_alarms
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 415840899887272
+    name: wit$get_date
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 438703477461413
+    name: wit$get_sunrise
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 375415767405106
+    name: wit$get_sunset
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 4289162121138059
+    name: wit$get_temperature
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 232518205474455
+    name: wit$get_time
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 893990681247881
+    name: wit$get_time_until_date
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 393845445654783
+    name: wit$get_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 549084829680351
+    name: wit$get_track_info
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 3011049075798095
+    name: wit$get_weather
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1014318852665058
+    name: wit$go_back
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1031968647622673
+    name: wit$go_forward
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 284911926808943
+    name: wit$increase_volume
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 547658879873191
+    name: wit$like_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 236590765151252
+    name: wit$loop_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 4404756796280183
+    name: wit$negation
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 4432284356859008
+    name: wit$nevermind
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 831865090860258
+    name: wit$open_resource
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 3014340998807022
+    name: wit$pause
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 162448539383689
+    name: wit$pause_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 629110521422335
+    name: wit$pause_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1749588415235689
+    name: wit$play
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 866056607377214
+    name: wit$play_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 258248752970902
+    name: wit$play_podcast
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1030753921087273
+    name: wit$previous_track
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 3112795525710499
+    name: wit$remove_from_playlist
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1641652012695476
+    name: wit$repeat_response
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 391429655722707
+    name: wit$replay_track
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 407662237413103
+    name: wit$resume
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 658111892259804
+    name: wit$resume_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 229892845779856
+    name: wit$resume_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 252614883454919
+    name: wit$rewind_track
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 4540198562705611
+    name: wit$select_item
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 2081412638678468
+    name: wit$share
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 588748799212186
+    name: wit$shuffle_playlist
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 917880522495837
+    name: wit$silence_alarm
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 329368558953931
+    name: wit$skip_track
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 2842638329380270
+    name: wit$snooze_alarm
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 411892023684057
+    name: wit$stop
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 238496474960073
+    name: wit$stop_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 151481930517141
+    name: wit$subtract_time_timer
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 620928052622542
+    name: wit$unloop_music
+    entities: []
+  - witConfiguration: {fileID: 11400000}
+    id: 1315332902220652
+    name: wit$unshuffle_playlist
+    entities: []
+  traits: []
+  isDemoOnly: 1
+  useConduit: 0
+  manifestLocalPath: ConduitManifest-ff661943-ef77-48d6-9307-724e9f634d94.json
+  autoGenerateManifest: 0
+  openManifestOnGeneration: 0
