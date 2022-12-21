@@ -16,10 +16,10 @@ using UnityEngine.SceneManagement;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Handles Unity scene loading/unloading, engine settings.
-        /// </summary>
-        public class LevelLoader : MonoBehaviour
+    /// <summary>
+    ///     Handles Unity scene loading/unloading, engine settings.
+    /// </summary>
+    public class LevelLoader : MonoBehaviour
     {
         public static LevelLoader Instance;
 
