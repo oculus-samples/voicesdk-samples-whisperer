@@ -18,17 +18,28 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 
 public class BuildFlavors
 {
     private const string ApkAppName = "Whisperer";
-    private const string SceneRoot = "Assets/Whisperer/Scenes/";
     private const string buildFolderName = "builds";
-    private static readonly string[] projectScenes = {
-    SceneRoot + "Loader.unity"
-  };
+
+    private static readonly string[] projectScenes;
+
+    static BuildFlavors()
+    {
+        var scenePaths = new List<string>();
+        foreach (var scene in EditorBuildSettings.scenes)
+        {
+            scenePaths.Add(scene.path);
+        }
+
+        projectScenes = scenePaths.ToArray();
+    }
 
     public static void BuildWin()
     {
@@ -40,11 +51,13 @@ public class BuildFlavors
           BuildTarget.StandaloneWindows64);
     }
 
+    [MenuItem("Whisperer/Build/Android 64")]
     public static void BuildAndroid64()
     {
         Android(AndroidArchitecture.ARM64);
     }
 
+    [MenuItem("Whisperer/Build/Android 32")]
     public static void BuildAndroid32()
     {
         Android(AndroidArchitecture.ARMv7);
@@ -71,9 +84,10 @@ public class BuildFlavors
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, previousAppIdentifier);
             HandleBuildError.Check(error);
         }
-        catch
+        catch (Exception e)
         {
-            UnityEngine.Debug.Log("Exception while building: exiting with exit code 2");
+            UnityEngine.Debug.Log($"Build exception: {e}");
+            UnityEngine.Debug.Log("Exception while building: exiting with exit code 2.");
             EditorApplication.Exit(2);
         }
     }
