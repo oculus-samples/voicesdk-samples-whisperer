@@ -9,7 +9,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public abstract class WitScriptableWizard : ScriptableWizard
     {
@@ -27,25 +27,22 @@ namespace Facebook.WitAi.Windows
         {
             createButtonName = ButtonLabel;
         }
-
-        protected virtual void OnWizardCreate()
-        {
-        }
-
         protected override bool DrawWizardGUI()
         {
             // Reapply title if needed
-            if (titleContent != Title) titleContent = Title;
+            if (titleContent != Title)
+            {
+                titleContent = Title;
+            }
 
             // Layout window
-            var size = Vector2.zero;
-            WitEditorUI.LayoutWindow(ContentHeaderLabel, HeaderIcon, HeaderUrl, LayoutContent, ref scrollOffset,
-                out size);
+            Vector2 size = Vector2.zero;
+            WitEditorUI.LayoutWindow(ContentHeaderLabel, HeaderIcon, HeaderUrl, LayoutContent, ref scrollOffset, out size);
 
             // Set wizard to max width
             size.x = WitStyles.WindowMaxWidth;
             // Wizards add additional padding
-            size.y += 70f;
+            size.y += 120f;
 
             // Clamp wizard sizes
             maxSize = minSize = size;
@@ -53,7 +50,6 @@ namespace Facebook.WitAi.Windows
             // True if valid server token
             return false;
         }
-
         protected virtual void LayoutContent()
         {
             if (!string.IsNullOrEmpty(ContentSubheaderLabel))
@@ -61,7 +57,6 @@ namespace Facebook.WitAi.Windows
                 WitEditorUI.LayoutSubheaderLabel(ContentSubheaderLabel);
                 GUILayout.Space(WitStyles.HeaderPaddingBottom * 2f);
             }
-
             GUILayout.BeginHorizontal();
             GUILayout.Space(WitStyles.WizardFieldPadding);
             GUILayout.BeginVertical();
@@ -70,7 +65,10 @@ namespace Facebook.WitAi.Windows
             GUILayout.Space(WitStyles.WizardFieldPadding);
             GUILayout.EndHorizontal();
         }
-
         protected abstract void LayoutFields();
+        protected virtual void OnWizardCreate()
+        {
+
+        }
     }
 }

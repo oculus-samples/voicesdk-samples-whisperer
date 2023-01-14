@@ -18,6 +18,10 @@
  * limitations under the License.
  */
 
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
@@ -28,20 +32,20 @@ namespace Oculus.VoiceSDK.Dictation.Utilities
     {
         public static bool HasMicPermission()
         {
-#if UNITY_ANDROID
+    #if UNITY_ANDROID
             return Permission.HasUserAuthorizedPermission(Permission.Microphone);
-#else
+    #else
             return true;
-#endif
+    #endif
         }
-
+    
         public static void RequestMicPermission()
         {
-#if UNITY_ANDROID
+    #if UNITY_ANDROID
             Permission.RequestUserPermission(Permission.Microphone);
-#else
+    #else
             // Do nothing for now, but eventually we may want to handle IOS/whatever permissions here, too.
-#endif
+    #endif
         }
     }
 }

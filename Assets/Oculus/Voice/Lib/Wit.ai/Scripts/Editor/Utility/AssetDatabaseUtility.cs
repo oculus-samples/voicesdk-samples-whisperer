@@ -8,38 +8,44 @@
 
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     public static class AssetDatabaseUtility
     {
         // Find Unity asset
-        public static T FindUnityAsset<T>(string filter) where T : Object
+        public static T FindUnityAsset<T>(string filter) where T : UnityEngine.Object
         {
-            var results = FindUnityAssets<T>(filter, true);
-            if (results != null && results.Length > 0) return results[0];
+            T[] results = FindUnityAssets<T>(filter, true);
+            if (results != null && results.Length > 0)
+            {
+                return results[0];
+            }
             return null;
         }
 
         // Get all unity objects matching the name
         public static T[] FindUnityAssets<T>(string filter, bool ignoreAdditional = false)
-            where T : Object
+            where T : UnityEngine.Object
         {
-            var results = new List<T>();
-            var guids = AssetDatabase.FindAssets(filter);
+            List<T> results = new List<T>();
+            string[] guids = AssetDatabase.FindAssets(filter);
             if (guids != null && guids.Length > 0)
+            {
                 foreach (var guid in guids)
                 {
-                    var assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                    var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                    T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
                     if (asset != null && !results.Contains(asset))
                     {
                         results.Add(asset);
-                        if (ignoreAdditional) break;
+                        if (ignoreAdditional)
+                        {
+                            break;
+                        }
                     }
                 }
-
+            }
             return results.ToArray();
         }
     }

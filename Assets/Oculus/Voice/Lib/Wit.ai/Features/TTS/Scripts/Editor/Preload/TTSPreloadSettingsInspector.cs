@@ -8,37 +8,38 @@
 
 using System;
 using System.Collections.Generic;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Editor.Preload;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Editor.Preload;
+using Meta.WitAi.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Editor
+namespace Meta.WitAi.TTS.Editor
 {
     [CustomEditor(typeof(TTSPreloadSettings), true)]
     public class TTSPreloadSettingsInspector : UnityEditor.Editor
     {
-        // Layout items
-        public const float ACTION_BTN_INDENT = 15f;
-
-        private List<string> _ttsVoiceIDs;
-
         // TTS Settings
         public TTSPreloadSettings Settings { get; private set; }
 
         // TTS Service
         public TTSService TtsService { get; private set; }
-        public virtual Texture2D HeaderIcon => WitTexts.HeaderIcon;
+        private List<string> _ttsVoiceIDs;
 
-        public virtual string HeaderUrl =>
-            WitTexts.GetAppURL(WitConfigurationUtility.GetAppID(null), WitTexts.WitAppEndpointType.Settings);
+        // Layout items
+        public const float ACTION_BTN_INDENT = 15f;
+        public virtual Texture2D HeaderIcon => WitTexts.HeaderIcon;
+        public virtual string HeaderUrl => WitTexts.GetAppURL(string.Empty, WitTexts.WitAppEndpointType.Settings);
 
         // Layout
         public override void OnInspectorGUI()
         {
             // Get settings
-            if (Settings != target) Settings = target as TTSPreloadSettings;
+            if (Settings != target)
+            {
+                Settings = target as TTSPreloadSettings;
+            }
 
             // Draw header
             WitEditorUI.LayoutHeaderButton(HeaderIcon, HeaderUrl);
@@ -49,7 +50,6 @@ namespace Facebook.WitAi.TTS.Editor
             // Layout data
             LayoutPreloadData();
         }
-
         // Layout Preload Data
         protected virtual void LayoutPreloadActions()
         {
@@ -74,15 +74,19 @@ namespace Facebook.WitAi.TTS.Editor
             TtsService = EditorGUILayout.ObjectField("TTS Service", TtsService, typeof(TTSService), true) as TTSService;
             if (TtsService == null)
             {
-                EditorUtility.ClearProgressBar();
-                TtsService = FindObjectOfType<TTSService>();
-                WitEditorUI.LayoutErrorLabel(
-                    "You must add a TTS Service to the loaded scene in order perform TTS actions.");
-                EditorGUI.indentLevel--;
-                return;
+                TtsService = GameObjectSearchUtility.FindSceneObject<TTSService>(true);
+                if (TtsService == null)
+                {
+                    EditorUtility.ClearProgressBar();
+                    WitEditorUI.LayoutErrorLabel("You must add a TTS Service to the loaded scene in order perform TTS actions.");
+                    EditorGUI.indentLevel--;
+                    return;
+                }
             }
-
-            if (TtsService != null && _ttsVoiceIDs == null) _ttsVoiceIDs = GetVoiceIDs(TtsService);
+            if (_ttsVoiceIDs == null)
+            {
+                _ttsVoiceIDs = GetVoiceIDs(TtsService);
+            }
 
             // Begin buttons
             EditorGUILayout.Space();
@@ -90,18 +94,23 @@ namespace Facebook.WitAi.TTS.Editor
 
             // Import JSON
             GUILayout.Space(ACTION_BTN_INDENT * EditorGUI.indentLevel);
-            if (WitEditorUI.LayoutTextButton("Refresh Data")) RefreshData();
+            if (WitEditorUI.LayoutTextButton("Refresh Data"))
+            {
+                RefreshData();
+            }
             GUILayout.Space(ACTION_BTN_INDENT);
             if (WitEditorUI.LayoutTextButton("Import JSON"))
             {
                 EditorUtility.ClearProgressBar();
-                if (TTSPreloadUtility.ImportData(Settings)) RefreshData();
+                if (TTSPreloadUtility.ImportData(Settings))
+                {
+                    RefreshData();
+                }
             }
-
             // Clear disk cache
             GUI.enabled = TtsService != null;
             EditorGUILayout.Space();
-            var col = GUI.color;
+            Color col = GUI.color;
             GUI.color = Color.red;
             if (WitEditorUI.LayoutTextButton("Delete Cache"))
             {
@@ -109,11 +118,13 @@ namespace Facebook.WitAi.TTS.Editor
                 TTSPreloadUtility.DeleteData(TtsService);
                 RefreshData();
             }
-
             // Preload disk cache
             GUILayout.Space(ACTION_BTN_INDENT);
             GUI.color = Color.green;
-            if (WitEditorUI.LayoutTextButton("Preload Cache")) DownloadClips();
+            if (WitEditorUI.LayoutTextButton("Preload Cache"))
+            {
+                DownloadClips();
+            }
             GUI.color = col;
             GUI.enabled = true;
 
@@ -124,37 +135,38 @@ namespace Facebook.WitAi.TTS.Editor
             // Indent
             EditorGUI.indentLevel--;
         }
-
         // Refresh
         private void RefreshData()
         {
-            TTSPreloadUtility.RefreshPreloadData(TtsService, Settings.data,
-                p => { EditorUtility.DisplayProgressBar("TTS Preload Utility", "Refreshing Data", p); }, (d, l) =>
-                {
-                    EditorUtility.ClearProgressBar();
-                    EditorUtility.SetDirty(Settings);
-                    Debug.Log($"TTS Preload Utility - Refresh Complete{l}");
-                });
+            TTSPreloadUtility.RefreshPreloadData(TtsService, Settings.data, (p) =>
+            {
+                EditorUtility.DisplayProgressBar("TTS Preload Utility", "Refreshing Data", p);
+            }, (d, l) =>
+            {
+                EditorUtility.ClearProgressBar();
+                EditorUtility.SetDirty(Settings);
+                Debug.Log($"TTS Preload Utility - Refresh Complete{l}");
+            });
         }
-
         // Download
         private void DownloadClips()
         {
-            TTSPreloadUtility.PreloadData(TtsService, Settings.data,
-                p => { EditorUtility.DisplayProgressBar("TTS Preload Utility", "Downloading Clips", p); }, (d, l) =>
-                {
-                    EditorUtility.ClearProgressBar();
-                    EditorUtility.SetDirty(Settings);
-                    AssetDatabase.Refresh();
-                    Debug.Log($"TTS Preload Utility - Preload Complete{l}");
-                });
+            TTSPreloadUtility.PreloadData(TtsService, Settings.data, (p) =>
+            {
+                EditorUtility.DisplayProgressBar("TTS Preload Utility", "Downloading Clips", p);
+            }, (d, l) =>
+            {
+                EditorUtility.ClearProgressBar();
+                EditorUtility.SetDirty(Settings);
+                AssetDatabase.Refresh();
+                Debug.Log($"TTS Preload Utility - Preload Complete{l}");
+            });
         }
-
         // Layout Preload Data
         protected virtual void LayoutPreloadData()
         {
             // For updates
-            var updated = false;
+            bool updated = false;
 
             // Layout preload items
             GUILayout.Space(WitStyles.WindowPaddingBottom);
@@ -165,7 +177,6 @@ namespace Facebook.WitAi.TTS.Editor
                 AddVoice();
                 updated = true;
             }
-
             GUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
@@ -173,21 +184,33 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel++;
 
             // Generate
-            if (Settings.data == null) Settings.data = new TTSPreloadData();
-            if (Settings.data.voices == null) Settings.data.voices = new[] { new TTSPreloadVoiceData() };
+            if (Settings.data == null)
+            {
+                Settings.data = new TTSPreloadData();
+            }
+            if (Settings.data.voices == null)
+            {
+                Settings.data.voices = new TTSPreloadVoiceData[] {new TTSPreloadVoiceData()};
+            }
 
             // Begin scroll
-            for (var v = 0; v < Settings.data.voices.Length; v++)
+            for (int v = 0; v < Settings.data.voices.Length; v++)
+            {
                 if (!LayoutVoiceData(Settings.data, v, ref updated))
+                {
                     break;
+                }
+            }
 
             // Set dirty
-            if (updated) EditorUtility.SetDirty(Settings);
+            if (updated)
+            {
+                EditorUtility.SetDirty(Settings);
+            }
 
             // Indent
             EditorGUI.indentLevel--;
         }
-
         // Layout
         private bool LayoutVoiceData(TTSPreloadData preloadData, int voiceIndex, ref bool updated)
         {
@@ -195,14 +218,17 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel++;
 
             // Get data
-            var voiceData = preloadData.voices[voiceIndex];
-            var voiceID = voiceData.presetVoiceID;
-            if (string.IsNullOrEmpty(voiceID)) voiceID = "No Voice Selected";
-            voiceID = $"{voiceIndex + 1} - {voiceID}";
+            TTSPreloadVoiceData voiceData = preloadData.voices[voiceIndex];
+            string voiceID = voiceData.presetVoiceID;
+            if (string.IsNullOrEmpty(voiceID))
+            {
+                voiceID = "No Voice Selected";
+            }
+            voiceID = $"{(voiceIndex+1)} - {voiceID}";
 
             // Foldout
             GUILayout.BeginHorizontal();
-            var show = WitEditorUI.LayoutFoldout(new GUIContent(voiceID), voiceData);
+            bool show = WitEditorUI.LayoutFoldout(new GUIContent(voiceID), voiceData);
             if (!show)
             {
                 GUILayout.EndHorizontal();
@@ -232,29 +258,32 @@ namespace Facebook.WitAi.TTS.Editor
             // Voice Preset Select
             else
             {
-                var presetIndex = _ttsVoiceIDs.IndexOf(voiceData.presetVoiceID);
-                var presetUpdated = false;
+                int presetIndex = _ttsVoiceIDs.IndexOf(voiceData.presetVoiceID);
+                bool presetUpdated = false;
                 WitEditorUI.LayoutPopup("Voice ID", _ttsVoiceIDs.ToArray(), ref presetIndex, ref presetUpdated);
                 if (presetUpdated)
                 {
                     voiceData.presetVoiceID = _ttsVoiceIDs[presetIndex];
-                    var l = string.Empty;
+                    string l = string.Empty;
                     TTSPreloadUtility.RefreshVoiceData(TtsService, voiceData, null, ref l);
                     updated = true;
                 }
             }
 
             // Ensure phrases exist
-            if (voiceData.phrases == null) voiceData.phrases = new TTSPreloadPhraseData[] { };
+            if (voiceData.phrases == null)
+            {
+                voiceData.phrases = new TTSPreloadPhraseData[] { };
+            }
 
             // Phrase Foldout
             EditorGUILayout.BeginHorizontal();
-            var isLayout = WitEditorUI.LayoutFoldout(new GUIContent($"Phrases ({voiceData.phrases.Length})"),
+            bool isLayout = WitEditorUI.LayoutFoldout(new GUIContent($"Phrases ({voiceData.phrases.Length})"),
                 voiceData.phrases);
             if (WitEditorUI.LayoutTextButton("Add Phrase"))
             {
-                var lastPhrase = voiceData.phrases.Length == 0 ? null : voiceData.phrases[voiceData.phrases.Length - 1];
-                voiceData.phrases = AddArrayItem(voiceData.phrases, new TTSPreloadPhraseData
+                TTSPreloadPhraseData lastPhrase = voiceData.phrases.Length == 0 ? null : voiceData.phrases[voiceData.phrases.Length - 1];
+                voiceData.phrases = AddArrayItem<TTSPreloadPhraseData>(voiceData.phrases, new TTSPreloadPhraseData()
                 {
                     textToSpeak = lastPhrase?.textToSpeak,
                     clipID = lastPhrase?.clipID
@@ -264,12 +293,17 @@ namespace Facebook.WitAi.TTS.Editor
                 updated = true;
                 return false;
             }
-
             EditorGUILayout.EndHorizontal();
             if (isLayout)
-                for (var p = 0; p < voiceData.phrases.Length; p++)
+            {
+                for (int p = 0; p < voiceData.phrases.Length; p++)
+                {
                     if (!LayoutPhraseData(voiceData, p, ref updated))
+                    {
                         break;
+                    }
+                }
+            }
 
             // End Voice Data
             EditorGUILayout.Space();
@@ -277,7 +311,6 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel--;
             return true;
         }
-
         // Layout phrase data
         private bool LayoutPhraseData(TTSPreloadVoiceData voiceData, int phraseIndex, ref bool updated)
         {
@@ -285,12 +318,12 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel++;
 
             // Get data
-            var phraseData = voiceData.phrases[phraseIndex];
-            var title = $"{phraseIndex + 1} - {phraseData.textToSpeak}";
+            TTSPreloadPhraseData phraseData = voiceData.phrases[phraseIndex];
+            string title = $"{(phraseIndex+1)} - {phraseData.textToSpeak}";
 
             // Foldout
             GUILayout.BeginHorizontal();
-            var show = WitEditorUI.LayoutFoldout(new GUIContent(title), phraseData);
+            bool show = WitEditorUI.LayoutFoldout(new GUIContent(title), phraseData);
             if (!show)
             {
                 GUILayout.EndHorizontal();
@@ -301,7 +334,7 @@ namespace Facebook.WitAi.TTS.Editor
             // Delete
             if (WitEditorUI.LayoutTextButton("Delete Phrase"))
             {
-                voiceData.phrases = DeleteArrayItem(voiceData.phrases, phraseIndex);
+                voiceData.phrases = DeleteArrayItem<TTSPreloadPhraseData>(voiceData.phrases, phraseIndex);
                 GUILayout.EndHorizontal();
                 EditorGUI.indentLevel--;
                 updated = true;
@@ -313,11 +346,11 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel++;
 
             // Phrase
-            var phraseChange = false;
+            bool phraseChange = false;
             WitEditorUI.LayoutTextField(new GUIContent("Phrase"), ref phraseData.textToSpeak, ref phraseChange);
             if (phraseChange)
             {
-                TTSPreloadUtility.RefreshPhraseData(TtsService, new TTSDiskCacheSettings
+                TTSPreloadUtility.RefreshPhraseData(TtsService, new TTSDiskCacheSettings()
                 {
                     DiskCacheLocation = TTSDiskCacheLocation.Preload
                 }, TtsService?.GetPresetVoiceSettings(voiceData.presetVoiceID), phraseData);
@@ -325,13 +358,13 @@ namespace Facebook.WitAi.TTS.Editor
             }
 
             // Clip
-            var clipID = phraseData.clipID;
+            string clipID = phraseData.clipID;
             WitEditorUI.LayoutTextField(new GUIContent("Clip ID"), ref clipID, ref phraseChange);
 
             // State
-            var col = GUI.color;
-            var stateColor = Color.green;
-            var stateValue = "Downloaded";
+            Color col = GUI.color;
+            Color stateColor = Color.green;
+            string stateValue = "Downloaded";
             if (!phraseData.downloaded)
             {
                 if (phraseData.downloadProgress <= 0f)
@@ -342,10 +375,9 @@ namespace Facebook.WitAi.TTS.Editor
                 else
                 {
                     stateColor = Color.yellow;
-                    stateValue = $"Downloading {phraseData.downloadProgress * 100f:00.0}%";
+                    stateValue = $"Downloading {(phraseData.downloadProgress * 100f):00.0}%";
                 }
             }
-
             GUI.color = stateColor;
             WitEditorUI.LayoutKeyLabel("State", stateValue);
             GUI.color = col;
@@ -356,33 +388,27 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUI.indentLevel--;
             return true;
         }
-
         // Add
-        private T[] AddArrayItem<T>(T[] array, T item)
-        {
-            return EditArray(array, l => l.Add(item));
-        }
-
+        private T[] AddArrayItem<T>(T[] array, T item) => EditArray<T>(array, (l) => l.Add(item));
         // Delete
-        private T[] DeleteArrayItem<T>(T[] array, int index)
-        {
-            return EditArray(array, l => l.RemoveAt(index));
-        }
-
+        private T[] DeleteArrayItem<T>(T[] array, int index) => EditArray<T>(array, (l) => l.RemoveAt(index));
         // Edit array
         private T[] EditArray<T>(T[] array, Action<List<T>> edit)
         {
             // Generate list
-            var list = new List<T>();
+            List<T> list = new List<T>();
 
             // Add array to list
-            if (array != null) list.AddRange(array);
+            if (array != null)
+            {
+                list.AddRange(array);
+            }
 
             // Call edit action
             edit(list);
 
             // Set to array
-            var result = list.ToArray();
+            T[] result = list.ToArray();
 
             // Refresh foldout value
             WitEditorUI.SetFoldoutValue(result, WitEditorUI.GetFoldoutValue(array));
@@ -390,46 +416,57 @@ namespace Facebook.WitAi.TTS.Editor
             // Return array
             return result;
         }
-
         //
         private void AddVoice()
         {
-            var voices = new List<TTSPreloadVoiceData>();
-            if (Settings?.data?.voices != null) voices.AddRange(Settings.data.voices);
-            voices.Add(new TTSPreloadVoiceData
+            List<TTSPreloadVoiceData> voices = new List<TTSPreloadVoiceData>();
+            if (Settings?.data?.voices != null)
+            {
+                voices.AddRange(Settings.data.voices);
+            }
+            voices.Add(new TTSPreloadVoiceData()
             {
                 presetVoiceID = _ttsVoiceIDs == null || _ttsVoiceIDs.Count == 0 ? "" : _ttsVoiceIDs[0],
-                phrases = new[] { new TTSPreloadPhraseData() }
+                phrases = new TTSPreloadPhraseData[] { new TTSPreloadPhraseData() }
             });
             Settings.data.voices = voices.ToArray();
         }
-
         // Delete voice
         private void DeleteVoice(int index)
         {
             // Invalid
-            if (Settings?.data?.voices == null || index < 0 || index >= Settings.data.voices.Length) return;
+            if (Settings?.data?.voices == null || index < 0 || index >= Settings.data.voices.Length)
+            {
+                return;
+            }
             // Cancelled
             if (!EditorUtility.DisplayDialog("Delete Voice?",
-                    $"Are you sure you would like to remove voice data:\n#{index + 1} - {Settings.data.voices[index].presetVoiceID}?",
-                    "Okay", "Cancel"))
+                $"Are you sure you would like to remove voice data:\n#{(index + 1)} - {Settings.data.voices[index].presetVoiceID}?",
+                "Okay", "Cancel"))
+            {
                 return;
+            }
 
             // Remove
-            var voices = new List<TTSPreloadVoiceData>(Settings.data.voices);
+            List<TTSPreloadVoiceData> voices = new List<TTSPreloadVoiceData>(Settings.data.voices);
             voices.RemoveAt(index);
             Settings.data.voices = voices.ToArray();
         }
-
         // Get voice ids
         private List<string> GetVoiceIDs(TTSService service)
         {
-            var results = new List<string>();
+            List<string> results = new List<string>();
             if (service != null)
+            {
                 foreach (var voiceSetting in service.GetAllPresetVoiceSettings())
+                {
                     if (voiceSetting != null && !string.IsNullOrEmpty(voiceSetting.settingsID) &&
                         !results.Contains(voiceSetting.settingsID))
+                    {
                         results.Add(voiceSetting.settingsID);
+                    }
+                }
+            }
             return results;
         }
     }

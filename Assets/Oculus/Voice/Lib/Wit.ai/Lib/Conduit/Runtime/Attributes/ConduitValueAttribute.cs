@@ -11,18 +11,21 @@ using System;
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     This can optionally be used on enum values to provide additional information.
+    /// This can optionally be used on enum values to provide additional information.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(System.AttributeTargets.Field)]
     public class ConduitValueAttribute : Attribute
     {
         public ConduitValueAttribute(params string[] aliases)
         {
-            Aliases = aliases;
+            this.Aliases = aliases;
         }
 
         /// <summary>
-        ///     Different ways to refer to the same value.
+        /// Different ways to refer to the same value. The first alias in the list will be treated as
+        /// keyword and additional aliases as synonyms.
+        /// Note: that if an alias is supplied, the original enum name is
+        /// not considered as an alias or keyword anymore unless explicitly specified as an alias.
         /// </summary>
         public string[] Aliases { get; }
     }

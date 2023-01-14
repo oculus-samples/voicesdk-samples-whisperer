@@ -9,16 +9,16 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using Facebook.WitAi.Utilities;
+using Meta.WitAi.Utilities;
 using UnityEngine;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     internal class RegisteredMatchIntent
     {
-        public MatchIntent matchIntent;
-        public MethodInfo method;
         public Type type;
+        public MethodInfo method;
+        public MatchIntent matchIntent;
     }
 
     internal static class MatchIntentRegistry
@@ -30,6 +30,7 @@ namespace Facebook.WitAi
             get
             {
                 if (null == registeredMethods)
+                {
                     // Note, first run this will not return any values. Initialize
                     // scans assemblies on a different thread. This is ok for voice
                     // commands since they are generally executed in realtime after
@@ -38,6 +39,7 @@ namespace Facebook.WitAi
                     // Best practice is to call Initialize in Awake of any method
                     // that will be using the resulting data.
                     Initialize();
+                }
 
                 return registeredMethods;
             }
@@ -56,44 +58,36 @@ namespace Facebook.WitAi
             // Work on a local dictionary to avoid thread complications
             var dictionary = new DictionaryList<string, RegisteredMatchIntent>();
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                try
-                {
-                    foreach (var t in assembly.GetTypes())
-                        try
-                        {
-                            foreach (var method in t.GetMethods())
-                                try
-                                {
-                                    foreach (var attribute in method.GetCustomAttributes(typeof(MatchIntent)))
-                                        try
-                                        {
+            {
+                try {
+                    foreach (Type t in assembly.GetTypes()) {
+                        try {
+                            foreach (var method in t.GetMethods()) {
+                                try {
+                                    foreach (var attribute in method.GetCustomAttributes(typeof(MatchIntent))) {
+                                        try {
                                             var mi = (MatchIntent)attribute;
-                                            dictionary[mi.Intent].Add(new RegisteredMatchIntent
-                                            {
+                                            dictionary[mi.Intent].Add(new RegisteredMatchIntent() {
                                                 type = t,
                                                 method = method,
                                                 matchIntent = mi
                                             });
-                                        }
-                                        catch (Exception e)
-                                        {
+                                        } catch (Exception e) {
                                             Debug.LogError(e);
                                         }
-                                }
-                                catch (Exception e)
-                                {
+                                    }
+                                } catch (Exception e) {
                                     Debug.LogError(e);
                                 }
-                        }
-                        catch (Exception e)
-                        {
+                            }
+                        } catch (Exception e) {
                             Debug.LogError(e);
                         }
-                }
-                catch (Exception e)
-                {
+                    }
+                } catch (Exception e) {
                     Debug.LogError(e);
                 }
+            }
 
             registeredMethods = dictionary;
         }

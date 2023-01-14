@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Json;
 
-namespace Facebook.WitAi.Data
+namespace Meta.WitAi.Data
 {
     public class WitStringValue : WitValue
     {
@@ -19,7 +19,10 @@ namespace Facebook.WitAi.Data
 
         public override bool Equals(WitResponseNode response, object value)
         {
-            if (value is string sValue) return GetStringValue(response) == sValue;
+            if (value is string sValue)
+            {
+                return GetStringValue(response) == sValue;
+            }
 
             return "" + value == GetStringValue(response);
         }

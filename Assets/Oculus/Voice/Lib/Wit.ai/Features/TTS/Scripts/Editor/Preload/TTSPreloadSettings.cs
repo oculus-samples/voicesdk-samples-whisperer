@@ -9,28 +9,26 @@
 using System;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Editor.Preload
+namespace Meta.WitAi.TTS.Editor.Preload
 {
     [Serializable]
     public class TTSPreloadPhraseData
     {
         /// <summary>
-        ///     ID used to identify this phrase
+        /// ID used to identify this phrase
         /// </summary>
         public string clipID;
-
         /// <summary>
-        ///     Actual phrase to be spoken
+        /// Actual phrase to be spoken
         /// </summary>
         public string textToSpeak;
 
         /// <summary>
-        ///     Meta data for whether clip is downloaded or not
+        /// Meta data for whether clip is downloaded or not
         /// </summary>
         public bool downloaded;
-
         /// <summary>
-        ///     Meta data for clip download progress
+        /// Meta data for clip download progress
         /// </summary>
         public float downloadProgress;
     }
@@ -39,12 +37,11 @@ namespace Facebook.WitAi.TTS.Editor.Preload
     public class TTSPreloadVoiceData
     {
         /// <summary>
-        ///     Specific preset voice settings id to be used with TTSService
+        /// Specific preset voice settings id to be used with TTSService
         /// </summary>
         public string presetVoiceID;
-
         /// <summary>
-        ///     All data corresponding to text to speak
+        /// All data corresponding to text to speak
         /// </summary>
         public TTSPreloadPhraseData[] phrases;
     }
@@ -57,6 +54,6 @@ namespace Facebook.WitAi.TTS.Editor.Preload
 
     public class TTSPreloadSettings : ScriptableObject
     {
-        [SerializeField] public TTSPreloadData data = new();
+        [SerializeField] public TTSPreloadData data = new TTSPreloadData();
     }
 }

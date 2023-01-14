@@ -6,19 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Events;
+using Meta.WitAi.Events;
 
-namespace Facebook.WitAi.Interfaces
+namespace Meta.WitAi.Interfaces
 {
     public interface ITranscriptionEvent
     {
         /// <summary>
-        ///     Message fired when a partial transcription has been received.
+        /// Message fired when a partial transcription has been received.
         /// </summary>
         WitTranscriptionEvent OnPartialTranscription { get; }
 
         /// <summary>
-        ///     Message received when a complete transcription is received.
+        /// Message received when a complete transcription is received.
         /// </summary>
         WitTranscriptionEvent OnFullTranscription { get; }
     }

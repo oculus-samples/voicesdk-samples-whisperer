@@ -7,22 +7,39 @@
  */
 
 using System.Collections.Generic;
-using Facebook.WitAi.Data;
+using Meta.WitAi.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.CallbackHandlers
+namespace Meta.WitAi.CallbackHandlers
 {
     public class ValuePathMatcherPropertyDrawer : PropertyDrawer
     {
         private string currentEditPath;
 
-        private readonly Dictionary<string, bool> foldouts = new();
+        class Properties
+        {
+            public const string witValueRef = "witValueReference";
+            public const string path = "path";
+            public const string contentRequired = "contentRequired";
+            public const string matchMethod = "matchMethod";
+            public const string comparisonMethod = "comparisonMethod";
+            public const string matchValue = "matchValue";
+
+            public const string floatingPointComparisonTolerance =
+                "floatingPointComparisonTolerance";
+        }
+
+        private Dictionary<string, bool> foldouts =
+            new Dictionary<string, bool>();
 
         private string GetPropertyPath(SerializedProperty property)
         {
             var valueRefProp = property.FindPropertyRelative(Properties.witValueRef);
-            if (valueRefProp.objectReferenceValue) return ((WitValue)valueRefProp.objectReferenceValue).path;
+            if (valueRefProp.objectReferenceValue)
+            {
+                return ((WitValue) valueRefProp.objectReferenceValue).path;
+            }
             return property.FindPropertyRelative(Properties.path).stringValue;
         }
 
@@ -34,6 +51,7 @@ namespace Facebook.WitAi.CallbackHandlers
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+
             float height = 0;
 
             // Path
@@ -47,16 +65,22 @@ namespace Facebook.WitAi.CallbackHandlers
                 height += EditorGUIUtility.singleLineHeight;
 
                 if (ComparisonMethodsVisible(property))
+                {
                     // Comparison Method
                     height += EditorGUIUtility.singleLineHeight;
+                }
 
                 if (ComparisonValueVisible(property))
+                {
                     // Comparison Value
                     height += EditorGUIUtility.singleLineHeight;
+                }
 
                 if (FloatingToleranceVisible(property))
+                {
                     // Floating Point Tolerance
                     height += EditorGUIUtility.singleLineHeight;
+                }
 
                 height += 4;
             }
@@ -66,13 +90,16 @@ namespace Facebook.WitAi.CallbackHandlers
 
         private bool IsExpanded(SerializedProperty property)
         {
-            return foldouts.TryGetValue(GetPropertyPath(property), out var value) && value;
+            return foldouts.TryGetValue(GetPropertyPath(property), out bool value) && value;
         }
 
         private bool Foldout(Rect rect, SerializedProperty property)
         {
             var path = GetPropertyPath(property);
-            if (!foldouts.TryGetValue(path, out var value)) foldouts[path] = false;
+            if (!foldouts.TryGetValue(path, out var value))
+            {
+                foldouts[path] = false;
+            }
 
             foldouts[path] = EditorGUI.Foldout(rect, value, "");
             return foldouts[path];
@@ -97,7 +124,10 @@ namespace Facebook.WitAi.CallbackHandlers
                 {
                     pathRect.width -= WitStyles.IconButtonSize;
                     var value = EditorGUI.TextField(pathRect, path.stringValue);
-                    if (value != path.stringValue) path.stringValue = value;
+                    if (value != path.stringValue)
+                    {
+                        path.stringValue = value;
+                    }
 
                     pathRect.width += WitStyles.IconButtonSize;
 
@@ -108,9 +138,9 @@ namespace Facebook.WitAi.CallbackHandlers
                     };
                     if (GUI.Button(pickerRect, WitStyles.ObjectPickerIcon, "Label"))
                     {
-                        var id = GUIUtility.GetControlID(FocusType.Passive) + 100;
+                        var id = EditorGUIUtility.GetControlID(FocusType.Passive) + 100;
                         EditorGUIUtility.ShowObjectPicker<WitValue>(
-                            (WitValue)valueRefProp.objectReferenceValue, false, "", id);
+                            (WitValue) valueRefProp.objectReferenceValue, false, "", id);
                     }
                 }
                 else
@@ -119,7 +149,9 @@ namespace Facebook.WitAi.CallbackHandlers
                 }
 
                 if (Event.current.commandName == "ObjectSelectorClosed")
+                {
                     valueRefProp.objectReferenceValue = EditorGUIUtility.GetObjectPickerObject();
+                }
 
                 pathValue = GetPropertyPath(property);
                 if (pathValue != currentEditPath && null != currentEditPath)
@@ -132,9 +164,13 @@ namespace Facebook.WitAi.CallbackHandlers
             else
             {
                 if (valueRefProp.objectReferenceValue)
+                {
                     EditorGUI.LabelField(pathRect, valueRefProp.objectReferenceValue.name);
+                }
                 else
+                {
                     EditorGUI.LabelField(pathRect, path.stringValue);
+                }
             }
 
             var editRect = new Rect(rect)
@@ -147,9 +183,13 @@ namespace Facebook.WitAi.CallbackHandlers
                 if (GUI.Button(editRect, WitStyles.EditIcon, "Label"))
                 {
                     if (currentEditPath == pathValue)
+                    {
                         currentEditPath = null;
+                    }
                     else
+                    {
                         currentEditPath = pathValue;
+                    }
                 }
 
                 rect.x += WitStyles.IconButtonSize;
@@ -185,7 +225,7 @@ namespace Facebook.WitAi.CallbackHandlers
         private bool ComparisonMethodsVisible(SerializedProperty property)
         {
             var matchedMethodProperty = property.FindPropertyRelative(Properties.matchMethod);
-            return matchedMethodProperty.enumValueIndex > (int)MatchMethod.RegularExpression;
+            return matchedMethodProperty.enumValueIndex > (int) MatchMethod.RegularExpression;
         }
 
         private bool ComparisonValueVisible(SerializedProperty property)
@@ -201,22 +241,8 @@ namespace Facebook.WitAi.CallbackHandlers
                 property.FindPropertyRelative(Properties.comparisonMethod);
 
             var comparisonMethod = comparisonMethodProperty.enumValueIndex;
-            return matchedMethodProperty.enumValueIndex >= (int)MatchMethod.FloatComparison &&
-                   (comparisonMethod == (int)ComparisonMethod.Equals ||
-                    comparisonMethod == (int)ComparisonMethod.NotEquals);
-        }
-
-        private class Properties
-        {
-            public const string witValueRef = "witValueReference";
-            public const string path = "path";
-            public const string contentRequired = "contentRequired";
-            public const string matchMethod = "matchMethod";
-            public const string comparisonMethod = "comparisonMethod";
-            public const string matchValue = "matchValue";
-
-            public const string floatingPointComparisonTolerance =
-                "floatingPointComparisonTolerance";
+            return matchedMethodProperty.enumValueIndex >= (int) MatchMethod.FloatComparison &&
+                   (comparisonMethod == (int) ComparisonMethod.Equals || comparisonMethod == (int) ComparisonMethod.NotEquals);
         }
     }
 }

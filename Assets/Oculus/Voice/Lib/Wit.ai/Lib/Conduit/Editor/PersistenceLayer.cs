@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace Meta.Conduit.Editor
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
     internal class PersistenceLayer : IPersistenceLayer
     {
         public bool HasKey(string key)

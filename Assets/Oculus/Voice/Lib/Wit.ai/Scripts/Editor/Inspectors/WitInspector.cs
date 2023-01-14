@@ -9,16 +9,16 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Inspectors
+namespace Meta.WitAi.Inspectors
 {
     public class WitInspector : Editor
     {
         private string activationMessage;
+        private VoiceService wit;
+        private float micMin;
+        private float micMax;
         private string lastTranscription;
         private float micCurrent;
-        private float micMax;
-        private float micMin;
-        private VoiceService wit;
 
         public override void OnInspectorGUI()
         {
@@ -26,16 +26,23 @@ namespace Facebook.WitAi.Inspectors
 
             if (Application.isPlaying)
             {
-                wit = (VoiceService)target;
+                wit = (VoiceService) target;
 
                 if (wit.Active)
                 {
-                    if (GUILayout.Button("Deactivate")) wit.Deactivate();
+                    if (GUILayout.Button("Deactivate"))
+                    {
+                        wit.Deactivate();
+                    }
 
                     if (wit.MicActive)
+                    {
                         GUILayout.Label("Listening...");
+                    }
                     else
+                    {
                         GUILayout.Label("Processing...");
+                    }
                 }
                 else
                 {
@@ -67,9 +74,9 @@ namespace Facebook.WitAi.Inspectors
 
         private void InitializeActivationLogging()
         {
-            wit.VoiceEvents.OnFullTranscription.AddListener(UpdateTranscription);
-            wit.VoiceEvents.OnPartialTranscription.AddListener(UpdateTranscription);
-            wit.VoiceEvents.OnMicLevelChanged.AddListener(OnMicLevelChanged);
+            wit.events.OnFullTranscription.AddListener(UpdateTranscription);
+            wit.events.OnPartialTranscription.AddListener(UpdateTranscription);
+            wit.events.OnMicLevelChanged.AddListener(OnMicLevelChanged);
             micMin = Mathf.Infinity;
             micMax = Mathf.NegativeInfinity;
             EditorApplication.update += UpdateWhileActive;
@@ -93,9 +100,9 @@ namespace Facebook.WitAi.Inspectors
             if (!wit.Active)
             {
                 EditorApplication.update -= UpdateWhileActive;
-                wit.VoiceEvents.OnFullTranscription.RemoveListener(UpdateTranscription);
-                wit.VoiceEvents.OnPartialTranscription.RemoveListener(UpdateTranscription);
-                wit.VoiceEvents.OnMicLevelChanged.RemoveListener(OnMicLevelChanged);
+                wit.events.OnFullTranscription.RemoveListener(UpdateTranscription);
+                wit.events.OnPartialTranscription.RemoveListener(UpdateTranscription);
+                wit.events.OnMicLevelChanged.RemoveListener(OnMicLevelChanged);
             }
         }
     }

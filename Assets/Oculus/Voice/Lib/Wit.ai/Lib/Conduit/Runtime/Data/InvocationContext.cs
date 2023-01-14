@@ -12,32 +12,32 @@ using System.Reflection;
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Holds the details required to invoke a method at runtime.
+    /// Holds the details required to invoke a method at runtime.
     /// </summary>
     internal class InvocationContext
     {
         /// <summary>
-        ///     The type that declares the method.
+        /// The type that declares the method.
         /// </summary>
         public Type Type { get; set; }
 
         /// <summary>
-        ///     The method information.
+        /// The method information.
         /// </summary>
         public MethodInfo MethodInfo { get; set; }
 
         /// <summary>
-        ///     The minimum confidence necessary to invoke this method.
+        /// The minimum confidence necessary to invoke this method.
         /// </summary>
         public float MinConfidence { get; set; } = 0;
 
         /// <summary>
-        ///     The maximum confidence allowed to invoke this method.
+        /// The maximum confidence allowed to invoke this method.
         /// </summary>
         public float MaxConfidence { get; set; } = 1;
 
         /// <summary>
-        ///     Whether partial responses should be validated
+        /// Whether partial responses should be validated
         /// </summary>
         public bool ValidatePartial { get; set; } = false;
     }

@@ -7,10 +7,10 @@
  */
 
 using System;
-using System.IO;
 using System.Net;
+using System.IO;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public interface IRequest
     {
@@ -24,14 +24,12 @@ namespace Facebook.WitAi
 
         IAsyncResult BeginGetRequestStream(AsyncCallback callback, object state);
         IAsyncResult BeginGetResponse(AsyncCallback callback, object state);
-
         /// <summary>
-        ///     Returns a Stream for writing data to the Internet resource.
+        /// Returns a Stream for writing data to the Internet resource.
         /// </summary>
         /// <param name="asyncResult"></param>
         /// <returns></returns>
         Stream EndGetRequestStream(IAsyncResult asyncResult);
-
         WebResponse EndGetResponse(IAsyncResult asyncResult);
 
         void Abort();

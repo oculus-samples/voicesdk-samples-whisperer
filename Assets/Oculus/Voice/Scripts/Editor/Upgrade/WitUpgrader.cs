@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
+using Meta.WitAi;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,9 +27,15 @@ namespace Oculus.Voice.Upgrade
     [CustomEditor(typeof(Wit), false)]
     public class WitUpgrader : Editor
     {
+        class Styles
+        {
+            public static GUIContent upgrade = new GUIContent("Upgrade to App Voice Experience",
+                "This will replace your Wit object with a comparable component from the Voice SDK.");
+        }
+
         public override void OnInspectorGUI()
         {
-            var wit = (Wit)target;
+            var wit = (Wit) target;
             if (!wit.GetComponent<AppVoiceExperience>())
             {
                 base.OnInspectorGUI();
@@ -37,19 +43,13 @@ namespace Oculus.Voice.Upgrade
                 if (!Application.isPlaying && GUILayout.Button(Styles.upgrade))
                 {
                     var voiceService = wit.gameObject.AddComponent<AppVoiceExperience>();
-                    voiceService.VoiceEvents = wit.VoiceEvents;
+                    voiceService.events = wit.events;
                     voiceService.RuntimeConfiguration = wit.RuntimeConfiguration;
                     var voiceServiceSerializedObject = new SerializedObject(voiceService);
                     voiceServiceSerializedObject.ApplyModifiedProperties();
                     DestroyImmediate(wit);
                 }
             }
-        }
-
-        private class Styles
-        {
-            public static readonly GUIContent upgrade = new("Upgrade to App Voice Experience",
-                "This will replace your Wit object with a comparable component from the Voice SDK.");
         }
     }
 }

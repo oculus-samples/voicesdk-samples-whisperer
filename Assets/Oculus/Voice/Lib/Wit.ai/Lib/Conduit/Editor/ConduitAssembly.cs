@@ -14,34 +14,39 @@ using System.Reflection;
 namespace Meta.Conduit.Editor
 {
     /// <summary>
-    ///     Wraps an assembly and provides access to Conduit-relevant details.
+    /// Wraps an assembly and provides access to Conduit-relevant details.
     /// </summary>
     internal class ConduitAssembly : IConduitAssembly
     {
         /// <summary>
-        ///     The assembly this class wraps.
+        /// The assembly this class wraps.
         /// </summary>
         private readonly Assembly _assembly;
-
+        
         /// <summary>
-        ///     Initializes the class with a target assembly.
+        /// Initializes the class with a target assembly.
         /// </summary>
         /// <param name="assembly">The assembly to process.</param>
         public ConduitAssembly(Assembly assembly)
         {
-            _assembly = assembly;
+            this._assembly = assembly;
         }
-
-        public string FullName => _assembly.FullName;
+        
+        public string FullName => this._assembly.FullName;
 
         public IEnumerable<Type> GetEnumTypes()
         {
-            return _assembly.GetTypes().Where(p => p.IsEnum);
+            return this._assembly.GetTypes().Where(p => p.IsEnum);
         }
 
         public IEnumerable<MethodInfo> GetMethods()
         {
-            return _assembly.GetTypes().SelectMany(type => type.GetMethods());
+            return this._assembly.GetTypes().SelectMany(type => type.GetMethods());
+        }
+
+        public Type GetType(string name)
+        {
+            return this._assembly.GetType(name);
         }
     }
 }

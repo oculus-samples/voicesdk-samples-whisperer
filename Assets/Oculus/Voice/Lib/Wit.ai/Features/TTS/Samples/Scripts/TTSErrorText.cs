@@ -9,13 +9,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Facebook.WitAi.TTS.Samples
+namespace Meta.WitAi.TTS.Samples
 {
     public class TTSErrorText : MonoBehaviour
     {
         // Label
         [SerializeField] private Text _errorLabel;
-
         // Current error response
         private string _error = string.Empty;
 
@@ -24,14 +23,18 @@ namespace Facebook.WitAi.TTS.Samples
         {
             if (TTSService.Instance != null)
             {
-                var serviceError = TTSService.Instance.IsValid();
-                if (!string.Equals(serviceError, _error))
+                string invalidError = TTSService.Instance.GetInvalidError();
+                if (!string.Equals(invalidError, _error))
                 {
-                    _error = serviceError;
+                    _error = invalidError;
                     if (string.IsNullOrEmpty(_error))
+                    {
                         _errorLabel.text = string.Empty;
+                    }
                     else
+                    {
                         _errorLabel.text = $"TTS Service Error: {_error}";
+                    }
                 }
             }
         }

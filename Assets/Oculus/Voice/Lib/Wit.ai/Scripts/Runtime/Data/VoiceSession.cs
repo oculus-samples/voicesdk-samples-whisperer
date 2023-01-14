@@ -7,26 +7,24 @@
  */
 
 using System;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Json;
 
-namespace Facebook.WitAi.Data
+namespace Meta.WitAi.Data
 {
     [Serializable]
     public class VoiceSession
     {
         /// <summary>
-        ///     Voice service being used
+        /// Voice service being used
         /// </summary>
         public VoiceService service;
-
         /// <summary>
-        ///     Session response data is valid & can be deactivated if true
-        /// </summary>
-        public bool validResponse;
-
-        /// <summary>
-        ///     Voice service response data
+        /// Voice service response data
         /// </summary>
         public WitResponseNode response;
+        /// <summary>
+        /// Session response data is valid & can be deactivated if true
+        /// </summary>
+        public bool validResponse = false;
     }
 }

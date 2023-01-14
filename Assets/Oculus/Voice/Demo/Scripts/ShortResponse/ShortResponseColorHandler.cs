@@ -19,8 +19,10 @@
  */
 
 using System;
-using Facebook.WitAi;
-using Facebook.WitAi.Data;
+using Meta.WitAi;
+using Meta.WitAi.Data;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi;
 using UnityEngine;
 
 namespace Oculus.Voice.Demo
@@ -34,72 +36,57 @@ namespace Oculus.Voice.Demo
 
     public class ShortResponseColorHandler : MonoBehaviour
     {
+        [Header("Shape Settings")]
+        // Shape container
+        [SerializeField] private Transform _shapeContainer;
+        // Found shapes
+        private Renderer[] _shapes;
+        // Selected shape
+        private int _shapeSelected = -1;
+        // On shape selected
+        public Action<Renderer> OnShapeSelected;
+
+        [Header("Color Settings")]
+        // Color override
+#if UNITY_2021_3_2 || UNITY_2021_3_3 || UNITY_2021_3_4 || UNITY_2021_3_5
+        [NonReorderable]
+#endif
+        [SerializeField] private ColorOverride[] _colorOverride;
+        // On shape selected
+        public Action<Renderer, Color> OnShapeColorChanged;
+
         // Constants
         private const string SHAPE_SELECT_INTENT_ID = "shape_select";
         private const string COLOR_SET_INTENT_ID = "color_set";
         private const float MIN_CONFIDENCE = 0.8f;
 
-        [Header("Shape Settings")]
-        // Shape container
-        [SerializeField]
-        private Transform _shapeContainer;
-
-        [Header("Color Settings")]
-        // Color override
-        [SerializeField]
-        private ColorOverride[] _colorOverride;
-
-        // Found shapes
-        private Renderer[] _shapes;
-
-        // Selected shape
-        private int _shapeSelected = -1;
-
-        // On shape selected
-        public Action<Renderer, Color> OnShapeColorChanged;
-
-        // On shape selected
-        public Action<Renderer> OnShapeSelected;
-
         // On enable, find shapes
         private void OnEnable()
         {
-            if (_shapeContainer != null) _shapes = _shapeContainer.GetComponentsInChildren<Renderer>(true);
+            VoiceService service = GameObject.FindObjectOfType<VoiceService>();
+            if (service != null)
+            {
+                WitConfiguration configuration = service.GetComponent<IWitRuntimeConfigProvider>()?.RuntimeConfiguration?.witConfiguration;
+                if (configuration != null && !configuration.useConduit)
+                {
+                    VLog.E("ShortResponseDemo only works with Conduit!  Please enable Conduit on your wit configuration to try this demo.");
+                }
+            }
+            if (_shapeContainer != null)
+            {
+                _shapes = _shapeContainer.GetComponentsInChildren<Renderer>(true);
+            }
             SelectShape(-1);
         }
 
-        // Validate partial response
-        public void OnValidatePartialResponse(VoiceSession sessionData)
-        {
-            if (sessionData == null || sessionData.response == null) return;
-
-            // Determine current intent
-            var intent = sessionData.response.GetFirstIntentData();
-            if (intent.confidence < MIN_CONFIDENCE) return;
-
-            // Handle shape intent
-            if (string.Equals(intent.name, SHAPE_SELECT_INTENT_ID, StringComparison.CurrentCultureIgnoreCase))
-            {
-                var shape = sessionData.response.GetFirstEntityValue("shape:shape");
-                OnValidateShapeSelect(sessionData, shape);
-            }
-            // Handle color intent
-            else if (string.Equals(intent.name, COLOR_SET_INTENT_ID, StringComparison.CurrentCultureIgnoreCase))
-            {
-                var color = sessionData.response.GetFirstEntityValue("color:color");
-                OnValidateColorSet(sessionData, color);
-            }
-        }
-
         #region SHAPES
-
-        // On short response handler
+        // Validate & set shape
+        [ValidatePartialIntent(intent:SHAPE_SELECT_INTENT_ID, minConfidence:MIN_CONFIDENCE)]
         public void OnValidateShapeSelect(VoiceSession sessionData, string shape)
         {
             int index;
             if (TryGetShapeIndex(shape, out index))
             {
-                Debug.Log("Shape: " + shape);
                 SelectShape(index);
                 sessionData.validResponse = true;
             }
@@ -108,10 +95,7 @@ namespace Oculus.Voice.Demo
         // Check if shape select
         private bool TryGetShapeIndex(string shapeName, out int index)
         {
-            index = _shapes == null
-                ? -1
-                : Array.FindIndex(_shapes,
-                    s => string.Equals(s.gameObject.name, shapeName, StringComparison.CurrentCultureIgnoreCase));
+            index = _shapes == null ? -1 : Array.FindIndex(_shapes, (s) => string.Equals(s.gameObject.name, shapeName, StringComparison.CurrentCultureIgnoreCase));
             return index != -1;
         }
 
@@ -124,18 +108,17 @@ namespace Oculus.Voice.Demo
                 _shapeSelected = shapeIndex;
 
                 // Return shape
-                var shape = _shapes != null && _shapeSelected >= 0 && _shapeSelected < _shapes.Length
+                Renderer shape = _shapes != null && _shapeSelected >= 0 && _shapeSelected < _shapes.Length
                     ? _shapes[_shapeSelected]
                     : null;
                 OnShapeSelected?.Invoke(shape);
             }
         }
-
         #endregion
 
         #region COLORS
-
-        // On short response handler
+        // Validate & set color
+        [ValidatePartialIntent(intent:COLOR_SET_INTENT_ID,minConfidence:MIN_CONFIDENCE)]
         public void OnValidateColorSet(VoiceSession sessionData, string color)
         {
             Color c;
@@ -152,17 +135,18 @@ namespace Oculus.Voice.Demo
             // Check overrides
             if (_colorOverride != null)
             {
-                var overrideIndex = Array.FindIndex(_colorOverride,
-                    c => string.Equals(c.colorID, colorName, StringComparison.CurrentCultureIgnoreCase));
+                int overrideIndex = Array.FindIndex(_colorOverride, (c) => string.Equals(c.colorID, colorName, StringComparison.CurrentCultureIgnoreCase));
                 if (overrideIndex != -1)
                 {
                     color = _colorOverride[overrideIndex].color;
                     return true;
                 }
             }
-
             // Check default
-            if (ColorUtility.TryParseHtmlString(colorName, out color)) return true;
+            if (ColorUtility.TryParseHtmlString(colorName, out color))
+            {
+                return true;
+            }
             // Failed
             return false;
         }
@@ -172,13 +156,18 @@ namespace Oculus.Voice.Demo
         {
             // Set all colors
             if (_shapes == null || _shapeSelected < 0 || _shapeSelected >= _shapes.Length)
+            {
                 foreach (var shape in _shapes)
+                {
                     SetColor(shape, newColor);
+                }
+            }
             // Set selected color
             else
+            {
                 SetColor(_shapes[_shapeSelected], newColor);
+            }
         }
-
         // Set color on a renderer
         private void SetColor(Renderer shape, Color color)
         {
@@ -188,7 +177,6 @@ namespace Oculus.Voice.Demo
                 OnShapeColorChanged?.Invoke(shape, color);
             }
         }
-
         #endregion
     }
 }

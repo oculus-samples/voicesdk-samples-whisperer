@@ -21,25 +21,37 @@
 using Oculus.Voice.Core.Bindings.Interfaces;
 using Oculus.Voice.Core.Utilities;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Oculus.Voice.Core.Bindings.Android.PlatformLogger
 {
     public class VoiceSDKPlatformLoggerImpl : BaseAndroidConnectionImpl<VoiceSDKLoggerBinding>, IVoiceSDKLogger
     {
-        private readonly VoiceSDKConsoleLoggerImpl consoleLoggerImpl = new();
-
+        public bool IsUsingPlatformIntegration { get; set; }
+        public string WitApplication { get; set; }
+        public bool ShouldLogToConsole
+        {
+            get => consoleLoggerImpl.ShouldLogToConsole;
+            set => consoleLoggerImpl.ShouldLogToConsole = value;
+        }
+        private VoiceSDKConsoleLoggerImpl consoleLoggerImpl = new VoiceSDKConsoleLoggerImpl();
         public VoiceSDKPlatformLoggerImpl() : base(
             "com.oculus.assistant.api.unity.logging.UnityPlatformLoggerServiceFragment")
         {
         }
 
-        public bool IsUsingPlatformIntegration { get; set; }
-        public string WitApplication { get; set; }
-
-        public bool ShouldLogToConsole
+        public override void Connect(string version)
         {
-            get => consoleLoggerImpl.ShouldLogToConsole;
-            set => consoleLoggerImpl.ShouldLogToConsole = value;
+            base.Connect(version);
+            service.Connect();
+            Debug.Log(
+                $"Logging Platform integration initialization complete.");
+        }
+
+        public override void Disconnect()
+        {
+            Debug.Log("Logging Platform integration shutdown");
+            base.Disconnect();
         }
 
         public void LogInteractionStart(string requestId, string witApi)
@@ -74,20 +86,6 @@ namespace Oculus.Voice.Core.Bindings.Android.PlatformLogger
         {
             consoleLoggerImpl.LogAnnotation(annotationKey, annotationValue);
             service.LogAnnotation(annotationKey, annotationValue);
-        }
-
-        public override void Connect(string version)
-        {
-            base.Connect(version);
-            service.Connect();
-            Debug.Log(
-                "Logging Platform integration initialization complete.");
-        }
-
-        public override void Disconnect()
-        {
-            Debug.Log("Logging Platform integration shutdown");
-            base.Disconnect();
         }
     }
 }

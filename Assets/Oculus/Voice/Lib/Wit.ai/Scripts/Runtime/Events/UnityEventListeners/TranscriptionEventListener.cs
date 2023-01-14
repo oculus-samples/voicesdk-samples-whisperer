@@ -1,14 +1,18 @@
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi.Interfaces;
 using UnityEngine;
 
-namespace Facebook.WitAi.Events.UnityEventListeners
+namespace Meta.WitAi.Events.UnityEventListeners
 {
     [RequireComponent(typeof(ITranscriptionEventProvider))]
     public class TranscriptionEventListener : MonoBehaviour, ITranscriptionEvent
     {
-        [SerializeField] private WitTranscriptionEvent onPartialTranscription = new();
+        [SerializeField] private WitTranscriptionEvent onPartialTranscription = new
+            WitTranscriptionEvent();
+        [SerializeField] private WitTranscriptionEvent onFullTranscription = new
+            WitTranscriptionEvent();
 
-        [SerializeField] private WitTranscriptionEvent onFullTranscription = new();
+        public WitTranscriptionEvent OnPartialTranscription => onPartialTranscription;
+        public WitTranscriptionEvent OnFullTranscription => onFullTranscription;
 
         private ITranscriptionEvent _events;
 
@@ -19,7 +23,10 @@ namespace Facebook.WitAi.Events.UnityEventListeners
                 if (null == _events)
                 {
                     var eventProvider = GetComponent<ITranscriptionEventProvider>();
-                    if (null != eventProvider) _events = eventProvider.TranscriptionEvents;
+                    if (null != eventProvider)
+                    {
+                        _events = eventProvider.TranscriptionEvents;
+                    }
                 }
 
                 return _events;
@@ -45,8 +52,5 @@ namespace Facebook.WitAi.Events.UnityEventListeners
                 events.OnFullTranscription.RemoveListener(onFullTranscription.Invoke);
             }
         }
-
-        public WitTranscriptionEvent OnPartialTranscription => onPartialTranscription;
-        public WitTranscriptionEvent OnFullTranscription => onFullTranscription;
     }
 }

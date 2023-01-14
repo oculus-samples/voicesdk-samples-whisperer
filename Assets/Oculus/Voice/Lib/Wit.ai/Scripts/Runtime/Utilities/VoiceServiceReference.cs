@@ -8,12 +8,12 @@
 
 using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     [Serializable]
     public struct VoiceServiceReference
@@ -26,10 +26,12 @@ namespace Facebook.WitAi.Utilities
             {
                 if (!voiceService)
                 {
-                    var services = Resources.FindObjectsOfTypeAll<VoiceService>();
+                    VoiceService[] services = Resources.FindObjectsOfTypeAll<VoiceService>();
                     if (services != null)
+                    {
                         // Set as first instance that isn't a prefab
-                        voiceService = Array.Find(services, o => o.gameObject.scene.rootCount != 0);
+                        voiceService = Array.Find(services, (o) => o.gameObject.scene.rootCount != 0);
+                    }
                 }
 
                 return voiceService;
@@ -50,29 +52,37 @@ namespace Facebook.WitAi.Utilities
         {
             var refProp = property.FindPropertyRelative("voiceService");
             var reference = refProp.objectReferenceValue as VoiceService;
-            var voiceServices = Object.FindObjectsOfType<VoiceService>();
+            var voiceServices = GameObject.FindObjectsOfType<VoiceService>();
             var voiceServiceNames = new string[voiceServices.Length + 1];
-            var index = 0;
+            int index = 0;
             voiceServiceNames[0] = "Autodetect";
-            if (voiceServices.Length == 1) voiceServiceNames[0] = $"{voiceServiceNames[0]} - {voiceServices[0].name}";
-            for (var i = 0; i < voiceServices.Length; i++)
+            if (voiceServices.Length == 1)
+            {
+                voiceServiceNames[0] = $"{voiceServiceNames[0]} - {voiceServices[0].name}";
+            }
+            for (int i = 0; i < voiceServices.Length; i++)
             {
                 voiceServiceNames[i + 1] = voiceServices[i].name;
-                if (voiceServices[i] == reference) index = i + 1;
+                if (voiceServices[i] == reference)
+                {
+                    index = i + 1;
+                }
             }
-
             EditorGUI.BeginProperty(position, label, property);
             var updatedIndex = EditorGUI.Popup(position, index, voiceServiceNames);
             if (index != updatedIndex)
             {
                 if (updatedIndex > 0)
+                {
                     refProp.objectReferenceValue = voiceServices[updatedIndex - 1];
+                }
                 else
+                {
                     refProp.objectReferenceValue = null;
+                }
 
                 property.serializedObject.ApplyModifiedProperties();
             }
-
             EditorGUI.EndProperty();
         }
     }

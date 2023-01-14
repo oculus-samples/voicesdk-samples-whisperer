@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Dictation.Data;
+using Meta.WitAi.Dictation.Data;
 
 namespace Oculus.Voice.Dictation.Bindings.Android
 {
     public class PlatformDictationSession : DictationSession
     {
         /// <summary>
-        ///     Session ID provided by the platform
+        /// Session ID provided by the platform
         /// </summary>
         public string platformSessionId;
     }

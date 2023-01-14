@@ -11,8 +11,8 @@ using System;
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Marks an assembly as Conduit-enabled to allow quick filtering.
-    ///     This can show anywhere in the assembly, but typically would go in AssemblyInfo.cs if one exists.
+    /// Marks an assembly as Conduit-enabled to allow quick filtering.
+    /// This can show anywhere in the assembly, but typically would go in AssemblyInfo.cs if one exists.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
     public class ConduitAssemblyAttribute : Attribute

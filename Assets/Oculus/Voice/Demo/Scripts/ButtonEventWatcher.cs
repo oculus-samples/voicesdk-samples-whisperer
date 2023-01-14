@@ -27,24 +27,30 @@ namespace Oculus.Voice.Demo
     {
 #if ENABLE_LEGACY_INPUT_MANAGER
         // By default: uses space bar, oculus quest a button and oculus quest x button
-        [SerializeField] private KeyCode[] _keys = { KeyCode.Space, KeyCode.JoystickButton0, KeyCode.JoystickButton2 };
+        [SerializeField] private KeyCode[] _keys = new KeyCode[] { KeyCode.Space, KeyCode.JoystickButton0, KeyCode.JoystickButton2 };
 #endif
 
         // Used for click or hold events
         public UnityEvent OnButtonDown;
-
         // Used for button up hold events
         public UnityEvent OnButtonUp;
 
 #if ENABLE_LEGACY_INPUT_MANAGER
         // Update activation
-        private void Update()
+        void Update()
         {
             // Iterate keys
             foreach (var key in _keys)
+            {
                 if (Input.GetKeyDown(key))
+                {
                     OnButtonDown?.Invoke();
-                else if (Input.GetKeyUp(key)) OnButtonUp?.Invoke();
+                }
+                else if (Input.GetKeyUp(key))
+                {
+                    OnButtonUp?.Invoke();
+                }
+            }
         }
 #endif
     }

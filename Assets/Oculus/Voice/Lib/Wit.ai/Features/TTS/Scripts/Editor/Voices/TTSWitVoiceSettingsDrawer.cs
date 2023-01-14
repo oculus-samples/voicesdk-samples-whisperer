@@ -7,15 +7,18 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Facebook.WitAi.TTS.Integrations;
-using Facebook.WitAi.Windows;
 using UnityEditor;
+using Meta.WitAi.TTS.Integrations;
+using Meta.WitAi.Windows;
+using Meta.WitAi;
+using Meta.WitAi.Data.Info;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Editor.Voices
+namespace Meta.WitAi.TTS.Editor.Voices
 {
-    [CustomPropertyDrawer(typeof(TTSWitVoiceSettings))]
+    [CustomPropertyDrawer(typeof( TTSWitVoiceSettings))]
     public class TTSWitVoiceSettingsDrawer : PropertyDrawer
     {
         // Constants for var layout
@@ -27,18 +30,29 @@ namespace Facebook.WitAi.TTS.Editor.Voices
         private const string VAR_VOICE = "voice";
         private const string VAR_STYLE = "style";
 
+        // Voice data
+        private IWitRequestConfiguration _configuration;
+        private WitVoiceInfo[] _voices;
+        private string[] _voiceNames;
+
         // Subfields
-        private static readonly FieldInfo[] _fields = FieldGUI.GetFields(typeof(TTSWitVoiceSettings));
+        private static readonly FieldInfo[] _fields = FieldGUI.GetFields(typeof( TTSWitVoiceSettings));
 
         // Determine height
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             // Property
-            if (!property.isExpanded) return VAR_HEIGHT;
+            if (!property.isExpanded)
+            {
+                return VAR_HEIGHT;
+            }
             // Add each
-            var total = _fields.Length + 1;
-            var voiceIndex = GetVoiceIndex(property);
-            if (voiceIndex != -1) total += 2;
+            int total = _fields.Length + 1;
+            int voiceIndex = GetVoiceIndex(property);
+            if (voiceIndex != -1)
+            {
+                total += 2;
+            }
             return total * VAR_HEIGHT + Mathf.Max(0, total - 1) * VAR_MARGIN;
         }
 
@@ -46,74 +60,76 @@ namespace Facebook.WitAi.TTS.Editor.Voices
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // On gui
-            var y = position.y;
-            var voiceName = property.FindPropertyRelative(VAR_SETTINGS).stringValue;
+            float y = position.y;
+            string voiceName = property.FindPropertyRelative(VAR_SETTINGS).stringValue;
             property.isExpanded =
                 EditorGUI.Foldout(new Rect(position.x, y, position.width, VAR_HEIGHT), property.isExpanded, voiceName);
-            if (!property.isExpanded) return;
+            if (!property.isExpanded)
+            {
+                return;
+            }
             y += VAR_HEIGHT + VAR_MARGIN;
 
             // Increment
             EditorGUI.indentLevel++;
 
+            // Refresh voices if needed
+            RefreshVoices(property);
             // Get voice index
-            var voiceIndex = GetVoiceIndex(property);
+            int voiceIndex = GetVoiceIndex(property);
 
             // Iterate subfields
-            for (var s = 0; s < _fields.Length; s++)
+            for (int s = 0; s < _fields.Length; s++)
             {
-                var subfield = _fields[s];
-                var subfieldProperty = property.FindPropertyRelative(subfield.Name);
-                var subfieldRect = new Rect(position.x, y, position.width, VAR_HEIGHT);
+                FieldInfo subfield = _fields[s];
+                SerializedProperty subfieldProperty = property.FindPropertyRelative(subfield.Name);
+                Rect subfieldRect = new Rect(position.x, y, position.width, VAR_HEIGHT);
                 if (string.Equals(subfield.Name, VAR_VOICE) && voiceIndex != -1)
                 {
-                    var newVoiceIndex = EditorGUI.Popup(subfieldRect, subfieldProperty.displayName, voiceIndex,
-                        TTSWitVoiceUtility.VoiceNames.ToArray());
-                    newVoiceIndex = Mathf.Clamp(newVoiceIndex, 0, TTSWitVoiceUtility.VoiceNames.Count);
+                    int newVoiceIndex = EditorGUI.Popup(subfieldRect, subfieldProperty.displayName, voiceIndex,
+                        _voiceNames);
+                    newVoiceIndex = Mathf.Clamp(newVoiceIndex, 0, _voiceNames.Length);
                     if (voiceIndex != newVoiceIndex)
                     {
                         voiceIndex = newVoiceIndex;
-                        subfieldProperty.stringValue = TTSWitVoiceUtility.VoiceNames[voiceIndex];
+                        subfieldProperty.stringValue = _voiceNames[voiceIndex];
                         GUI.FocusControl(null);
                     }
-
                     y += VAR_HEIGHT + VAR_MARGIN;
                     continue;
                 }
-
-                if (string.Equals(subfield.Name, VAR_STYLE) && voiceIndex >= 0 &&
-                    voiceIndex < TTSWitVoiceUtility.Voices.Length)
+                if (string.Equals(subfield.Name, VAR_STYLE) && voiceIndex >= 0 && voiceIndex < _voices.Length)
                 {
                     // Get voice data
-                    var voiceData = TTSWitVoiceUtility.Voices[voiceIndex];
+                    WitVoiceInfo voiceInfo = _voices[voiceIndex];
                     EditorGUI.indentLevel++;
 
                     // Locale layout
-                    EditorGUI.LabelField(subfieldRect, "Locale", voiceData.locale);
+                    EditorGUI.LabelField(subfieldRect, "Locale", voiceInfo.locale);
                     y += VAR_HEIGHT + VAR_MARGIN;
 
                     // Gender layout
                     subfieldRect = new Rect(position.x, y, position.width, VAR_HEIGHT);
-                    EditorGUI.LabelField(subfieldRect, "Gender", voiceData.gender);
+                    EditorGUI.LabelField(subfieldRect, "Gender", voiceInfo.gender);
                     y += VAR_HEIGHT + VAR_MARGIN;
 
                     // Style layout/select
                     subfieldRect = new Rect(position.x, y, position.width, VAR_HEIGHT);
-                    if (voiceData.styles != null && voiceData.styles.Length > 0)
+                    if (voiceInfo.styles != null && voiceInfo.styles.Length > 0)
                     {
                         // Get style index
-                        var style = subfieldProperty.stringValue;
-                        var styleIndex = new List<string>(voiceData.styles).IndexOf(style);
+                        string style = subfieldProperty.stringValue;
+                        int styleIndex = new List<string>(voiceInfo.styles).IndexOf(style);
 
                         // Show style select
-                        var newStyleIndex = EditorGUI.Popup(subfieldRect, subfieldProperty.displayName, styleIndex,
-                            voiceData.styles);
-                        newStyleIndex = Mathf.Clamp(newStyleIndex, 0, voiceData.styles.Length);
+                        int newStyleIndex = EditorGUI.Popup(subfieldRect, subfieldProperty.displayName, styleIndex,
+                            voiceInfo.styles);
+                        newStyleIndex = Mathf.Clamp(newStyleIndex, 0, voiceInfo.styles.Length);
                         if (styleIndex != newStyleIndex)
                         {
                             // Apply style
                             styleIndex = newStyleIndex;
-                            subfieldProperty.stringValue = voiceData.styles[styleIndex];
+                            subfieldProperty.stringValue = voiceInfo.styles[styleIndex];
                             GUI.FocusControl(null);
                         }
 
@@ -131,11 +147,14 @@ namespace Facebook.WitAi.TTS.Editor.Voices
                 EditorGUI.PropertyField(subfieldRect, subfieldProperty, new GUIContent(subfieldProperty.displayName));
 
                 // Clamp in between range
-                var range = subfield.GetCustomAttribute<RangeAttribute>();
+                RangeAttribute range = subfield.GetCustomAttribute<RangeAttribute>();
                 if (range != null)
                 {
-                    var newValue = Mathf.Clamp(subfieldProperty.intValue, (int)range.min, (int)range.max);
-                    if (subfieldProperty.intValue != newValue) subfieldProperty.intValue = newValue;
+                    int newValue = Mathf.Clamp(subfieldProperty.intValue, (int)range.min, (int)range.max);
+                    if (subfieldProperty.intValue != newValue)
+                    {
+                        subfieldProperty.intValue = newValue;
+                    }
                 }
 
                 // Increment
@@ -145,15 +164,51 @@ namespace Facebook.WitAi.TTS.Editor.Voices
             // Undent
             EditorGUI.indentLevel--;
         }
-
+        // Refresh voices
+        private void RefreshVoices(SerializedProperty property)
+        {
+            // Get tts wit if possible
+            object targetObject = property.serializedObject.targetObject;
+            if (targetObject == null || targetObject.GetType() !=  typeof(TTSWit))
+            {
+                return;
+            }
+            // Get configuration
+            TTSWit wit = property.serializedObject.targetObject as TTSWit;
+            IWitRequestConfiguration configuration = wit.RequestSettings.configuration;
+            // Set configuration
+            if (_configuration != configuration)
+            {
+                _configuration = configuration;
+                _voices = null;
+                _voiceNames = null;
+            }
+            // Ignore if null
+            if (configuration == null)
+            {
+                return;
+            }
+            // Ignore if already set up
+            if (_voices != null && _voiceNames != null)
+            {
+                return;
+            }
+            // Get voices & voice names
+            _voices = configuration.GetApplicationInfo().voices;
+            _voiceNames = _voices?.Select(voice => voice.name).ToArray();
+        }
         // Get voice index
         private int GetVoiceIndex(SerializedProperty property)
         {
-            var voiceProperty = property.FindPropertyRelative(VAR_VOICE);
-            var voiceID = voiceProperty.stringValue;
-            var voiceIndex = -1;
-            var voiceNames = TTSWitVoiceUtility.VoiceNames;
-            if (voiceNames != null && voiceNames.Count > 0)
+            SerializedProperty voiceProperty = property.FindPropertyRelative(VAR_VOICE);
+            string voiceID = voiceProperty.stringValue;
+            int voiceIndex = -1;
+            List<string> voiceNames = new List<string>();
+            if (_voiceNames != null)
+            {
+                voiceNames.AddRange(_voiceNames);
+            }
+            if (voiceNames.Count > 0)
             {
                 if (string.IsNullOrEmpty(voiceID))
                 {
@@ -167,7 +222,6 @@ namespace Facebook.WitAi.TTS.Editor.Voices
                     voiceIndex = voiceNames.IndexOf(voiceID);
                 }
             }
-
             return voiceIndex;
         }
     }

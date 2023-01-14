@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     // Handles layout of very simple property drawer
     public abstract class WitSimplePropertyDrawer : PropertyDrawer
@@ -23,24 +23,24 @@ namespace Facebook.WitAi.Windows
         {
             return 0;
         }
-
         // Handles gui layout
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var keyText = GetFieldStringValue(property, GetKeyFieldName());
-            var valueText = GetFieldStringValue(property, GetValueFieldName());
+            string keyText = GetFieldStringValue(property, GetKeyFieldName());
+            string valueText = GetFieldStringValue(property, GetValueFieldName());
             WitEditorUI.LayoutKeyLabel(keyText, valueText);
         }
-
         // Get subfield value
         protected virtual string GetFieldStringValue(SerializedProperty property, string fieldName)
         {
-            var subfieldProperty = property.FindPropertyRelative(fieldName);
-            var result = GetFieldStringValue(subfieldProperty);
-            if (string.IsNullOrEmpty(result)) result = fieldName;
+            SerializedProperty subfieldProperty = property.FindPropertyRelative(fieldName);
+            string result = GetFieldStringValue(subfieldProperty);
+            if (string.IsNullOrEmpty(result))
+            {
+                result = fieldName;
+            }
             return result;
         }
-
         // Get subfield value
         protected virtual string GetFieldStringValue(SerializedProperty subfieldProperty)
         {
@@ -54,7 +54,6 @@ namespace Facebook.WitAi.Windows
                 case "bool":
                     return subfieldProperty.boolValue.ToString();
             }
-
             // No others are currently supported
             return string.Empty;
         }

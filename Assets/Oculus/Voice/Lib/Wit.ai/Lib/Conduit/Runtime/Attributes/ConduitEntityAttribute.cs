@@ -11,11 +11,26 @@ using System;
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Marks an enumeration as a Conduit entity to be included in the generated manifest. Enums that are directly used
-    ///     in a parameter of Conduit methods do not need this attribute.
+    /// Marks an enumeration as a Conduit entity to be included in the generated manifest. Enums that are directly used
+    /// in a parameter of Conduit methods do not need this attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Enum)]
+    [AttributeUsage(System.AttributeTargets.Enum)]
     public class ConduitEntityAttribute : Attribute
     {
+        /// <summary>
+        /// The current name of this entity
+        /// </summary>
+        public string Name { get; }
+        /// <summary>
+        /// The specific entity id
+        /// </summary>
+        public string ID { get; }
+
+        // ID used for auto generation
+        public ConduitEntityAttribute(string name, string id = null)
+        {
+            this.Name = name;
+            this.ID = id;
+        }
     }
 }

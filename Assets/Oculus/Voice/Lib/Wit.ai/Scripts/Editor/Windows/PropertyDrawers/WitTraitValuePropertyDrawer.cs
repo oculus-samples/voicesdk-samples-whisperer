@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Data.Traits;
 using UnityEditor;
+using Meta.WitAi.Data.Info;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
-    [CustomPropertyDrawer(typeof(WitTraitValue))]
+    [CustomPropertyDrawer(typeof(WitTraitInfo))]
     public class WitTraitValuePropertyDrawer : WitSimplePropertyDrawer
     {
         // Key = value
@@ -19,7 +19,6 @@ namespace Facebook.WitAi.Windows
         {
             return "value";
         }
-
         // Value = id
         protected override string GetValueFieldName()
         {

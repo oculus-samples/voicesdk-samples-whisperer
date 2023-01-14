@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using System.Reflection;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public class WitIntentPropertyDrawer : WitPropertyDrawer
     {
@@ -21,8 +21,11 @@ namespace Facebook.WitAi.Windows
             switch (key)
             {
                 case LocalizedTitleKey:
-                    var title = GetFieldStringValue(property, "name");
-                    if (!string.IsNullOrEmpty(title)) return title;
+                    string title = GetFieldStringValue(property, "name");
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        return title;
+                    }
                     break;
                 case "id":
                     return WitTexts.Texts.ConfigurationIntentsIdLabel;
@@ -33,10 +36,8 @@ namespace Facebook.WitAi.Windows
             // Default to base
             return base.GetLocalizedText(property, key);
         }
-
         // Layout entity override
-        protected override void LayoutPropertyField(FieldInfo subfield, SerializedProperty subfieldProperty,
-            GUIContent labelContent, bool canEdit)
+        protected override void LayoutPropertyField(FieldInfo subfield, SerializedProperty subfieldProperty, GUIContent labelContent, bool canEdit)
         {
             // Handle all the same except entities
             if (canEdit || !string.Equals(subfield.Name, "entities"))
@@ -51,19 +52,21 @@ namespace Facebook.WitAi.Windows
             {
                 EditorGUI.indentLevel++;
                 if (subfieldProperty.arraySize == 0)
+                {
                     WitEditorUI.LayoutErrorLabel(WitTexts.Texts.ConfigurationEntitiesMissingLabel);
+                }
                 else
-                    for (var i = 0; i < subfieldProperty.arraySize; i++)
+                {
+                    for (int i = 0; i < subfieldProperty.arraySize; i++)
                     {
-                        var entityProp = subfieldProperty.GetArrayElementAtIndex(i);
-                        var entityPropName = entityProp.FindPropertyRelative("name").stringValue;
+                        SerializedProperty entityProp = subfieldProperty.GetArrayElementAtIndex(i);
+                        string entityPropName = entityProp.FindPropertyRelative("name").stringValue;
                         WitEditorUI.LayoutLabel(entityPropName);
                     }
-
+                }
                 EditorGUI.indentLevel--;
             }
         }
-
         // Determine if should layout field
         protected override bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)
         {
@@ -72,7 +75,6 @@ namespace Facebook.WitAi.Windows
                 case "name":
                     return false;
             }
-
             return base.ShouldLayoutField(property, subfield);
         }
     }

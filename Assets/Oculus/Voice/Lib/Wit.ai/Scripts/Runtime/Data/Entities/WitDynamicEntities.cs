@@ -9,19 +9,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Json;
+using Meta.WitAi.Data.Info;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data.Entities
+namespace Meta.WitAi.Data.Entities
 {
     [Serializable]
     public class WitDynamicEntities : IDynamicEntitiesProvider, IEnumerable<WitDynamicEntity>
     {
-        public List<WitDynamicEntity> entities = new();
+        public List<WitDynamicEntity> entities = new List<WitDynamicEntity>();
 
         public WitDynamicEntities()
         {
+
         }
 
         public WitDynamicEntities(IEnumerable<WitDynamicEntity> entity)
@@ -38,31 +40,30 @@ namespace Facebook.WitAi.Data.Entities
         {
             get
             {
-                var json = new WitResponseClass();
-                foreach (var entity in entities) json.Add(entity.entity, entity.AsJson);
+                WitResponseClass json = new WitResponseClass();
+                foreach (var entity in entities)
+                {
+                    json.Add(entity.entity, entity.AsJson);
+                }
 
                 return json;
             }
         }
 
-        public WitDynamicEntities GetDynamicEntities()
+        public override string ToString()
         {
-            return this;
+            return AsJson.ToString();
         }
 
-        public IEnumerator<WitDynamicEntity> GetEnumerator()
-        {
-            return entities.GetEnumerator();
-        }
-
+        public IEnumerator<WitDynamicEntity> GetEnumerator() => entities.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        public override string ToString()
+        public WitDynamicEntities GetDynamicEntities()
         {
-            return AsJson.ToString();
+            return this;
         }
 
         public void Merge(IDynamicEntitiesProvider provider)
@@ -81,8 +82,8 @@ namespace Facebook.WitAi.Data.Entities
 
         public void Add(WitDynamicEntity dynamicEntity)
         {
-            var index = entities.FindIndex(e => e.entity == dynamicEntity.entity);
-            if (index < 0) entities.Add(dynamicEntity);
+            int index = entities.FindIndex(e => e.entity == dynamicEntity.entity);
+            if(index < 0) entities.Add(dynamicEntity);
             else Debug.LogWarning($"Cannot add entity, registry already has an entry for {dynamicEntity.entity}");
         }
 
@@ -91,7 +92,7 @@ namespace Facebook.WitAi.Data.Entities
             entities.Remove(dynamicEntity);
         }
 
-        public void AddKeyword(string entityName, WitEntityKeyword keyword)
+        public void AddKeyword(string entityName, WitEntityKeywordInfo keyword)
         {
             var entity = entities.Find(e => entityName == e.entity);
             if (null == entity)
@@ -99,17 +100,16 @@ namespace Facebook.WitAi.Data.Entities
                 entity = new WitDynamicEntity(entityName);
                 entities.Add(entity);
             }
-
             entity.keywords.Add(keyword);
         }
 
-        public void RemoveKeyword(string entityName, WitEntityKeyword keyword)
+        public void RemoveKeyword(string entityName, WitEntityKeywordInfo keyword)
         {
-            var index = entities.FindIndex(e => e.entity == entityName);
+            int index = entities.FindIndex(e => e.entity == entityName);
             if (index >= 0)
             {
                 entities[index].keywords.Remove(keyword);
-                if (entities[index].keywords.Count == 0) entities.RemoveAt(index);
+                if(entities[index].keywords.Count == 0) entities.RemoveAt(index);
             }
         }
     }

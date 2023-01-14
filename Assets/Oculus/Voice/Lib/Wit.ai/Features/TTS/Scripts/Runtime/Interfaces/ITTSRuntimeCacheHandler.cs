@@ -6,40 +6,39 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Events;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Events;
 
-namespace Facebook.WitAi.TTS.Interfaces
+namespace Meta.WitAi.TTS.Interfaces
 {
     public interface ITTSRuntimeCacheHandler
     {
         /// <summary>
-        ///     Callback for clips being added to the runtime cache
+        /// Callback for clips being added to the runtime cache
         /// </summary>
         TTSClipEvent OnClipAdded { get; set; }
-
         /// <summary>
-        ///     Callback for clips being removed from the runtime cache
+        /// Callback for clips being removed from the runtime cache
         /// </summary>
         TTSClipEvent OnClipRemoved { get; set; }
 
         /// <summary>
-        ///     Method for obtaining all cached clips
+        /// Method for obtaining all cached clips
         /// </summary>
         TTSClipData[] GetClips();
-
         /// <summary>
-        ///     Method for obtaining a specific cached clip
+        /// Method for obtaining a specific cached clip
         /// </summary>
         TTSClipData GetClip(string clipID);
 
         /// <summary>
-        ///     Method for adding a clip to the cache
+        /// Method for adding a clip to the cache
         /// </summary>
-        void AddClip(TTSClipData clipData);
-
+        /// <param name="clipData"></param>
+        /// <returns></returns>
+        bool AddClip(TTSClipData clipData);
         /// <summary>
-        ///     Method for removing a clip from the cache
+        /// Method for removing a clip from the cache
         /// </summary>
         void RemoveClip(string clipID);
     }

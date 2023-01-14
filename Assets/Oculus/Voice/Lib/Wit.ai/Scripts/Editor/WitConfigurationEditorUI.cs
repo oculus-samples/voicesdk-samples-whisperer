@@ -6,41 +6,41 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Data.Configuration;
+using System;
 using UnityEditor;
 using UnityEngine;
+using Meta.WitAi.Data.Configuration;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public static class WitConfigurationEditorUI
     {
         // Configuration select
-        public static void LayoutConfigurationSelect(ref int configIndex)
+        public static void LayoutConfigurationSelect(ref int configIndex, Action onNewClick)
         {
             // Refresh configurations if needed
-            var witConfigs = WitConfigurationUtility.WitConfigs;
+            WitConfiguration[] witConfigs = WitConfigurationUtility.WitConfigs;
 
+            // If no configuration exists, provide a means for the user to create a new one.
             if (witConfigs == null || witConfigs.Length == 0)
             {
-                // If no configuration exists, provide a means for the user to create a new one.
+                // Begin layout
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
-                if (WitEditorUI.LayoutTextButton("New Config"))
+                if (WitEditorUI.LayoutTextButton(WitTexts.Texts.SettingsAddMainButtonLabel))
                 {
-                    WitConfigurationUtility.CreateConfiguration("");
-
-                    EditorUtility.FocusProjectWindow();
+                    onNewClick?.Invoke();
                 }
 
+                // End layout
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-
                 return;
             }
 
             // Clamp Config Index
-            var configUpdated = false;
+            bool configUpdated = false;
             if (configIndex < 0 || configIndex >= witConfigs.Length)
             {
                 configUpdated = true;
@@ -50,8 +50,7 @@ namespace Facebook.WitAi
             GUILayout.BeginHorizontal();
 
             // Layout popup
-            WitEditorUI.LayoutPopup(WitTexts.Texts.ConfigurationSelectLabel, WitConfigurationUtility.WitConfigNames,
-                ref configIndex, ref configUpdated);
+            WitEditorUI.LayoutPopup(WitTexts.Texts.ConfigurationSelectLabel, WitConfigurationUtility.WitConfigNames, ref configIndex, ref configUpdated);
 
             if (GUILayout.Button("", GUI.skin.GetStyle("IN ObjectField"), GUILayout.Width(15)))
             {

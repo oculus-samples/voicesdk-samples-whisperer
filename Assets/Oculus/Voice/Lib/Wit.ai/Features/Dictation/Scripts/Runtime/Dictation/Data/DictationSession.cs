@@ -7,26 +7,24 @@
  */
 
 using System;
-using Facebook.WitAi.Data;
+using Meta.WitAi.Data;
 
-namespace Facebook.WitAi.Dictation.Data
+namespace Meta.WitAi.Dictation.Data
 {
     [Serializable]
     public class DictationSession : VoiceSession
     {
         /// <summary>
-        ///     Collection of Request IDs generated from client for Wit requests
-        /// </summary>
-        public string[] clientRequestId;
-
-        /// <summary>
-        ///     An identifier for the current dictation session
-        /// </summary>
-        public string sessionId;
-
-        /// <summary>
-        ///     Dictation service being used
+        /// Dictation service being used
         /// </summary>
         public IDictationService dictationService;
+        /// <summary>
+        /// Collection of Request IDs generated from client for Wit requests
+        /// </summary>
+        public string[] clientRequestId;
+        /// <summary>
+        /// An identifier for the current dictation session
+        /// </summary>
+        public string sessionId;
     }
 }

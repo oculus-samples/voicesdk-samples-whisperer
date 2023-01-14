@@ -18,10 +18,11 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Data.Configuration;
+using Meta.WitAi;
+using Meta.WitAi.Data.Configuration;
 using UnityEngine;
 using UnityEngine.UI;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,7 +32,18 @@ namespace Oculus.Voice.Demo.UIShapesDemo
     [ExecuteAlways]
     public class Instructions : MonoBehaviour
     {
-        private static readonly string[] steps =
+        internal enum Step
+        {
+            SetupWit = 0,
+            MissingServerToken,
+            MissingClientToken,
+            AddConfig,
+            AddVoiceExperiences,
+            SetConfig,
+            Ready
+        }
+
+        static readonly string[] steps = new string[]
         {
             "Create an application at https://wit.ai. You can import the \"shapes_demo - Wit.ai Config.zip\" in the Demo/Data directory to create it for you.\n\nConnect to the Wit.ai app by clicking Oculus>Voice SDK>Settings and copy the Server Access Token from the Wit.ai app's settings page.Next, create a new Wit configuration by clicking Create.",
             "Copy the Server Access Token from the Wit.ai app's settings page and paste it in field found in Oculus/Voice SDK/Settings.",
@@ -44,11 +56,11 @@ namespace Oculus.Voice.Demo.UIShapesDemo
 
         [SerializeField] private Text instructionText;
 
-        internal Step CurrentStep { get; private set; } = Step.Ready;
+        private Step currentStep = Step.Ready;
+        internal Step CurrentStep => currentStep;
+        internal string CurrentStepText => steps[(int) currentStep];
 
-        internal string CurrentStepText => steps[(int)CurrentStep];
-
-        private void Update()
+        private void OnValidate()
         {
             UpdateStep();
         }
@@ -58,7 +70,7 @@ namespace Oculus.Voice.Demo.UIShapesDemo
             UpdateStep();
         }
 
-        private void OnValidate()
+        private void Update()
         {
             UpdateStep();
         }
@@ -67,50 +79,39 @@ namespace Oculus.Voice.Demo.UIShapesDemo
         {
 #if UNITY_EDITOR
             var appVoiceExperience = FindObjectOfType<AppVoiceExperience>();
-            var guids = AssetDatabase.FindAssets("t:WitConfiguration");
+            string[] guids = AssetDatabase.FindAssets("t:WitConfiguration");
             if (guids.Length == 0)
             {
-                CurrentStep = Step.SetupWit;
+                currentStep = Step.SetupWit;
             }
             else if (!appVoiceExperience)
             {
-                CurrentStep = Step.AddVoiceExperiences;
+                currentStep = Step.AddVoiceExperiences;
             }
             else if (!appVoiceExperience.RuntimeConfiguration.witConfiguration)
             {
-                CurrentStep = Step.SetConfig;
+                currentStep = Step.SetConfig;
                 appVoiceExperience.RuntimeConfiguration.witConfiguration =
                     AssetDatabase.LoadAssetAtPath<WitConfiguration>(
                         AssetDatabase.GUIDToAssetPath(guids[0]));
             }
             else if (!WitAuthUtility.IsServerTokenValid())
             {
-                CurrentStep = Step.MissingServerToken;
+                currentStep = Step.MissingServerToken;
             }
-            else if (string.IsNullOrEmpty(appVoiceExperience.RuntimeConfiguration?.witConfiguration
-                         .clientAccessToken))
+            else if (string.IsNullOrEmpty(appVoiceExperience.RuntimeConfiguration?.witConfiguration?
+                .GetClientAccessToken()))
             {
-                CurrentStep = Step.MissingClientToken;
+                currentStep = Step.MissingClientToken;
             }
             else
             {
-                CurrentStep = Step.Ready;
+                currentStep = Step.Ready;
             }
 
 
-            instructionText.text = steps[(int)CurrentStep];
+            instructionText.text = steps[(int) currentStep];
 #endif
-        }
-
-        internal enum Step
-        {
-            SetupWit = 0,
-            MissingServerToken,
-            MissingClientToken,
-            AddConfig,
-            AddVoiceExperiences,
-            SetConfig,
-            Ready
         }
     }
 
@@ -120,7 +121,7 @@ namespace Oculus.Voice.Demo.UIShapesDemo
     {
         public override void OnInspectorGUI()
         {
-            var instructions = (Instructions)target;
+            var instructions = (Instructions) target;
 
             if (instructions.CurrentStep == Instructions.Step.Ready)
             {
@@ -152,31 +153,47 @@ namespace Oculus.Voice.Demo.UIShapesDemo
             GUILayout.Label("Resources", EditorStyles.boldLabel);
 
             if (GUILayout.Button("Select Wit Config"))
-                Selection.activeObject = FindObjectOfType<AppVoiceExperience>()
-                    .RuntimeConfiguration.witConfiguration;
+            {
+                Selection.activeObject = (FindObjectOfType<AppVoiceExperience>()
+                    .RuntimeConfiguration.witConfiguration);
+            }
 
-            if (GUILayout.Button("Open Wit.ai")) Application.OpenURL("https://wit.ai/apps");
+            if (GUILayout.Button("Open Wit.ai"))
+            {
+                Application.OpenURL("https://wit.ai/apps");
+            }
         }
 
         private void MissingServerTokenResources()
         {
             GUILayout.Label("Resources", EditorStyles.boldLabel);
 
-            if (GUILayout.Button("Open Wit.ai")) Application.OpenURL("https://wit.ai/apps");
+            if (GUILayout.Button("Open Wit.ai"))
+            {
+                Application.OpenURL("https://wit.ai/apps");
+            }
         }
 
         private void SetupWitResources()
         {
             GUILayout.Label("Resources", EditorStyles.boldLabel);
 
-            if (GUILayout.Button("Open Wit.ai")) Application.OpenURL("https://wit.ai/apps");
+            if (GUILayout.Button("Open Wit.ai"))
+            {
+                Application.OpenURL("https://wit.ai/apps");
+            }
 
             GUILayout.Label("Wit.ai Sample Application File");
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Open In Explorer")) EditorUtility.RevealInFinder("Assets/Oculus/Voice/Demo/Data/");
+            if (GUILayout.Button("Open In Explorer"))
+            {
+                EditorUtility.RevealInFinder("Assets/Oculus/Voice/Demo/Data/");
+            }
 
             if (GUILayout.Button("Copy Path"))
+            {
                 GUIUtility.systemCopyBuffer = Application.dataPath + "/Oculus/Voice/Demo/Data";
+            }
 
             GUILayout.EndHorizontal();
         }

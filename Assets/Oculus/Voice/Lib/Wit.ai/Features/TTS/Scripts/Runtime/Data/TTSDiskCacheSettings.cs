@@ -8,28 +8,25 @@
 
 using System;
 
-namespace Facebook.WitAi.TTS.Data
+namespace Meta.WitAi.TTS.Data
 {
     // TTS Cache disk location
     public enum TTSDiskCacheLocation
     {
         /// <summary>
-        ///     Does not cache
+        /// Does not cache
         /// </summary>
         Stream,
-
         /// <summary>
-        ///     Stores files in editor only & loads files from internal project location (Application.streamingAssetsPath)
+        /// Stores files in editor only & loads files from internal project location (Application.streamingAssetsPath)
         /// </summary>
         Preload,
-
         /// <summary>
-        ///     Stores files at persistent location (Application.persistentDataPath)
+        /// Stores files at persistent location (Application.persistentDataPath)
         /// </summary>
         Persistent,
-
         /// <summary>
-        ///     Stores files at temporary cache location (Application.temporaryCachePath)
+        /// Stores files at temporary cache location (Application.temporaryCachePath)
         /// </summary>
         Temporary
     }
@@ -38,7 +35,7 @@ namespace Facebook.WitAi.TTS.Data
     public class TTSDiskCacheSettings
     {
         /// <summary>
-        ///     Where the TTS clip should be cached
+        /// Where the TTS clip should be cached
         /// </summary>
         public TTSDiskCacheLocation DiskCacheLocation = TTSDiskCacheLocation.Stream;
     }

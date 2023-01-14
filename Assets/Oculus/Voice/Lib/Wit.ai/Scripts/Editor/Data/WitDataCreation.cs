@@ -8,23 +8,24 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data.Configuration;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data.Configuration;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data
+
+namespace Meta.WitAi.Data
 {
     public class WitDataCreation
     {
-        private const string PATH_KEY = "Facebook::Wit::ValuePath";
+        const string PATH_KEY = "Facebook::Wit::ValuePath";
 
         public static WitConfiguration FindDefaultWitConfig()
         {
-            var guids = AssetDatabase.FindAssets("t:WitConfiguration");
-            if (guids.Length > 0)
+            string[] guids = AssetDatabase.FindAssets("t:WitConfiguration");
+            if(guids.Length > 0)
             {
-                var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
                 return AssetDatabase.LoadAssetAtPath<WitConfiguration>(path);
             }
 
@@ -38,7 +39,7 @@ namespace Facebook.WitAi.Data
                 name = "Wit"
             };
             var wit = witGo.AddComponent<Wit>();
-            var runtimeConfiguration = new WitRuntimeConfiguration
+            var runtimeConfiguration = new WitRuntimeConfiguration()
             {
                 witConfiguration = FindDefaultWitConfig()
             };
@@ -88,7 +89,9 @@ namespace Facebook.WitAi.Data
             {
                 EditorPrefs.SetString(PATH_KEY, filePath);
                 if (filePath.StartsWith(Application.dataPath))
+                {
                     filePath = filePath.Substring(Application.dataPath.Length - 6);
+                }
                 AssetDatabase.CreateAsset(asset, filePath);
                 AssetDatabase.SaveAssets();
             }

@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using System.Reflection;
 using UnityEditor;
+using System.Reflection;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public class WitTraitPropertyDrawer : WitPropertyDrawer
     {
@@ -20,8 +20,11 @@ namespace Facebook.WitAi.Windows
             switch (key)
             {
                 case LocalizedTitleKey:
-                    var title = GetFieldStringValue(property, "name");
-                    if (!string.IsNullOrEmpty(title)) return title;
+                    string title = GetFieldStringValue(property, "name");
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        return title;
+                    }
                     break;
                 case "id":
                     return WitTexts.Texts.ConfigurationTraitsIdLabel;
@@ -32,7 +35,6 @@ namespace Facebook.WitAi.Windows
             // Default to base
             return base.GetLocalizedText(property, key);
         }
-
         // Determine if should layout field
         protected override bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)
         {
@@ -41,7 +43,6 @@ namespace Facebook.WitAi.Windows
                 case "name":
                     return false;
             }
-
             return base.ShouldLayoutField(property, subfield);
         }
     }

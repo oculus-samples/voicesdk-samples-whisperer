@@ -7,14 +7,14 @@
  */
 
 using System;
-using Facebook.WitAi.Dictation;
+using Meta.WitAi.Dictation;
 using UnityEngine;
-using Object = UnityEngine.Object;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     [Serializable]
     public struct DictationServiceReference
@@ -27,10 +27,12 @@ namespace Facebook.WitAi.Utilities
             {
                 if (!dictationService)
                 {
-                    var services = Resources.FindObjectsOfTypeAll<DictationService>();
+                    DictationService[] services = Resources.FindObjectsOfTypeAll<DictationService>();
                     if (services != null)
+                    {
                         // Set as first instance that isn't a prefab
-                        dictationService = Array.Find(services, o => o.gameObject.scene.rootCount != 0);
+                        dictationService = Array.Find(services, (o) => o.gameObject.scene.rootCount != 0);
+                    }
                 }
 
                 return dictationService;
@@ -51,30 +53,37 @@ namespace Facebook.WitAi.Utilities
         {
             var refProp = property.FindPropertyRelative("DictationService");
             var reference = refProp.objectReferenceValue as DictationService;
-            var dictationServices = Object.FindObjectsOfType<DictationService>();
+            var dictationServices = GameObject.FindObjectsOfType<DictationService>();
             var dictationServiceNames = new string[dictationServices.Length + 1];
-            var index = 0;
+            int index = 0;
             dictationServiceNames[0] = "Autodetect";
             if (dictationServices.Length == 1)
+            {
                 dictationServiceNames[0] = $"{dictationServiceNames[0]} - {dictationServices[0].name}";
-            for (var i = 0; i < dictationServices.Length; i++)
+            }
+            for (int i = 0; i < dictationServices.Length; i++)
             {
                 dictationServiceNames[i + 1] = dictationServices[i].name;
-                if (dictationServices[i] == reference) index = i + 1;
+                if (dictationServices[i] == reference)
+                {
+                    index = i + 1;
+                }
             }
-
             EditorGUI.BeginProperty(position, label, property);
             var updatedIndex = EditorGUI.Popup(position, index, dictationServiceNames);
             if (index != updatedIndex)
             {
                 if (updatedIndex > 0)
+                {
                     refProp.objectReferenceValue = dictationServices[updatedIndex - 1];
+                }
                 else
+                {
                     refProp.objectReferenceValue = null;
+                }
 
                 property.serializedObject.ApplyModifiedProperties();
             }
-
             EditorGUI.EndProperty();
         }
     }

@@ -9,7 +9,7 @@
 namespace Meta.Conduit.Editor
 {
     /// <summary>
-    ///     Mediates storage for small data that need to be persisted across projects.
+    /// Mediates storage for small data that need to be persisted across projects.
     /// </summary>
     internal interface IPersistenceLayer
     {

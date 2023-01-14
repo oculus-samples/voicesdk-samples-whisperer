@@ -8,82 +8,89 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Scripting;
 
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Represents a method parameter/argument in the manifest.
+    /// Represents a method parameter/argument in the manifest.
     /// </summary>
     internal class ManifestParameter
     {
-        private string name;
-
         /// <summary>
-        ///     Called via JSON reflection, need preserver or it will be stripped on compile
+        /// Called via JSON reflection, need preserver or it will be stripped on compile
         /// </summary>
-        [Preserve]
-        public ManifestParameter()
-        {
-        }
+        [UnityEngine.Scripting.Preserve]
+        public ManifestParameter() { }
 
         /// <summary>
-        ///     This is the parameter name as exposed to the backend (slot or role)
+        /// This is the parameter name as exposed to the backend (slot or role)
         /// </summary>
         public string Name
         {
             get => name;
-            set => name = ConduitUtilities.DelimitWithUnderscores(value).ToLower();
+            set => name = ConduitUtilities.DelimitWithUnderscores(value);
         }
+        private string name;
 
         /// <summary>
-        ///     This is the technical name of the parameter in the actual method in codebase.
+        /// This is the technical name of the parameter in the actual method in codebase.
         /// </summary>
         public string InternalName { get; set; }
 
         /// <summary>
-        ///     A fully qualified name exposed to the backend for uniqueness.
+        /// A fully qualified name exposed to the backend for uniqueness.
         /// </summary>
         public string QualifiedName { get; set; }
 
         /// <summary>
-        ///     This is the data type of the parameter, exposed as an entity type.
+        /// This is the data type of the parameter, exposed as an entity type.
         /// </summary>
         public string EntityType
         {
             get
             {
                 var lastPeriod = QualifiedTypeName.LastIndexOf('.');
-                if (lastPeriod < 0) return string.Empty;
+                if (lastPeriod < 0)
+                {
+                    return QualifiedTypeName;
+                }
                 var entityName = QualifiedTypeName.Substring(lastPeriod + 1);
 
                 // Identify whether it's a nested type
                 var lastPlus = entityName.LastIndexOf('+');
 
-                if (lastPlus < 0) return entityName;
+                if (lastPlus < 0)
+                {
+                    return entityName;
+                }
 
                 return entityName.Substring(lastPlus + 1);
             }
         }
 
         /// <summary>
-        ///     The assembly containing the data type.
+        /// The assembly containing the data type.
         /// </summary>
         public string TypeAssembly { get; set; }
 
         /// <summary>
-        ///     The fully qualified name of the parameter data type.
+        /// The fully qualified name of the parameter data type.
         /// </summary>
         public string QualifiedTypeName { get; set; }
 
         /// <summary>
-        ///     Additional names by which the backend can refer to this parameter.
+        /// Additional names by which the backend can refer to this parameter.
         /// </summary>
         public List<string> Aliases { get; set; }
+        
+        /// <summary>
+        /// Example values this parameter can accept.
+        /// </summary>
+        public List<string> Examples { get; set; }
 
         public override bool Equals(object obj)
         {
-            return obj is ManifestParameter other && Equals(other);
+            return obj is ManifestParameter other && this.Equals(other);
         }
 
         public override int GetHashCode()
@@ -100,10 +107,10 @@ namespace Meta.Conduit
 
         private bool Equals(ManifestParameter other)
         {
-            return Equals(InternalName, other.InternalName) && Equals(QualifiedName, other.QualifiedName) &&
-                   Equals(EntityType, other.EntityType) && Aliases.SequenceEqual(other.Aliases) &&
-                   Equals(TypeAssembly, other.TypeAssembly) &&
-                   Equals(QualifiedTypeName, other.QualifiedTypeName);
+            return Equals(this.InternalName, other.InternalName) && Equals(this.QualifiedName, other.QualifiedName) &&
+                   Equals(this.EntityType, other.EntityType) && this.Aliases.SequenceEqual(other.Aliases) &&
+                   Equals(this.TypeAssembly, other.TypeAssembly) &&
+                   Equals(this.QualifiedTypeName, other.QualifiedTypeName);
         }
     }
 }

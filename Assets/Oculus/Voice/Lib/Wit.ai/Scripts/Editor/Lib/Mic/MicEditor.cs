@@ -6,9 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using Meta.WitAi.Lib;
 using UnityEditor;
 
-namespace Facebook.WitAi.Lib
+namespace Meta.WitAi.Lib
 {
     [CustomEditor(typeof(Mic))]
     public class MicEditor : Editor
@@ -17,10 +18,13 @@ namespace Facebook.WitAi.Lib
         {
             base.OnInspectorGUI();
 
-            var mic = (Mic)target;
+            var mic = (Mic) target;
 
-            var index = EditorGUILayout.Popup("Input", mic.CurrentDeviceIndex, mic.Devices.ToArray());
-            if (index != mic.CurrentDeviceIndex) mic.ChangeDevice(index);
+            int index = EditorGUILayout.Popup("Input", mic.CurrentDeviceIndex, mic.Devices.ToArray());
+            if (index != mic.CurrentDeviceIndex)
+            {
+                mic.ChangeDevice(index);
+            }
         }
     }
 }

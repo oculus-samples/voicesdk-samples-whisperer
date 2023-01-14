@@ -80,7 +80,7 @@ namespace Whisperer
 
         private void StartApp()
         {
-            var token = FindObjectOfType<AppVoiceExperience>().RuntimeConfiguration.witConfiguration.clientAccessToken;
+            var token = FindObjectOfType<AppVoiceExperience>().RuntimeConfiguration.witConfiguration.GetClientAccessToken();
             if (!string.IsNullOrEmpty(token))
             {
                 _hands.Transforms.ForEach(t => t.gameObject.SetActive(true));

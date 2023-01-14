@@ -19,16 +19,13 @@
  */
 
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace Oculus.Voice.Core.Bindings.Android.PlatformLogger
 {
     public class VoiceSDKLoggerBinding : BaseServiceBinding
     {
-        [Preserve]
-        public VoiceSDKLoggerBinding(AndroidJavaObject loggerInstance) : base(loggerInstance)
-        {
-        }
+        [UnityEngine.Scripting.Preserve]
+        public VoiceSDKLoggerBinding(AndroidJavaObject loggerInstance) : base(loggerInstance) {}
 
         public void Connect()
         {

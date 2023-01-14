@@ -25,17 +25,17 @@ namespace Oculus.Voice.Core.Bindings.Android
 {
     public class BaseAndroidConnectionImpl<T> where T : BaseServiceBinding
     {
-        protected readonly AndroidServiceConnection serviceConnection;
-        private readonly string fragmentClassName;
+        private string fragmentClassName;
         protected T service;
+        protected readonly AndroidServiceConnection serviceConnection;
+
+        public bool IsConnected => serviceConnection.IsConnected;
 
         public BaseAndroidConnectionImpl(string className)
         {
             fragmentClassName = className;
             serviceConnection = new AndroidServiceConnection(className, "getService");
         }
-
-        public bool IsConnected => serviceConnection.IsConnected;
 
         #region Service Connection
 
@@ -44,9 +44,11 @@ namespace Oculus.Voice.Core.Bindings.Android
             serviceConnection.Connect(version);
             var serviceInstance = serviceConnection.GetService();
             if (null == serviceInstance)
+            {
                 throw new Exception("Unable to get service connection from " + fragmentClassName);
+            }
 
-            service = (T)Activator.CreateInstance(typeof(T), serviceInstance);
+            service = (T) Activator.CreateInstance(typeof(T), serviceInstance);
         }
 
         public virtual void Disconnect()

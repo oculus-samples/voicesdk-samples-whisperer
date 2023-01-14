@@ -6,16 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using System.Collections.Generic;
+using System;
 using System.IO;
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Events;
-using Facebook.WitAi.TTS.Interfaces;
-using Facebook.WitAi.TTS.Utilities;
-using Facebook.WitAi.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Events;
+using Meta.WitAi.TTS.Interfaces;
+using Meta.WitAi.TTS.Utilities;
+using Meta.WitAi.Utilities;
+using Meta.WitAi;
+using Meta.WitAi.Requests;
 
-namespace Facebook.WitAi.TTS.Integrations
+namespace Meta.WitAi.TTS.Integrations
 {
     public class TTSDiskCache : MonoBehaviour, ITTSDiskCacheHandler
     {
@@ -23,43 +26,44 @@ namespace Facebook.WitAi.TTS.Integrations
         /// <summary>
         /// The relative path from the DiskCacheLocation in TTSDiskCacheSettings
         /// </summary>
-        [SerializeField]
-        private string _diskPath = "TTS/";
-
-        /// <summary>
-        ///     The cache default settings
-        /// </summary>
-        [SerializeField] private TTSDiskCacheSettings _defaultSettings = new();
-
-        /// <summary>
-        ///     The cache streaming events
-        /// </summary>
-        [SerializeField] private TTSStreamEvents _events = new();
-
-        // All currently performing stream requests
-        private readonly Dictionary<string, VoiceUnityRequest> _streamRequests = new();
+        [SerializeField] private string _diskPath = "TTS/";
         public string DiskPath => _diskPath;
+
+        /// <summary>
+        /// The cache default settings
+        /// </summary>
+        [SerializeField] private TTSDiskCacheSettings _defaultSettings = new TTSDiskCacheSettings();
         public TTSDiskCacheSettings DiskCacheDefaultSettings => _defaultSettings;
 
+        /// <summary>
+        /// The cache streaming events
+        /// </summary>
+        [SerializeField] private TTSStreamEvents _events = new TTSStreamEvents();
         public TTSStreamEvents DiskStreamEvents
         {
             get => _events;
-            set => _events = value;
+            set { _events = value; }
         }
 
+        // All currently performing stream requests
+        private Dictionary<string, VRequest> _streamRequests = new Dictionary<string, VRequest>();
+
         /// <summary>
-        ///     Builds full cache path
+        /// Builds full cache path
         /// </summary>
         /// <param name="clipData"></param>
         /// <returns></returns>
         public string GetDiskCachePath(TTSClipData clipData)
         {
             // Disabled
-            if (!ShouldCacheToDisk(clipData)) return string.Empty;
+            if (!ShouldCacheToDisk(clipData))
+            {
+                return string.Empty;
+            }
 
             // Get directory path
-            var location = clipData.diskCacheSettings.DiskCacheLocation;
-            var directory = string.Empty;
+            TTSDiskCacheLocation location = clipData.diskCacheSettings.DiskCacheLocation;
+            string directory = string.Empty;
             switch (location)
             {
                 case TTSDiskCacheLocation.Persistent:
@@ -72,62 +76,73 @@ namespace Facebook.WitAi.TTS.Integrations
                     directory = Application.streamingAssetsPath;
                     break;
             }
-
-            if (string.IsNullOrEmpty(directory)) return string.Empty;
+            if (string.IsNullOrEmpty(directory))
+            {
+                return string.Empty;
+            }
 
             // Add tts cache path & clean
             directory = Path.Combine(directory, DiskPath);
 
             // Generate tts directory if possible
             if (location != TTSDiskCacheLocation.Preload || !Application.isPlaying)
-                if (!IOUtility.CreateDirectory(directory))
+            {
+                if (!IOUtility.CreateDirectory(directory, true))
                 {
-                    Debug.LogError(
-                        $"TTS Cache - Failed to create tts directory\nPath: {directory}\nLocation: {location}");
+                    VLog.E($"Failed to create tts directory\nPath: {directory}\nLocation: {location}");
                     return string.Empty;
                 }
+            }
 
             // Return clip path
             return Path.Combine(directory, clipData.clipID + "." + clipData.audioType.ToString().ToLower());
         }
 
         /// <summary>
-        ///     Determine if should cache to disk or not
+        /// Determine if should cache to disk or not
         /// </summary>
         /// <param name="clipData">All clip data</param>
         /// <returns>Returns true if should cache to disk</returns>
         public bool ShouldCacheToDisk(TTSClipData clipData)
         {
-            return clipData != null && clipData.diskCacheSettings.DiskCacheLocation != TTSDiskCacheLocation.Stream &&
-                   !string.IsNullOrEmpty(clipData.clipID);
+            return clipData != null && clipData.diskCacheSettings.DiskCacheLocation != TTSDiskCacheLocation.Stream && !string.IsNullOrEmpty(clipData.clipID);
         }
 
         /// <summary>
-        ///     Determines if file is cached on disk
+        /// Determines if file is cached on disk
         /// </summary>
         /// <param name="clipData">Request data</param>
         /// <returns>True if file is on disk</returns>
-        public bool IsCachedToDisk(TTSClipData clipData)
+        public void CheckCachedToDisk(TTSClipData clipData, Action<TTSClipData, bool> onCheckComplete)
         {
             // Get path
-            var cachePath = GetDiskCachePath(clipData);
-            if (string.IsNullOrEmpty(cachePath)) return false;
-
-#if UNITY_ANDROID
-            // Cannot use File.Exists with Streaming Assets on Android
-            // This will try and fail to load if the file is missing and then stream it
-            if (clipData.diskCacheSettings.DiskCacheLocation == TTSDiskCacheLocation.Preload && Application.isPlaying)
+            string cachePath = GetDiskCachePath(clipData);
+            if (string.IsNullOrEmpty(cachePath))
             {
-                return true;
+                onCheckComplete?.Invoke(clipData, false);
+                return;
             }
-#endif
 
             // Check if file exists
-            return File.Exists(cachePath);
+            VRequest request = new VRequest();
+            bool canPerform = request.RequestFileExists(cachePath, (success, error) =>
+            {
+                // Remove
+                if (_streamRequests.ContainsKey(clipData.clipID))
+                {
+                    _streamRequests.Remove(clipData.clipID);
+                }
+                // Complete
+                onCheckComplete(clipData, success);
+            });
+            if (canPerform)
+            {
+                _streamRequests[clipData.clipID] = request;
+            }
         }
 
         /// <summary>
-        ///     Performs async load request
+        /// Performs async load request
         /// </summary>
         public void StreamFromDiskCache(TTSClipData clipData)
         {
@@ -135,61 +150,66 @@ namespace Facebook.WitAi.TTS.Integrations
             DiskStreamEvents?.OnStreamBegin?.Invoke(clipData);
 
             // Get file path
-            var filePath = GetDiskCachePath(clipData);
-
-            // Ensures possible
-            if (!IsCachedToDisk(clipData))
-            {
-                var e = $"Clip not found\nPath: {filePath}";
-                OnStreamComplete(clipData, e);
-                return;
-            }
+            string filePath = GetDiskCachePath(clipData);
 
             // Load clip async
-            _streamRequests[clipData.clipID] = VoiceUnityRequest.RequestAudioClip(filePath,
-                (path, progress) => clipData.loadProgress = progress, (path, clip, error) =>
-                {
-                    // Apply clip
-                    clipData.clip = clip;
-                    // Call on complete
-                    OnStreamComplete(clipData, error);
-                });
+            VRequest request = new VRequest();
+            bool canPerform = request.RequestAudioClip(new Uri(request.CleanUrl(filePath)), (clip, error) =>
+            {
+                // Apply clip
+                clipData.clip = clip;
+                // Call on complete
+                OnStreamComplete(clipData, error);
+            }, WitTTSVRequest.TTSAudioType, true, (progress) => clipData.loadProgress = progress);
+            if (canPerform)
+            {
+                _streamRequests[clipData.clipID] = request;
+            }
         }
-
         /// <summary>
-        ///     Cancels unity request
+        /// Cancels unity request
         /// </summary>
         public void CancelDiskCacheStream(TTSClipData clipData)
         {
             // Ignore if not currently streaming
-            if (!_streamRequests.ContainsKey(clipData.clipID)) return;
+            if (!_streamRequests.ContainsKey(clipData.clipID))
+            {
+                return;
+            }
 
             // Get request
-            var request = _streamRequests[clipData.clipID];
+            VRequest request = _streamRequests[clipData.clipID];
             _streamRequests.Remove(clipData.clipID);
 
-            // Destroy immediately
-            if (request != null) request.Unload();
+            // Cancel immediately
+            request?.Cancel();
+            request = null;
 
             // Call cancel
             DiskStreamEvents?.OnStreamCancel?.Invoke(clipData);
         }
-
         // On stream completion
         protected virtual void OnStreamComplete(TTSClipData clipData, string error)
         {
             // Ignore if not currently streaming
-            if (!_streamRequests.ContainsKey(clipData.clipID)) return;
+            if (!_streamRequests.ContainsKey(clipData.clipID))
+            {
+                return;
+            }
 
             // Remove from list
             _streamRequests.Remove(clipData.clipID);
 
             // Error
             if (!string.IsNullOrEmpty(error))
+            {
                 DiskStreamEvents?.OnStreamError?.Invoke(clipData, error);
+            }
             // Success
             else
+            {
                 DiskStreamEvents?.OnStreamReady?.Invoke(clipData);
+            }
         }
     }
 }

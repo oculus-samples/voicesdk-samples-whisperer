@@ -35,7 +35,6 @@ MonoBehaviour:
     id: 3153129054936907
     name: color
     lookups:
-    - free-text
     - keywords
     roles:
     - id: 3025574414362129
@@ -78,7 +77,6 @@ MonoBehaviour:
     id: 712343623174186
     name: shape
     lookups:
-    - free-text
     - keywords
     roles:
     - id: 712301993185969
@@ -124,7 +122,7 @@ MonoBehaviour:
       keywords: []
   traits: []
   isDemoOnly: 1
-  useConduit: 0
+  useConduit: 1
   manifestLocalPath: ConduitManifest-e5dca2f3-693e-4314-892e-48c1ac44fc21.json
   autoGenerateManifest: 0
   openManifestOnGeneration: 0

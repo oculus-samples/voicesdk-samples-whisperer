@@ -18,17 +18,18 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Dictation;
-using Facebook.WitAi.Dictation.Data;
-using Facebook.WitAi.Dictation.Events;
 using UnityEngine;
+using Meta.WitAi.Dictation;
+using Meta.WitAi.Dictation.Data;
+using Meta.WitAi.Dictation.Events;
 
 namespace Oculus.Voice.Dictation.Bindings.Android
 {
     public class DictationListenerBinding : AndroidJavaProxy
     {
-        private readonly IDictationService _dictationService;
-        private readonly IServiceEvents _serviceEvents;
+        private IDictationService _dictationService;
+        private IServiceEvents _serviceEvents;
+        private DictationEvents DictationEvents => _dictationService.DictationEvents;
 
         public DictationListenerBinding(IDictationService dictationService, IServiceEvents serviceEvents)
             : base("com.oculus.assistant.api.voicesdk.dictation.PlatformDictationListener")
@@ -37,12 +38,10 @@ namespace Oculus.Voice.Dictation.Bindings.Android
             _serviceEvents = serviceEvents;
         }
 
-        private DictationEvents DictationEvents => _dictationService.DictationEvents;
-
         public void onStart(string sessionId)
         {
             DictationEvents.onStart?.Invoke();
-            DictationSession session = new PlatformDictationSession
+            DictationSession session = new PlatformDictationSession()
             {
                 dictationService = _dictationService,
                 platformSessionId = sessionId
@@ -74,7 +73,7 @@ namespace Oculus.Voice.Dictation.Bindings.Android
         public void onStopped(string sessionId)
         {
             DictationEvents.onStopped?.Invoke();
-            DictationSession session = new PlatformDictationSession
+            DictationSession session = new PlatformDictationSession()
             {
                 dictationService = _dictationService,
                 platformSessionId = sessionId

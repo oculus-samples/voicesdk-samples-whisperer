@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Whisperer

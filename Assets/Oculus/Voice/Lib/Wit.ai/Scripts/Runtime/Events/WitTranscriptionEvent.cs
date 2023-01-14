@@ -9,10 +9,8 @@
 using System;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.Events
+namespace Meta.WitAi.Events
 {
     [Serializable]
-    public class WitTranscriptionEvent : UnityEvent<string>
-    {
-    }
+    public class WitTranscriptionEvent : UnityEvent<string> { }
 }

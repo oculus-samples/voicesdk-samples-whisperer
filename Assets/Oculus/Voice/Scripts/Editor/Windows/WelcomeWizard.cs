@@ -18,9 +18,11 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Windows;
+using System.Collections.Generic;
+using Meta.WitAi;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.Windows;
+using Meta.WitAi.Data.Info;
 using Oculus.Voice.Utility;
 using UnityEngine;
 
@@ -28,8 +30,8 @@ namespace Oculus.Voice.Windows
 {
     public class WelcomeWizard : WitWelcomeWizard
     {
-        private string[] builtinAppNames;
         private int witBuiltInIndex;
+        private string[] builtinAppNames;
 
         protected override Texture2D HeaderIcon => VoiceSDKStyles.MainHeader;
         protected override GUIContent Title => VoiceSDKStyles.SetupTitle;
@@ -44,21 +46,28 @@ namespace Oculus.Voice.Windows
             var names = AppBuiltIns.appNames;
             builtinAppNames = new string[names.Length + 1];
             builtinAppNames[0] = "Custom App";
-            for (var i = 0; i < names.Length; i++) builtinAppNames[i + 1] = names[i];
+            for (int i = 0; i < names.Length; i++)
+            {
+                builtinAppNames[i + 1] = names[i];
+            }
         }
 
         protected override void LayoutFields()
         {
             // Prebuilt language app
-            var updated = false;
+            bool updated = false;
             WitEditorUI.LayoutLabel(VoiceSDKStyles.Texts.SetupLanguageLabel);
             WitEditorUI.LayoutPopup("", builtinAppNames, ref witBuiltInIndex, ref updated);
             if (updated)
             {
                 if (witBuiltInIndex == 0)
+                {
                     serverToken = WitAuthUtility.ServerToken;
+                }
                 else
+                {
                     serverToken = AppBuiltIns.builtInPrefix + builtinAppNames[witBuiltInIndex];
+                }
             }
 
             // Base fields
@@ -73,24 +82,29 @@ namespace Oculus.Voice.Windows
         protected override int CreateConfiguration(string newToken)
         {
             // Do base for custom app
-            if (witBuiltInIndex <= 0) return base.CreateConfiguration(newToken);
+            if (witBuiltInIndex <= 0)
+            {
+                return base.CreateConfiguration(newToken);
+            }
 
             // Get built in app data
-            var languageName = builtinAppNames[witBuiltInIndex];
-            var appData = AppBuiltIns.apps[languageName];
+            string languageName = builtinAppNames[witBuiltInIndex];
+            Dictionary<string, string> appData = AppBuiltIns.apps[languageName];
 
             // Generate asset using app data
-            var configuration = CreateInstance<WitConfiguration>();
-            configuration.clientAccessToken = appData["clientToken"];
-            var application = new WitApplication();
-            application.name = appData["name"];
-            application.id = appData["id"];
-            application.lang = appData["lang"];
-            configuration.application = application;
+            WitConfiguration configuration = ScriptableObject.CreateInstance<WitConfiguration>();
+            configuration.SetClientAccessToken(appData["clientToken"]);
+            WitAppInfo application = new WitAppInfo()
+            {
+                name = appData["name"],
+                id = appData["id"],
+                lang = appData["lang"]
+            };
+            configuration.SetApplicationInfo(application);
             configuration.name = application.id;
 
             // Save configuration to asset
-            return WitConfigurationUtility.SaveConfiguration(newToken, configuration);
+            return WitConfigurationUtility.SaveConfiguration(string.Empty, configuration);
         }
     }
 
@@ -103,8 +117,7 @@ namespace Oculus.Voice.Windows
 
         public bool IsServerTokenValid(string serverToken)
         {
-            return null != serverToken &&
-                   (serverToken.Length == 32 || serverToken.StartsWith(AppBuiltIns.builtInPrefix));
+            return null != serverToken && (serverToken.Length == 32 || serverToken.StartsWith(AppBuiltIns.builtInPrefix));
         }
     }
 }

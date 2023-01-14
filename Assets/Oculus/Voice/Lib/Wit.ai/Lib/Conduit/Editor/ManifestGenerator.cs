@@ -7,46 +7,49 @@
  */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using Meta.Wit.LitJson;
-using UnityEngine;
+using Meta.WitAi.Json;
 
 namespace Meta.Conduit.Editor
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using UnityEngine;
+
     /// <summary>
-    ///     Generates manifests from the codebase that capture the essence of what we need to expose to the backend.
-    ///     The manifest includes all the information necessary to train the backend services as well as dispatching the
-    ///     incoming requests to the right methods with the right parameters.
+    /// Generates manifests from the codebase that capture the essence of what we need to expose to the backend.
+    /// The manifest includes all the information necessary to train the backend services as well as dispatching the
+    /// incoming requests to the right methods with the right parameters.
     /// </summary>
     internal class ManifestGenerator
     {
         /// <summary>
-        ///     The manifest version. This would only change if the schema of the manifest changes.
+        /// Provides access to available assemblies.
         /// </summary>
-        private const string CurrentVersion = "0.1";
+        private readonly IAssemblyWalker _assemblyWalker;
 
         /// <summary>
-        ///     Mines assemblies for callback methods and entities.
+        /// Mines assemblies for callback methods and entities.
         /// </summary>
         private readonly IAssemblyMiner _assemblyMiner;
 
         /// <summary>
-        ///     Provides access to available assemblies.
+        /// The manifest version. This would only change if the schema of the manifest changes.
         /// </summary>
-        private readonly IAssemblyWalker _assemblyWalker;
+        private const string CurrentVersion = "0.1";
 
         internal ManifestGenerator(IAssemblyWalker assemblyWalker, IAssemblyMiner assemblyMiner)
         {
-            _assemblyWalker = assemblyWalker;
-            _assemblyMiner = assemblyMiner;
+            this._assemblyWalker = assemblyWalker;
+            this._assemblyMiner = assemblyMiner;
         }
 
+        #region API
+
         /// <summary>
-        ///     Generate a manifest for assemblies marked with the <see cref="ConduitAssemblyAttribute" /> attribute.
+        /// Generate a manifest for assemblies marked with the <see cref="ConduitAssemblyAttribute"/> attribute.
         /// </summary>
         /// <param name="domain">A friendly name to use for this app.</param>
         /// <param name="id">The App ID.</param>
@@ -57,7 +60,36 @@ namespace Meta.Conduit.Editor
         }
 
         /// <summary>
-        ///     Generate a manifest for the supplied assemblies.
+        /// Generate a manifest with empty entities and actions lists.
+        /// </summary>
+        /// <param name="domain">A friendly name to use for this app.</param>
+        /// <param name="id">The App ID.</param>
+        /// <returns>A JSON representation of the empty manifest.</returns>
+        public string GenerateEmptyManifest(string domain, string id)
+        {
+            return GenerateManifest(new List<IConduitAssembly>(), domain, id);
+        }
+
+        /// <summary>
+        /// Extract entities and actions from assemblies marked with the <see cref="ConduitAssemblyAttribute"/> attribute.
+        /// </summary>
+        /// <returns>Extracted Intents list</returns>
+        public List<string> ExtractManifestData()
+        {
+            Debug.Log("Extracting manifest actions and entities.");
+
+            var (entities, actions) = ExtractAssemblyData(_assemblyWalker.GetTargetAssemblies());
+            Debug.Log($"Extracted {actions.Count} actions and {entities.Count} entities.");
+
+            List<string> transformedActions = new HashSet<string>(actions.Select(v => v.Name).Where(v => !string.IsNullOrEmpty(v))).ToList();
+
+            return transformedActions;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Generate a manifest for the supplied assemblies.
         /// </summary>
         /// <param name="assemblies">List of assemblies to process.</param>
         /// <param name="domain">A friendly name to use for this app.</param>
@@ -65,20 +97,11 @@ namespace Meta.Conduit.Editor
         /// <returns>A JSON representation of the manifest.</returns>
         private string GenerateManifest(IEnumerable<IConduitAssembly> assemblies, string domain, string id)
         {
-            Debug.Log("Generating manifest.");
+            Debug.Log($"Generating manifest.");
 
-            var entities = new List<ManifestEntity>();
-            var actions = new List<ManifestAction>();
-            _assemblyMiner.Initialize();
-            foreach (var assembly in assemblies)
-            {
-                entities.AddRange(_assemblyMiner.ExtractEntities(assembly));
-                actions.AddRange(_assemblyMiner.ExtractActions(assembly));
-            }
+            var (entities, actions) = ExtractAssemblyData(assemblies);
 
-            PruneUnreferencedEntities(ref entities, actions);
-
-            var manifest = new Manifest
+            var manifest = new Manifest()
             {
                 ID = id,
                 Version = CurrentVersion,
@@ -87,30 +110,37 @@ namespace Meta.Conduit.Editor
                 Actions = actions
             };
 
-            var sb = new StringBuilder();
-            var jsonWriter = new JsonWriter(sb)
-            {
-                PrettyPrint = true,
-                IndentValue = 4
-            };
+            return JsonConvert.SerializeObject(manifest);
+        }
 
-            JsonMapper.ToJson(manifest, jsonWriter);
-            return sb.ToString();
+        private (List<ManifestEntity>, List<ManifestAction>) ExtractAssemblyData(IEnumerable<IConduitAssembly> assemblies)
+        {
+            var entities = new List<ManifestEntity>();
+            var actions = new List<ManifestAction>();
+            _assemblyMiner.Initialize();
+            foreach (var assembly in assemblies)
+            {
+                actions.AddRange(this._assemblyMiner.ExtractActions(assembly));
+                entities.AddRange(this._assemblyMiner.ExtractEntities(assembly));
+            }
+
+            this.PruneUnreferencedEntities(ref entities, actions);
+
+            return (entities, actions);
         }
 
         /// <summary>
-        ///     Returns a list of all assemblies that should be processed.
-        ///     This currently selects assemblies that are marked with the <see cref="ConduitAssemblyAttribute" /> attribute.
+        /// Returns a list of all assemblies that should be processed.
+        /// This currently selects assemblies that are marked with the <see cref="ConduitAssemblyAttribute"/> attribute.
         /// </summary>
         /// <returns>The list of assemblies.</returns>
         private IEnumerable<Assembly> GetTargetAssemblies()
         {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => assembly.IsDefined(typeof(ConduitAssemblyAttribute)));
+            return AppDomain.CurrentDomain.GetAssemblies().Where(assembly => assembly.IsDefined(typeof(ConduitAssemblyAttribute)));
         }
 
         /// <summary>
-        ///     Removes unnecessary entities from the manifest to keep it restricted to what is required.
+        /// Removes unnecessary entities from the manifest to keep it restricted to what is required.
         /// </summary>
         /// <param name="entities">List of all entities. This list will be changed as a result.</param>
         /// <param name="actions">List of all actions.</param>
@@ -119,12 +149,19 @@ namespace Meta.Conduit.Editor
             var referencedEntities = new HashSet<string>();
 
             foreach (var action in actions)
-            foreach (var parameter in action.Parameters)
-                referencedEntities.Add(parameter.EntityType);
+            {
+                foreach (var parameter in action.Parameters)
+                {
+                    referencedEntities.Add(parameter.EntityType);
+                }
+            }
 
             for (var i = 0; i < entities.Count; ++i)
             {
-                if (referencedEntities.Contains(entities[i].ID)) continue;
+                if (referencedEntities.Contains(entities[i].ID))
+                {
+                    continue;
+                }
 
                 entities.RemoveAt(i--);
             }

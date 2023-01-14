@@ -7,8 +7,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Facebook.WitAi;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using Oculus.Voice;
 using UnityEngine;
 

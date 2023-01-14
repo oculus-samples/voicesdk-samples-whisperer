@@ -8,15 +8,18 @@
 
 using System.Collections.Generic;
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     public class DictionaryList<T, U>
     {
-        private readonly Dictionary<T, List<U>> dictionary = new();
+        private Dictionary<T, List<U>> dictionary = new Dictionary<T, List<U>>();
 
         public void Add(T key, U value)
         {
-            if (!TryGetValue(key, out var values)) dictionary[key] = values;
+            if (!TryGetValue(key, out var values))
+            {
+                dictionary[key] = values;
+            }
             values.Add(value);
         }
 
@@ -31,7 +34,6 @@ namespace Facebook.WitAi.Utilities
         }
 
         #region Getters
-
         public List<U> this[T key]
         {
             get
@@ -42,7 +44,6 @@ namespace Facebook.WitAi.Utilities
                     values = new List<U>();
                     dictionary[key] = values;
                 }
-
                 return values;
             }
             set => dictionary[key] = value;
@@ -58,7 +59,6 @@ namespace Facebook.WitAi.Utilities
 
             return true;
         }
-
         #endregion
     }
 }

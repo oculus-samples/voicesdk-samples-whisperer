@@ -28,15 +28,18 @@ namespace Oculus.Voice.Core.Utilities
     [CustomPropertyDrawer(typeof(ArrayElementTitleAttribute))]
     public class ArrayElementTitleDrawer : PropertyDrawer
     {
-        private SerializedProperty titleNameProp;
-
-        protected virtual ArrayElementTitleAttribute Attribute => (ArrayElementTitleAttribute)attribute;
-
         public override float GetPropertyHeight(SerializedProperty property,
             GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label, true);
         }
+
+        protected virtual ArrayElementTitleAttribute Attribute
+        {
+            get { return (ArrayElementTitleAttribute) attribute; }
+        }
+
+        SerializedProperty titleNameProp;
 
         public override void OnGUI(Rect position,
             SerializedProperty property,
@@ -49,16 +52,24 @@ namespace Oculus.Voice.Core.Utilities
             }
             else
             {
-                var fullPathName = property.propertyPath + "." + Attribute.varname;
+                string fullPathName = property.propertyPath + "." + Attribute.varname;
                 titleNameProp = property.serializedObject.FindProperty(fullPathName);
             }
 
-            if (null != titleNameProp) name = GetTitle();
+            if (null != titleNameProp)
+            {
+                name = GetTitle();
+            }
 
             if (string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(Attribute.fallbackName))
+            {
                 name = Attribute.fallbackName;
+            }
 
-            if (string.IsNullOrEmpty(name)) name = label.text;
+            if (string.IsNullOrEmpty(name))
+            {
+                name = label.text;
+            }
 
             EditorGUI.PropertyField(position, property, new GUIContent(name, label.tooltip), true);
         }
@@ -104,6 +115,8 @@ namespace Oculus.Voice.Core.Utilities
                 case SerializedPropertyType.Gradient:
                     break;
                 case SerializedPropertyType.Quaternion:
+                    break;
+                default:
                     break;
             }
 

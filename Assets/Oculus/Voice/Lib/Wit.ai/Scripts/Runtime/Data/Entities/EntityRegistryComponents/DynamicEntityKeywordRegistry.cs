@@ -6,31 +6,35 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Interfaces;
 using UnityEngine;
+using Meta.WitAi.Data.Info;
+using Meta.WitAi.Interfaces;
 
-namespace Facebook.WitAi.Data.Entities
+namespace Meta.WitAi.Data.Entities
 {
     /// <summary>
-    ///     Singleton registry for tracking any objects owned defined in entities in
-    ///     a scene
+    /// Singleton registry for tracking any objects owned defined in entities in
+    /// a scene
     /// </summary>
     public class DynamicEntityKeywordRegistry : MonoBehaviour, IDynamicEntitiesProvider
     {
         private static DynamicEntityKeywordRegistry instance;
 
-        private readonly WitDynamicEntities entities = new();
+        private WitDynamicEntities entities = new WitDynamicEntities();
 
         public static bool HasDynamicEntityRegistry => Instance;
 
         /// <summary>
-        ///     Gets the instance in the scene if there is one
+        /// Gets the instance in the scene if there is one
         /// </summary>
         public static DynamicEntityKeywordRegistry Instance
         {
             get
             {
-                if (!instance) instance = FindObjectOfType<DynamicEntityKeywordRegistry>();
+                if (!instance)
+                {
+                    instance = FindObjectOfType<DynamicEntityKeywordRegistry>();
+                }
 
                 return instance;
             }
@@ -46,19 +50,19 @@ namespace Facebook.WitAi.Data.Entities
             instance = null;
         }
 
-        public WitDynamicEntities GetDynamicEntities()
-        {
-            return entities;
-        }
-
-        public void RegisterDynamicEntity(string entity, WitEntityKeyword keyword)
+        public void RegisterDynamicEntity(string entity, WitEntityKeywordInfo keyword)
         {
             entities.AddKeyword(entity, keyword);
         }
 
-        public void UnregisterDynamicEntity(string entity, WitEntityKeyword keyword)
+        public void UnregisterDynamicEntity(string entity, WitEntityKeywordInfo keyword)
         {
             entities.RemoveKeyword(entity, keyword);
+        }
+
+        public WitDynamicEntities GetDynamicEntities()
+        {
+            return entities;
         }
     }
 }

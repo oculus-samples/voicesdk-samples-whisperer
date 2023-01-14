@@ -6,29 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Interfaces;
 using UnityEngine;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public class Wit : VoiceService, IWitRuntimeConfigProvider
     {
         [SerializeField] private WitRuntimeConfiguration witRuntimeConfiguration;
-
-        private WitService witService;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            // WitService is 1:1 tied to a VoiceService. In the event there
-            // are multiple voice services on a game object this will ensure
-            // that this component has its own dedicated WitService
-            witService = gameObject.AddComponent<WitService>();
-            witService.VoiceEventProvider = this;
-            witService.ConfigurationProvider = this;
-        }
 
         public WitRuntimeConfiguration RuntimeConfiguration
         {
@@ -36,39 +22,31 @@ namespace Facebook.WitAi
             set => witRuntimeConfiguration = value;
         }
 
-        #region Voice Service Properties
+        private WitService witService;
 
+        #region Voice Service Properties
         public override bool Active => null != witService && witService.Active;
         public override bool IsRequestActive => null != witService && witService.IsRequestActive;
-
         public override ITranscriptionProvider TranscriptionProvider
         {
             get => witService.TranscriptionProvider;
             set => witService.TranscriptionProvider = value;
         }
-
         public override bool MicActive => null != witService && witService.MicActive;
-
         protected override bool ShouldSendMicData => witRuntimeConfiguration.sendAudioToWit ||
-                                                     null == TranscriptionProvider;
-
+                                                  null == TranscriptionProvider;
         #endregion
 
         #region Voice Service Methods
 
-        public override void Activate()
+        public override void Activate(string text, WitRequestOptions requestOptions)
         {
-            witService.Activate();
+            witService.Activate(text, requestOptions);
         }
 
         public override void Activate(WitRequestOptions options)
         {
             witService.Activate(options);
-        }
-
-        public override void ActivateImmediately()
-        {
-            witService.ActivateImmediately();
         }
 
         public override void ActivateImmediately(WitRequestOptions options)
@@ -86,16 +64,18 @@ namespace Facebook.WitAi
             witService.DeactivateAndAbortRequest();
         }
 
-        public override void Activate(string text)
-        {
-            witService.Activate(text);
-        }
-
-        public override void Activate(string text, WitRequestOptions requestOptions)
-        {
-            witService.Activate(text, requestOptions);
-        }
-
         #endregion
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // WitService is 1:1 tied to a VoiceService. In the event there
+            // are multiple voice services on a game object this will ensure
+            // that this component has its own dedicated WitService
+            witService = gameObject.AddComponent<WitService>();
+            witService.VoiceEventProvider = this;
+            witService.ConfigurationProvider = this;
+        }
     }
 }

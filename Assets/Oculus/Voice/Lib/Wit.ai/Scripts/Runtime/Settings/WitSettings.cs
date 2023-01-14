@@ -9,7 +9,7 @@
 #if UNITY_EDITOR
 using System;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     // Wit Settings
     [Serializable]
@@ -17,7 +17,6 @@ namespace Facebook.WitAi
     {
         public WitConfigSettings[] configSettings;
     }
-
     // Wit Config Settings
     [Serializable]
     public struct WitConfigSettings

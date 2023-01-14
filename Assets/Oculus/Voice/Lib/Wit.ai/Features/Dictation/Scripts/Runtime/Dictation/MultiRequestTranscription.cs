@@ -1,24 +1,26 @@
+using System;
 using System.Text;
-using Facebook.WitAi.Events;
+using Meta.WitAi.Events;
 using UnityEngine;
 
-namespace Facebook.WitAi.Dictation
+namespace Meta.WitAi.Dictation
 {
     public class MultiRequestTranscription : MonoBehaviour
     {
         [SerializeField] private WitDictation witDictation;
         [SerializeField] private int linesBetweenActivations = 2;
+        [Multiline]
+        [SerializeField] private string activationSeparator = String.Empty;
 
-        [Multiline] [SerializeField] private string activationSeparator = string.Empty;
+        [Header("Events")]
+        [SerializeField] private WitTranscriptionEvent onTranscriptionUpdated = new
+            WitTranscriptionEvent();
 
-        [Header("Events")] [SerializeField] private WitTranscriptionEvent onTranscriptionUpdated = new();
-
+        private StringBuilder _text;
         private string _activeText;
         private bool _newSection;
 
         private StringBuilder _separator;
-
-        private StringBuilder _text;
 
         private void Awake()
         {
@@ -26,9 +28,15 @@ namespace Facebook.WitAi.Dictation
 
             _text = new StringBuilder();
             _separator = new StringBuilder();
-            for (var i = 0; i < linesBetweenActivations; i++) _separator.AppendLine();
+            for (int i = 0; i < linesBetweenActivations; i++)
+            {
+                _separator.AppendLine();
+            }
 
-            if (!string.IsNullOrEmpty(activationSeparator)) _separator.Append(activationSeparator);
+            if (!string.IsNullOrEmpty(activationSeparator))
+            {
+                _separator.Append(activationSeparator);
+            }
         }
 
         private void OnEnable()
@@ -56,7 +64,10 @@ namespace Facebook.WitAi.Dictation
         {
             _activeText = string.Empty;
 
-            if (_text.Length > 0) _text.Append(_separator);
+            if (_text.Length > 0)
+            {
+                _text.Append(_separator);
+            }
 
             _text.Append(text);
 
@@ -81,9 +92,15 @@ namespace Facebook.WitAi.Dictation
             transcription.Append(_text);
             if (!string.IsNullOrEmpty(_activeText))
             {
-                if (transcription.Length > 0) transcription.Append(_separator);
+                if (transcription.Length > 0)
+                {
+                    transcription.Append(_separator);
+                }
 
-                if (!string.IsNullOrEmpty(_activeText)) transcription.Append(_activeText);
+                if (!string.IsNullOrEmpty(_activeText))
+                {
+                    transcription.Append(_activeText);
+                }
             }
 
             onTranscriptionUpdated.Invoke(transcription.ToString());

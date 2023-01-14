@@ -6,39 +6,45 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Meta.Wit.LitJson;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Loads the manifest and resolves its actions so they can be used during dispatching.
+    /// Loads the manifest and resolves its actions so they can be used during dispatching.
     /// </summary>
-    internal class ManifestLoader : IManifestLoader
+    class ManifestLoader : IManifestLoader
     {
-        /// <summary>
-        ///     Loads the manifest from file and into a <see cref="Manifest" /> structure.
-        /// </summary>
-        /// <param name="filePath">The path to the manifest file.</param>
-        /// <returns>The loaded manifest object.</returns>
+        /// <inheritdoc/>
         public Manifest LoadManifest(string manifestLocalPath)
         {
-            Debug.Log($"Loaded Conduit manifest from Resources/{manifestLocalPath}");
-            var extIndex = manifestLocalPath.LastIndexOf('.');
-            var ignoreEnd = extIndex == -1 ? manifestLocalPath : manifestLocalPath.Substring(0, extIndex);
-            var jsonFile = Resources.Load<TextAsset>(ignoreEnd);
+            int extIndex = manifestLocalPath.LastIndexOf('.');
+            string ignoreEnd = extIndex == -1 ? manifestLocalPath : manifestLocalPath.Substring(0, extIndex);
+            TextAsset jsonFile = Resources.Load<TextAsset>(ignoreEnd);
             if (jsonFile == null)
             {
-                Debug.LogError($"Conduit Error - No Manifest found at Resources/{manifestLocalPath}");
+                VLog.E($"Conduit Error - No Manifest found at Resources/{manifestLocalPath}");
                 return null;
             }
 
-            var rawJson = jsonFile.text;
-            var manifest = JsonMapper.ToObject<Manifest>(rawJson);
+            string rawJson = jsonFile.text;
+            return LoadManifestFromString(rawJson);
+        }
+
+        /// <inheritdoc/>
+        public Manifest LoadManifestFromString(string manifestText)
+        {
+            var manifest = JsonConvert.DeserializeObject<Manifest>(manifestText);
             if (manifest.ResolveActions())
-                Debug.Log("Successfully Loaded Conduit manifest");
+            {
+                VLog.D($"Successfully Loaded Conduit manifest");
+            }
             else
-                Debug.LogError("Fail to resolve actions from Conduit manifest");
+            {
+                VLog.E($"Fail to resolve actions from Conduit manifest");
+            }
 
             return manifest;
         }

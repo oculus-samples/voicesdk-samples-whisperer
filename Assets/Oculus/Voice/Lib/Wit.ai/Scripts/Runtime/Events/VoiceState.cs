@@ -8,17 +8,17 @@
 
 
 using System;
-
-namespace Facebook.WitAi.Events
+namespace Meta.WitAi.Events
 {
     [Flags]
     public enum VoiceState
     {
-        MicOff = 1, //000001
-        MicOn = 2, //000010
-        Listening = 4, //000100
-        StartProcessing = 8, //001000
-        Response = 16, //010000
-        Error = 32 //100000
+        MicOff = 1,   //000001
+        MicOn = 2,    //000010
+        Listening = 4,//000100
+        StartProcessing = 8,//001000
+        Response = 16,//010000
+        Error = 32, //100000
     }
+
 }

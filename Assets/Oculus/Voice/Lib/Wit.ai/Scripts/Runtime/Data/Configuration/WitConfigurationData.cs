@@ -7,18 +7,18 @@
  */
 
 using System;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.Json;
 using UnityEngine;
 
-namespace Facebook.WitAi.Configuration
+namespace Meta.WitAi.Configuration
 {
     [Serializable]
     public abstract class WitConfigurationData
     {
         [SerializeField] public WitConfiguration witConfiguration;
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         public void UpdateData(Action onUpdateComplete = null)
         {
             if (!witConfiguration)
@@ -28,7 +28,7 @@ namespace Facebook.WitAi.Configuration
             }
 
             var request = OnCreateRequest();
-            request.onResponse += r => OnUpdateData(r, onUpdateComplete);
+            request.onResponse += (r) => OnUpdateData(r, onUpdateComplete);
             request.Request();
         }
 
@@ -37,14 +37,18 @@ namespace Facebook.WitAi.Configuration
         private void OnUpdateData(WitRequest request, Action onUpdateComplete)
         {
             if (request.StatusCode == 200)
+            {
                 UpdateData(request.ResponseData);
+            }
             else
+            {
                 Debug.LogError(request.StatusDescription);
+            }
 
             onUpdateComplete?.Invoke();
         }
 
         public abstract void UpdateData(WitResponseNode data);
-#endif
+        #endif
     }
 }

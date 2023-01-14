@@ -6,36 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Data.Configuration;
+using Meta.WitAi.Data.Configuration;
 #if UNITY_EDITOR
 
 #endif
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public class WitAuthUtility
     {
-        public const string SERVER_TOKEN_ID = "SharedServerToken";
         private static string serverToken;
         public static ITokenValidationProvider tokenValidator = new DefaultTokenValidatorProvider();
-
-        public static string ServerToken
-        {
-#if UNITY_EDITOR
-            get
-            {
-                if (null == serverToken) serverToken = WitSettingsUtility.GetServerToken(SERVER_TOKEN_ID);
-                return serverToken;
-            }
-            set
-            {
-                serverToken = value;
-                WitSettingsUtility.SetServerToken(SERVER_TOKEN_ID, serverToken);
-            }
-#else
-        get => "";
-#endif
-        }
 
         public static bool IsServerTokenValid()
         {
@@ -50,7 +31,7 @@ namespace Facebook.WitAi
         public static string GetAppServerToken(WitConfiguration configuration,
             string defaultValue = "")
         {
-            return GetAppServerToken(configuration?.application?.id, defaultValue);
+            return GetAppServerToken(configuration.GetApplicationId(), defaultValue);
         }
 
         public static string GetAppServerToken(string appId, string defaultServerToken = "")
@@ -75,6 +56,28 @@ namespace Facebook.WitAi
         {
 #if UNITY_EDITOR
             WitSettingsUtility.SetServerToken(appId, token);
+#endif
+        }
+
+        public const string SERVER_TOKEN_ID = "SharedServerToken";
+        public static string ServerToken
+        {
+#if UNITY_EDITOR
+            get
+            {
+                if (null == serverToken)
+                {
+                    serverToken = WitSettingsUtility.GetServerToken(SERVER_TOKEN_ID);
+                }
+                return serverToken;
+            }
+            set
+            {
+                serverToken = value;
+                WitSettingsUtility.SetServerToken(SERVER_TOKEN_ID, serverToken);
+            }
+#else
+        get => "";
 #endif
         }
 

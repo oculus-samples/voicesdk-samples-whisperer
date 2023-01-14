@@ -6,31 +6,35 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Events.UnityEventListeners;
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi.Events;
+using Meta.WitAi.Events.UnityEventListeners;
+using Meta.WitAi.Interfaces;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.ServiceReferences
+namespace Meta.WitAi.ServiceReferences
 {
     /// <summary>
-    ///     Finds all audio event listeners in the scene and subscribes to them.
-    ///     This is good for creating generic attention systems that are shown for
-    ///     the same way for any voice based service active in the scene.
+    /// Finds all audio event listeners in the scene and subscribes to them.
+    /// This is good for creating generic attention systems that are shown for
+    /// the same way for any voice based service active in the scene.
     /// </summary>
     //[Tooltip("Finds all voice based services and listens for changes in their audio input state.")]
     public class CombinedAudioEventReference : AudioInputServiceReference, IAudioInputEvents
     {
-        private AudioEventListener[] _sourceListeners;
         public override IAudioInputEvents AudioEvents => this;
+
+        private WitMicLevelChangedEvent _onMicAudioLevelChanged = new WitMicLevelChangedEvent();
+        private UnityEvent _onMicStartedListening = new UnityEvent();
+        private UnityEvent _onMicStoppedListening = new UnityEvent();
+        private AudioEventListener[] _sourceListeners;
 
         private void Awake()
         {
-#if UNITY_2020_1_OR_NEWER
+            #if UNITY_2020_1_OR_NEWER
             _sourceListeners = FindObjectsOfType<AudioEventListener>(true);
-#else
+            #else
             _sourceListeners = FindObjectsOfType<AudioEventListener>();
-#endif
+            #endif
         }
 
         private void OnEnable()
@@ -53,10 +57,8 @@ namespace Facebook.WitAi.ServiceReferences
             }
         }
 
-        public WitMicLevelChangedEvent OnMicAudioLevelChanged { get; } = new();
-
-        public UnityEvent OnMicStartedListening { get; } = new();
-
-        public UnityEvent OnMicStoppedListening { get; } = new();
+        public WitMicLevelChangedEvent OnMicAudioLevelChanged => _onMicAudioLevelChanged;
+        public UnityEvent OnMicStartedListening => _onMicStartedListening;
+        public UnityEvent OnMicStoppedListening => _onMicStoppedListening;
     }
 }

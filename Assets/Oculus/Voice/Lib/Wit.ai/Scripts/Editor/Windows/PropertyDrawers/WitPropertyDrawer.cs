@@ -6,11 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System;
 using System.Reflection;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     // Edit Type
     public enum WitPropertyEditType
@@ -23,17 +24,10 @@ namespace Facebook.WitAi.Windows
     // Handles layout of of property sub properties
     public abstract class WitPropertyDrawer : PropertyDrawer
     {
-        // Get text for specified key
-        public const string LocalizedTitleKey = "title";
-
-        public const string LocalizedMissingKey = "missing";
-
         // Whether editing
         private int editIndex = -1;
-
         // Whether to use a foldout
         protected virtual bool FoldoutEnabled => true;
-
         // Determine edit type for this drawer
         protected virtual WitPropertyEditType EditType => WitPropertyEditType.NoEdit;
 
@@ -49,17 +43,20 @@ namespace Facebook.WitAi.Windows
             // Return error
             if (property.serializedObject == null)
             {
-                var missingText = GetLocalizedText(property, LocalizedMissingKey);
+                string missingText = GetLocalizedText(property, LocalizedMissingKey);
                 WitEditorUI.LayoutErrorLabel(missingText);
                 return;
             }
 
             // Show foldout if desired
-            var titleText = GetLocalizedText(property, LocalizedTitleKey);
+            string titleText = GetLocalizedText(property, LocalizedTitleKey);
             if (FoldoutEnabled)
             {
                 property.isExpanded = WitEditorUI.LayoutFoldout(new GUIContent(titleText), property.isExpanded);
-                if (!property.isExpanded) return;
+                if (!property.isExpanded)
+                {
+                    return;
+                }
             }
             // Show title only
             else
@@ -75,15 +72,21 @@ namespace Facebook.WitAi.Windows
             OnGUIPreFields(position, property, label);
 
             // Iterate all subfields
-            var editType = EditType;
+            WitPropertyEditType editType = EditType;
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-            var fieldType = fieldInfo.FieldType;
-            if (fieldType.IsArray) fieldType = fieldType.GetElementType();
-            var subfields = fieldType.GetFields(flags);
-            for (var s = 0; s < subfields.Length; s++)
+            Type fieldType = fieldInfo.FieldType;
+            if (fieldType.IsArray)
             {
-                var subfield = subfields[s];
-                if (ShouldLayoutField(property, subfield)) LayoutField(s, property, subfield, editType);
+                fieldType = fieldType.GetElementType();
+            }
+            FieldInfo[] subfields = fieldType.GetFields(flags);
+            for (int s = 0; s < subfields.Length; s++)
+            {
+                FieldInfo subfield = subfields[s];
+                if (ShouldLayoutField(property, subfield))
+                {
+                    LayoutField(s, property, subfield, editType);
+                }
             }
 
             // Post fields
@@ -93,36 +96,42 @@ namespace Facebook.WitAi.Windows
             EditorGUI.indentLevel--;
             GUILayout.EndVertical();
         }
-
         // Override pre fields
         protected virtual void OnGUIPreFields(Rect position, SerializedProperty property, GUIContent label)
         {
-        }
 
+        }
         // Draw a specific property
-        protected virtual void LayoutField(int index, SerializedProperty property, FieldInfo subfield,
-            WitPropertyEditType editType)
+        protected virtual void LayoutField(int index, SerializedProperty property, FieldInfo subfield, WitPropertyEditType editType)
         {
+            // Get property if possible
+            SerializedProperty subfieldProperty = property.FindPropertyRelative(subfield.Name);
+            if (subfieldProperty == null)
+            {
+                return;
+            }
+
             // Begin layout
             GUILayout.BeginHorizontal();
 
             // Get label content
-            var labelText = GetLocalizedText(property, subfield.Name);
-            var labelContent = new GUIContent(labelText);
+            string labelText = GetLocalizedText(property, subfield.Name);
+            GUIContent labelContent = new GUIContent(labelText);
 
             // Determine if can edit
-            var canEdit = editType == WitPropertyEditType.FreeEdit ||
-                          (editType == WitPropertyEditType.LockEdit && editIndex == index);
-            var couldEdit = GUI.enabled;
+            bool canEdit = editType == WitPropertyEditType.FreeEdit || (editType == WitPropertyEditType.LockEdit && editIndex == index);
+            bool couldEdit = GUI.enabled;
             GUI.enabled = canEdit;
 
             // Cannot edit, just show field
-            var subfieldProperty = property.FindPropertyRelative(subfield.Name);
             if (!canEdit && subfieldProperty.type == "string")
             {
                 // Get value text
-                var valText = subfieldProperty.stringValue;
-                if (string.IsNullOrEmpty(valText)) valText = GetDefaultFieldValue(property, subfield);
+                string valText = subfieldProperty.stringValue;
+                if (string.IsNullOrEmpty(valText))
+                {
+                    valText = GetDefaultFieldValue(property, subfield);
+                }
 
                 // Layout key
                 WitEditorUI.LayoutKeyLabel(labelText, valText);
@@ -148,12 +157,14 @@ namespace Facebook.WitAi.Windows
                     if (WitEditorUI.LayoutIconButton(WitStyles.ResetIcon))
                     {
                         editIndex = -1;
-                        var clearVal = "";
-                        if (subfieldProperty.type != "string") clearVal = GetDefaultFieldValue(property, subfield);
+                        string clearVal = "";
+                        if (subfieldProperty.type != "string")
+                        {
+                            clearVal = GetDefaultFieldValue(property, subfield);
+                        }
                         SetFieldStringValue(subfieldProperty, clearVal);
                         GUI.FocusControl(null);
                     }
-
                     // Accept Edit
                     if (WitEditorUI.LayoutIconButton(WitStyles.AcceptIcon))
                     {
@@ -176,10 +187,8 @@ namespace Facebook.WitAi.Windows
             // End layout
             GUILayout.EndHorizontal();
         }
-
         // Layout property field
-        protected virtual void LayoutPropertyField(FieldInfo subfield, SerializedProperty subfieldProperty,
-            GUIContent labelContent, bool canEdit)
+        protected virtual void LayoutPropertyField(FieldInfo subfield, SerializedProperty subfieldProperty,  GUIContent labelContent, bool canEdit)
         {
             // If can edit or not array default layout
             if (canEdit || !subfield.FieldType.IsArray || subfieldProperty.arraySize <= 0)
@@ -193,26 +202,26 @@ namespace Facebook.WitAi.Windows
             if (subfieldProperty.isExpanded)
             {
                 EditorGUI.indentLevel++;
-                for (var i = 0; i < subfieldProperty.arraySize; i++)
+                for (int i = 0; i < subfieldProperty.arraySize; i++)
                 {
-                    var p = subfieldProperty.GetArrayElementAtIndex(i);
+                    SerializedProperty p = subfieldProperty.GetArrayElementAtIndex(i);
                     EditorGUILayout.PropertyField(p);
                 }
-
                 EditorGUI.indentLevel--;
             }
         }
-
         // Override post fields
         protected virtual void OnGUIPostFields(Rect position, SerializedProperty property, GUIContent label)
         {
-        }
 
+        }
+        // Get text for specified key
+        public const string LocalizedTitleKey = "title";
+        public const string LocalizedMissingKey = "missing";
         protected virtual string GetLocalizedText(SerializedProperty property, string key)
         {
-            return property.displayName;
+            return string.IsNullOrEmpty(key) || string.Equals(LocalizedTitleKey, key) ? property.displayName : key[0].ToString().ToUpper() + key.Substring(1);
         }
-
         // Way to ignore certain properties
         protected virtual bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)
         {
@@ -221,23 +230,19 @@ namespace Facebook.WitAi.Windows
                 case "witConfiguration":
                     return false;
             }
-
             return true;
         }
-
         // Get field default value if applicable
         protected virtual string GetDefaultFieldValue(SerializedProperty property, FieldInfo subfield)
         {
             return string.Empty;
         }
-
         // Get subfield value
         protected virtual string GetFieldStringValue(SerializedProperty property, string fieldName)
         {
-            var subfieldProperty = property.FindPropertyRelative(fieldName);
+            SerializedProperty subfieldProperty = property.FindPropertyRelative(fieldName);
             return GetFieldStringValue(subfieldProperty);
         }
-
         // Get subfield value
         protected virtual string GetFieldStringValue(SerializedProperty subfieldProperty)
         {
@@ -251,11 +256,9 @@ namespace Facebook.WitAi.Windows
                 case "bool":
                     return subfieldProperty.boolValue.ToString();
             }
-
             // No others are currently supported
             return string.Empty;
         }
-
         // Set subfield value
         protected virtual void SetFieldStringValue(SerializedProperty subfieldProperty, string newFieldValue)
         {
@@ -267,11 +270,17 @@ namespace Facebook.WitAi.Windows
                     break;
                 case "int":
                     int rI;
-                    if (int.TryParse(newFieldValue, out rI)) subfieldProperty.intValue = rI;
+                    if (int.TryParse(newFieldValue, out rI))
+                    {
+                        subfieldProperty.intValue = rI;
+                    }
                     break;
                 case "bool":
                     bool rB;
-                    if (bool.TryParse(newFieldValue, out rB)) subfieldProperty.boolValue = rB;
+                    if (bool.TryParse(newFieldValue, out rB))
+                    {
+                        subfieldProperty.boolValue = rB;
+                    }
                     break;
             }
         }

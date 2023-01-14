@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-using System.Reflection;
-using Facebook.WitAi.Windows;
-using Oculus.Voice.Inspectors;
 using UnityEditor;
+using System.Reflection;
+using Meta.WitAi.Windows;
+using Oculus.Voice.Inspectors;
 
 namespace Oculus.Voice.Windows
 {
@@ -30,16 +30,18 @@ namespace Oculus.Voice.Windows
         // Skip fields if voice sdk app id
         protected override bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)
         {
-            var appID = GetFieldStringValue(property, "id").ToLower();
+            string appID = GetFieldStringValue(property, "id").ToLower();
             if (AppVoiceExperienceWitConfigurationEditor.IsBuiltInConfiguration(appID))
+            {
                 switch (subfield.Name)
                 {
-                    case "id":
-                    case "createdAt":
-                    case "isPrivate":
+                    case "name":
+                    case "lang":
+                        return true;
+                    default:
                         return false;
                 }
-
+            }
             return base.ShouldLayoutField(property, subfield);
         }
     }

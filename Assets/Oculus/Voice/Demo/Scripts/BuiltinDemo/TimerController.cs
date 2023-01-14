@@ -25,27 +25,30 @@ using UnityEngine.UI;
 namespace Oculus.Voice.Demo.BuiltInDemo
 {
     /// <summary>
-    ///     Represents a countdown timer.
+    /// Represents a countdown timer.
     /// </summary>
     public class TimerController : MonoBehaviour
     {
+        private double _time = 0; // [sec] current time of the countdown timer.
+        private bool _timerExist = false;
+        private bool _timerRunning = false;
+
         [Tooltip("The UI text element to show app messages.")]
         public Text logText;
 
-        [Tooltip("The timer ring sound.")] public AudioClip buzzSound;
-        private double _time; // [sec] current time of the countdown timer.
-        private bool _timerExist;
-        private bool _timerRunning;
+        [Tooltip("The timer ring sound.")] public AudioClip[] timesUpSounds;
 
         // Update is called once per frame
-        private void Update()
+        void Update()
         {
             if (_timerExist && _timerRunning)
             {
                 _time -= Time.deltaTime;
                 if (_time < 0)
+                {
                     // Raise a ring.
                     OnElapsedTime();
+                }
             }
         }
 
@@ -56,19 +59,20 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Buzzes and resets the timer.
+        /// Buzzes and resets the timer.
         /// </summary>
         private void OnElapsedTime()
         {
             _time = 0;
             _timerRunning = false;
             _timerExist = false;
-            Log("Buzz!");
-            AudioSource.PlayClipAtPoint(buzzSound, Vector3.zero);
+            Log("Your timer is complete.");
+            AudioClip timesUpSfx = timesUpSounds[UnityEngine.Random.Range(0, timesUpSounds.Length)];
+            AudioSource.PlayClipAtPoint(timesUpSfx, Vector3.zero);
         }
 
         /// <summary>
-        ///     Deletes the timer. It corresponds to the wit intent "wit$delete_timer"
+        /// Deletes the timer. It corresponds to the wit intent "wit$delete_timer"
         /// </summary>
         public void DeleteTimer()
         {
@@ -85,7 +89,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Creates a timer. It corresponds to the wit intent "wit$create_timer"
+        /// Creates a timer. It corresponds to the wit intent "wit$create_timer"
         /// </summary>
         /// <param name="entityValues">countdown in minutes.</param>
         public void CreateTimer(string[] entityValues)
@@ -105,7 +109,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Displays current timer value. It corresponds to "wit$get_timer".
+        /// Displays current timer value. It corresponds to "wit$get_timer".
         /// </summary>
         public void GetTimerIntent()
         {
@@ -115,7 +119,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Pauses the timer. It corresponds to the wit intent "wit$pause_timer"
+        /// Pauses the timer. It corresponds to the wit intent "wit$pause_timer"
         /// </summary>
         public void PauseTimer()
         {
@@ -124,7 +128,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     It corresponds to the wit intent "wit$resume_timer"
+        /// It corresponds to the wit intent "wit$resume_timer"
         /// </summary>
         public void ResumeTimer()
         {
@@ -133,7 +137,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Subtracts time from the timer. It corresponds to the wit intent "wit$subtract_time_timer".
+        /// Subtracts time from the timer. It corresponds to the wit intent "wit$subtract_time_timer".
         /// </summary>
         /// <param name="entityValues"></param>
         public void SubtractTimeTimer(string[] entityValues)
@@ -164,7 +168,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Adds time to the timer. It corresponds to the wit intent "wit$add_time_timer".
+        /// Adds time to the timer. It corresponds to the wit intent "wit$add_time_timer".
         /// </summary>
         /// <param name="entityValues"></param>
         public void AddTimeToTimer(string[] entityValues)
@@ -188,7 +192,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Returns the remaining time (in sec) of the countdown timer.
+        /// Returns the remaining time (in sec) of the countdown timer.
         /// </summary>
         /// <returns></returns>
         public double GetRemainingTime()
@@ -197,7 +201,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         }
 
         /// <summary>
-        ///     Returns time in the format of min:sec.
+        /// Returns time in the format of min:sec.
         /// </summary>
         /// <returns></returns>
         public string GetFormattedTimeFromSeconds()
@@ -207,14 +211,12 @@ namespace Oculus.Voice.Demo.BuiltInDemo
                 _time = TimeSpan.MaxValue.TotalSeconds - 1;
                 Log("Error: Hit max time");
             }
-
-            var span = TimeSpan.FromSeconds(_time);
-            return
-                $"{Math.Floor(span.TotalHours)}:{span.Minutes:00}:{span.Seconds:00}.{Math.Floor(span.Milliseconds / 100f)}";
+            TimeSpan span = TimeSpan.FromSeconds(_time);
+            return $"{Math.Floor(span.TotalHours)}:{span.Minutes:00}:{span.Seconds:00}.{Math.Floor(span.Milliseconds/100f)}";
         }
 
         /// <summary>
-        ///     Parses entity values to get a resulting time value in seconds
+        /// Parses entity values to get a resulting time value in seconds
         /// </summary>
         /// <param name="entityValues">The entity value results from a Response Handler</param>
         /// <param name="time">The parsed time</param>
@@ -226,10 +228,13 @@ namespace Oculus.Voice.Demo.BuiltInDemo
             if (entityValues.Length > 0 && double.TryParse(entityValues[0], out time))
             {
                 if (entityValues.Length < 2)
+                {
                     throw new ArgumentException("Entities being parsed must include time value and unit.");
+                }
 
                 // If entity was not included in the result it will be empty, but the array will still be size 2
                 if (!string.IsNullOrEmpty(entityValues[1]))
+                {
                     switch (entityValues[1])
                     {
                         case "minute":
@@ -239,6 +244,7 @@ namespace Oculus.Voice.Demo.BuiltInDemo
                             time *= 60 * 60;
                             break;
                     }
+                }
 
                 return true;
             }

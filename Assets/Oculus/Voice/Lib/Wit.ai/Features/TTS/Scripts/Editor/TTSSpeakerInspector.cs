@@ -7,35 +7,40 @@
  */
 
 using System;
-using Facebook.WitAi.TTS.Utilities;
 using UnityEditor;
 using UnityEngine;
+using Meta.WitAi.TTS.Utilities;
+using Meta.WitAi.TTS.Data;
 
-namespace Facebook.WitAi.TTS.Editor
+namespace Meta.WitAi.TTS.Editor
 {
     [CustomEditor(typeof(TTSSpeaker), true)]
     public class TTSSpeakerInspector : UnityEditor.Editor
     {
-        // Voice text
-        private const string UI_VOICE_HEADER = "Voice Settings";
-
-        private const string UI_VOICE_KEY = "Voice Preset";
-
         // Speaker
         private TTSSpeaker _speaker;
 
         // Voices
         private int _voiceIndex = -1;
-        private string[] _voices;
+        private string[] _voices = null;
+
+        // Voice text
+        private const string UI_VOICE_HEADER = "Voice Settings";
+        private const string UI_VOICE_KEY = "Voice Preset";
 
         // GUI
         public override void OnInspectorGUI()
         {
             // Get speaker
-            if (_speaker == null) _speaker = target as TTSSpeaker;
+            if (_speaker == null)
+            {
+                _speaker = target as TTSSpeaker;
+            }
             // Get voices
-            if (_voices == null || (_voiceIndex >= 0 && _voiceIndex < _voices.Length &&
-                                    !string.Equals(_speaker.presetVoiceID, _voices[_voiceIndex]))) RefreshVoices();
+            if (_voices == null || (_voiceIndex >= 0 && _voiceIndex < _voices.Length && !string.Equals(_speaker.presetVoiceID, _voices[_voiceIndex])))
+            {
+                RefreshVoices();
+            }
 
             // Voice select
             EditorGUILayout.LabelField(UI_VOICE_HEADER, EditorStyles.boldLabel);
@@ -47,11 +52,11 @@ namespace Facebook.WitAi.TTS.Editor
             // Voice dropdown
             else
             {
-                var updated = false;
+                bool updated = false;
                 WitEditorUI.LayoutPopup(UI_VOICE_KEY, _voices, ref _voiceIndex, ref updated);
                 if (updated)
                 {
-                    var newVoiceID = _voiceIndex >= 0 && _voiceIndex < _voices.Length
+                    string newVoiceID = _voiceIndex >= 0 && _voiceIndex < _voices.Length
                         ? _voices[_voiceIndex]
                         : string.Empty;
                     _speaker.presetVoiceID = newVoiceID;
@@ -73,8 +78,8 @@ namespace Facebook.WitAi.TTS.Editor
             _voices = null;
 
             // Get settings
-            var tts = TTSService.Instance;
-            var settings = tts?.GetAllPresetVoiceSettings();
+            TTSService tts = TTSService.Instance;
+            TTSVoiceSettings[] settings = tts?.GetAllPresetVoiceSettings();
             if (settings == null)
             {
                 Debug.LogError("No Preset Voice Settings Found!");
@@ -83,11 +88,13 @@ namespace Facebook.WitAi.TTS.Editor
 
             // Apply all settings
             _voices = new string[settings.Length];
-            for (var i = 0; i < settings.Length; i++)
+            for (int i = 0; i < settings.Length; i++)
             {
                 _voices[i] = settings[i].settingsID;
                 if (string.Equals(_speaker.presetVoiceID, _voices[i], StringComparison.CurrentCultureIgnoreCase))
+                {
                     _voiceIndex = i;
+                }
             }
         }
     }

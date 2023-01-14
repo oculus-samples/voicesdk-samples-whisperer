@@ -7,19 +7,20 @@
  */
 
 using System.Collections.Generic;
-using Facebook.WitAi.CallbackHandlers;
 using UnityEditor;
 using UnityEngine;
+using Meta.WitAi.CallbackHandlers;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     [CustomPropertyDrawer(typeof(ConfidenceRange))]
     public class ConfidenceRangeDrawer : WitPropertyDrawer
     {
-        private Dictionary<SerializedProperty, bool> eventFoldouts = new();
-
         private Vector2 fieldScroll;
         private bool showOutsideConfidence;
+
+        private Dictionary<SerializedProperty, bool> eventFoldouts =
+            new Dictionary<SerializedProperty, bool>();
 
         private float GetEventContentsHeight(SerializedProperty property)
         {

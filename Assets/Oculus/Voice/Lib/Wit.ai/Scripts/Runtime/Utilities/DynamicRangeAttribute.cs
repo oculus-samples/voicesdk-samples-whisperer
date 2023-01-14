@@ -8,20 +8,19 @@
 
 using UnityEngine;
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     public class DynamicRangeAttribute : PropertyAttribute
     {
-        public DynamicRangeAttribute(string rangeProperty, float defaultMin = float.MinValue,
-            float defaultMax = float.MaxValue)
+        public string RangeProperty { get; private set; }
+        public float DefaultMin { get; private set; }
+        public float DefaultMax { get; private set; }
+
+        public DynamicRangeAttribute(string rangeProperty, float defaultMin = float.MinValue, float defaultMax = float.MaxValue)
         {
             DefaultMin = defaultMin;
             DefaultMax = defaultMax;
             RangeProperty = rangeProperty;
         }
-
-        public string RangeProperty { get; }
-        public float DefaultMin { get; }
-        public float DefaultMax { get; }
     }
 }

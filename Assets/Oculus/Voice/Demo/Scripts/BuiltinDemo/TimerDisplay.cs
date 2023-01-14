@@ -30,13 +30,13 @@ namespace Oculus.Voice.Demo.BuiltInDemo
         private Text _uiText;
 
         // Start is called before the first frame update
-        private void Start()
+        void Start()
         {
             _uiText = GetComponent<Text>();
         }
 
         // Update is called once per frame
-        private void Update()
+        void Update()
         {
             // Note: This is not optimized and you should avoid updating time each frame.
             _uiText.text = timer.GetFormattedTimeFromSeconds();

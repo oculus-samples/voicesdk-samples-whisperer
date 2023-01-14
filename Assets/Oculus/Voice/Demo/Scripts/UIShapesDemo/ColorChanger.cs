@@ -19,8 +19,8 @@
  */
 
 using System;
-using Facebook.WitAi;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Oculus.Voice.Demo.UIShapesDemo
@@ -28,7 +28,7 @@ namespace Oculus.Voice.Demo.UIShapesDemo
     public class ColorChanger : MonoBehaviour
     {
         /// <summary>
-        ///     Sets the color of the specified transform.
+        /// Sets the color of the specified transform.
         /// </summary>
         /// <param name="trans"></param>
         /// <param name="color"></param>
@@ -38,38 +38,40 @@ namespace Oculus.Voice.Demo.UIShapesDemo
         }
 
         /// <summary>
-        ///     Directly processes a command result getting the slots with WitResult utilities
+        /// Directly processes a command result getting the slots with WitResult utilities
         /// </summary>
         /// <param name="commandResult">Result data from Wit.ai activation to be processed</param>
         public void UpdateColor(WitResponseNode commandResult)
         {
-            var colorNames = commandResult.GetAllEntityValues("color:color");
-            var shapes = commandResult.GetAllEntityValues("shape:shape");
+            string[] colorNames = commandResult.GetAllEntityValues("color:color");
+            string[] shapes = commandResult.GetAllEntityValues("shape:shape");
             UpdateColor(colorNames, shapes);
         }
 
         /// <summary>
-        ///     Updates the colors of a set of shape, or all colors split across the shapes
+        /// Updates the colors of a set of shape, or all colors split across the shapes
         /// </summary>
         /// <param name="colorNames">The names of the colors to be processed</param>
         /// <param name="shapes">The shape names or if empty all shapes</param>
         public void UpdateColor(string[] colorNames, string[] shapes)
         {
-            if (shapes.Length != 0 && colorNames.Length != shapes.Length) return;
-            if (shapes.Length == 0 || shapes[0] == "color")
+            if (shapes.Length != 0 && colorNames.Length != shapes.Length)
             {
+                return;
+            }
+            if (shapes.Length == 0 || shapes[0] == "color"){
                 UpdateColorAllShapes(colorNames);
                 return;
             }
 
-            for (var entity = 0; entity < colorNames.Length; entity++)
+            for(var entity = 0; entity < colorNames.Length; entity++)
             {
                 if (!ColorUtility.TryParseHtmlString(colorNames[entity], out var color)) return;
 
-                for (var i = 0; i < transform.childCount; i++)
+                for (int i = 0; i < transform.childCount; i++)
                 {
-                    var child = transform.GetChild(i);
-                    if (string.Equals(shapes[entity], child.name,
+                    Transform child = transform.GetChild(i);
+                    if (String.Equals(shapes[entity], child.name,
                             StringComparison.CurrentCultureIgnoreCase))
                     {
                         SetColor(child, color);
@@ -78,19 +80,18 @@ namespace Oculus.Voice.Demo.UIShapesDemo
                 }
             }
         }
-
         /// <summary>
-        ///     Updates the colors of the shapes, with colours split across the shapes
+        /// Updates the colors of the shapes, with colours split across the shapes
         /// </summary>
         /// <param name="colorNames">The names of the colors to be processed</param>
         public void UpdateColorAllShapes(string[] colorNames)
         {
             var unspecifiedShape = 0;
-            for (var entity = 0; entity < colorNames.Length; entity++)
+            for(var entity = 0; entity < colorNames.Length; entity++)
             {
                 if (!ColorUtility.TryParseHtmlString(colorNames[entity], out var color)) return;
 
-                var splitLimit = transform.childCount / colorNames.Length * (entity + 1);
+                var splitLimit = (transform.childCount/colorNames.Length) * (entity+1);
                 while (unspecifiedShape < splitLimit)
                 {
                     SetColor(transform.GetChild(unspecifiedShape), color);

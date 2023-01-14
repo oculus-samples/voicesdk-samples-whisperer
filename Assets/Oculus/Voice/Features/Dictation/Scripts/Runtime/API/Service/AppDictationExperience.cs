@@ -19,31 +19,30 @@
  */
 
 using System;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Dictation;
-using Facebook.WitAi.Dictation.Data;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
-using Oculus.Voice.Core.Bindings.Android.PlatformLogger;
-using Oculus.Voice.Core.Bindings.Interfaces;
+using Meta.WitAi;
+using Meta.WitAi.Json;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Dictation;
+using Meta.WitAi.Dictation.Data;
+using Meta.WitAi.Interfaces;
 using Oculus.Voice.Dictation.Bindings.Android;
 using Oculus.VoiceSDK.Dictation.Utilities;
+using Oculus.Voice.Core.Bindings.Android.PlatformLogger;
+using Oculus.Voice.Core.Bindings.Interfaces;
 using UnityEngine;
 
 namespace Oculus.Voice.Dictation
 {
-    public class AppDictationExperience : DictationService
+    public class AppDictationExperience : DictationService, IWitRuntimeConfigProvider
     {
         [SerializeField] private WitDictationRuntimeConfiguration runtimeConfiguration;
-
         [Tooltip("Uses platform dictation service instead of accessing wit directly from within the application.")]
-        [SerializeField]
-        private bool usePlatformServices;
+        [SerializeField] private bool usePlatformServices;
+        [Tooltip("Enables logs related to the interaction to be displayed on console")]
+        [SerializeField] private bool enableConsoleLogging;
 
-        [Tooltip("Enables logs related to the interaction to be displayed on console")] [SerializeField]
-        private bool enableConsoleLogging;
-
-        public WitDictationRuntimeConfiguration RuntimeConfiguration
+        public WitRuntimeConfiguration RuntimeConfiguration => runtimeConfiguration;
+        public WitDictationRuntimeConfiguration RuntimeDictationConfiguration
         {
             get => runtimeConfiguration;
             set => runtimeConfiguration = value;
@@ -55,7 +54,8 @@ namespace Oculus.Voice.Dictation
         public event Action OnInitialized;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        private readonly string PACKAGE_VERSION = "44.0.0";
+        // This version is auto-updated for a release build
+        private readonly string PACKAGE_VERSION = "49.0.0.173.358";
 #endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -86,11 +86,18 @@ namespace Oculus.Voice.Dictation
         {
             // Clean up if we're switching to native C# wit impl
             if (!UsePlatformIntegrations && _dictationServiceImpl is PlatformDictationImpl)
-                ((PlatformDictationImpl)_dictationServiceImpl).Disconnect();
+            {
+                ((PlatformDictationImpl) _dictationServiceImpl).Disconnect();
+            }
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var loggerImpl = new VoiceSDKPlatformLoggerImpl();
-            loggerImpl.Connect(PACKAGE_VERSION);
-            _voiceSDKLogger = loggerImpl;
+            // Do not re-init logging if we've already initialized logger
+            if (_voiceSDKLogger == null)
+            {
+                var loggerImpl = new VoiceSDKPlatformLoggerImpl();
+                loggerImpl.Connect(PACKAGE_VERSION);
+                _voiceSDKLogger = loggerImpl;
+            }
+
             if (UsePlatformIntegrations)
             {
                 Debug.Log("Checking platform dictation capabilities...");
@@ -101,9 +108,8 @@ namespace Oculus.Voice.Dictation
                 {
                     _dictationServiceImpl = platformDictationImpl;
                     _dictationServiceImpl.DictationEvents = DictationEvents;
-                    platformDictationImpl.SetDictationRuntimeConfiguration(RuntimeConfiguration);
+                    platformDictationImpl.SetDictationRuntimeConfiguration(RuntimeDictationConfiguration);
                     Debug.Log("Dictation platform init complete");
-                    _voiceSDKLogger.LogAnnotation("isUsingPlatformSupport", "true");
                     _voiceSDKLogger.IsUsingPlatformIntegration = true;
                 }
                 else
@@ -120,8 +126,7 @@ namespace Oculus.Voice.Dictation
             _voiceSDKLogger = new VoiceSDKConsoleLoggerImpl();
             RevertToWitDictation();
 #endif
-            _voiceSDKLogger.WitApplication =
-                RuntimeConfiguration.witConfiguration.WitApplicationId;
+            _voiceSDKLogger.WitApplication = RuntimeDictationConfiguration?.witConfiguration?.GetLoggerAppId();
             _voiceSDKLogger.ShouldLogToConsole = enableConsoleLogging;
 
             OnInitialized?.Invoke();
@@ -129,14 +134,14 @@ namespace Oculus.Voice.Dictation
 
         private void RevertToWitDictation()
         {
-            var witDictation = GetComponent<WitDictation>();
+            WitDictation witDictation = GetComponent<WitDictation>();
             if (null == witDictation)
             {
                 witDictation = gameObject.AddComponent<WitDictation>();
                 witDictation.hideFlags = HideFlags.HideInInspector;
             }
 
-            witDictation.RuntimeConfiguration = RuntimeConfiguration;
+            witDictation.RuntimeConfiguration = RuntimeDictationConfiguration;
             witDictation.DictationEvents = DictationEvents;
             _dictationServiceImpl = witDictation;
             Debug.Log("WitDictation init complete");
@@ -147,9 +152,13 @@ namespace Oculus.Voice.Dictation
         {
             base.OnEnable();
             if (MicPermissionsManager.HasMicPermission())
+            {
                 InitDictation();
+            }
             else
+            {
                 MicPermissionsManager.RequestMicPermission();
+            }
 
             DictationEvents.onStart.AddListener(OnStarted);
             DictationEvents.onStopped.AddListener(OnStopped);
@@ -172,6 +181,7 @@ namespace Oculus.Voice.Dictation
             }
 #endif
             _dictationServiceImpl = null;
+            _voiceSDKLogger = null;
             DictationEvents.onStart.RemoveListener(OnStarted);
             DictationEvents.onStopped.RemoveListener(OnStopped);
             DictationEvents.onResponse.RemoveListener(OnWitResponseListener);
@@ -189,17 +199,14 @@ namespace Oculus.Voice.Dictation
         {
             get => _dictationServiceImpl.TranscriptionProvider;
             set => _dictationServiceImpl.TranscriptionProvider = value;
+
         }
-
         public override bool MicActive => null != _dictationServiceImpl && _dictationServiceImpl.MicActive;
-
         protected override bool ShouldSendMicData => RuntimeConfiguration.sendAudioToWit ||
                                                      null == TranscriptionProvider;
-
         #endregion
 
         #region DictationService APIs
-
         public override void Activate()
         {
             Activate(new WitRequestOptions());
@@ -231,18 +238,17 @@ namespace Oculus.Voice.Dictation
         {
             _dictationServiceImpl.Deactivate();
         }
-
         #endregion
 
         #region Listeners for logging
 
-        private void OnWitResponseListener(WitResponseNode witResponseNode)
+        void OnWitResponseListener(WitResponseNode witResponseNode)
         {
             var tokens = witResponseNode?["speech"]?["tokens"];
             if (tokens != null)
             {
-                var speechTokensLength = tokens.Count;
-                var speechLength = witResponseNode["speech"]["tokens"][speechTokensLength - 1]?["end"]?.Value;
+                int speechTokensLength = tokens.Count;
+                string speechLength = witResponseNode["speech"]["tokens"][speechTokensLength - 1]?["end"]?.Value;
                 _voiceSDKLogger.LogAnnotation("audioLength", speechLength);
             }
 
@@ -250,26 +256,31 @@ namespace Oculus.Voice.Dictation
             _voiceSDKLogger.LogInteractionEndSuccess();
         }
 
-        private void OnError(string errorType, string errorMessage)
+        void OnError(string errorType, string errorMessage)
         {
             _voiceSDKLogger.LogInteractionEndFailure($"{errorType}:{errorMessage}");
         }
 
-        private void OnStarted()
+        void OnStarted()
         {
             _voiceSDKLogger.LogInteractionPoint("startedListening");
         }
 
-        private void OnStopped()
+        void OnStopped()
         {
             _voiceSDKLogger.LogInteractionPoint("stoppedListening");
-            if (_voiceSDKLogger.IsUsingPlatformIntegration) _voiceSDKLogger.LogInteractionEndSuccess();
+            if (_voiceSDKLogger.IsUsingPlatformIntegration)
+            {
+                _voiceSDKLogger.LogInteractionEndSuccess();
+            }
         }
 
-        private void OnDictationSessionStarted(DictationSession session)
+        void OnDictationSessionStarted(DictationSession session)
         {
             if (session is PlatformDictationSession platformDictationSession)
+            {
                 _voiceSDKLogger.LogAnnotation("platformInteractionId", platformDictationSession.platformSessionId);
+            }
         }
 
         #endregion

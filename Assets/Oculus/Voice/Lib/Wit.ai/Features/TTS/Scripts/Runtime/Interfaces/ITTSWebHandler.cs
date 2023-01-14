@@ -6,51 +6,51 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Events;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Events;
 
-namespace Facebook.WitAi.TTS.Interfaces
+namespace Meta.WitAi.TTS.Interfaces
 {
     public interface ITTSWebHandler
     {
         /// <summary>
-        ///     Streaming events
+        /// Streaming events
         /// </summary>
         TTSStreamEvents WebStreamEvents { get; set; }
 
         /// <summary>
-        ///     Download events
-        /// </summary>
-        TTSDownloadEvents WebDownloadEvents { get; set; }
-
-        /// <summary>
-        ///     Method for determining if text to speak is valid
+        /// Method for determining if text to speak is valid
         /// </summary>
         /// <param name="textToSpeak">Text to be spoken by TTS</param>
         /// <returns>Invalid error</returns>
         string IsTextValid(string textToSpeak);
 
         /// <summary>
-        ///     Method for performing a web load request
+        /// Method for performing a web load request
         /// </summary>
         /// <param name="clipData">Clip request data</param>
         void RequestStreamFromWeb(TTSClipData clipData);
 
         /// <summary>
-        ///     Cancel web stream
+        /// Cancel web stream
         /// </summary>
         /// <param name="clipID">Clip unique identifier</param>
         bool CancelWebStream(TTSClipData clipData);
 
         /// <summary>
-        ///     Method for performing a web load request
+        /// Download events
+        /// </summary>
+        TTSDownloadEvents WebDownloadEvents { get; set; }
+
+        /// <summary>
+        /// Method for performing a web load request
         /// </summary>
         /// <param name="clipData">Clip request data</param>
         /// <param name="downloadPath">Path to save clip</param>
         void RequestDownloadFromWeb(TTSClipData clipData, string downloadPath);
 
         /// <summary>
-        ///     Cancel web download
+        /// Cancel web download
         /// </summary>
         /// <param name="clipID">Clip unique identifier</param>
         /// <param name="downloadPath">Path to save clip</param>

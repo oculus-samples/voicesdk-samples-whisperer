@@ -8,19 +8,19 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Events;
-using Facebook.WitAi.TTS.Interfaces;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Interfaces;
+using Meta.WitAi.TTS.Events;
 
-namespace Facebook.WitAi.TTS.Integrations
+namespace Meta.WitAi.TTS.Integrations
 {
     // A simple LRU Cache
     public class TTSRuntimeCache : MonoBehaviour, ITTSRuntimeCacheHandler
     {
         /// <summary>
-        ///     Whether or not to unload clip data after the clip capacity is hit
+        /// Whether or not to unload clip data after the clip capacity is hit
         /// </summary>
         [Header("Runtime Cache Settings")]
         [Tooltip("Whether or not to unload clip data after the clip capacity is hit")]
@@ -28,59 +28,57 @@ namespace Facebook.WitAi.TTS.Integrations
         public bool ClipLimit = true;
 
         /// <summary>
-        ///     The maximum clips allowed in the runtime cache
+        /// The maximum clips allowed in the runtime cache
         /// </summary>
-        [Tooltip("The maximum clips allowed in the runtime cache")] [FormerlySerializedAs("_clipCapacity")] [Min(1)]
-        public int ClipCapacity = 20;
+        [Tooltip("The maximum clips allowed in the runtime cache")]
+        [FormerlySerializedAs("_clipCapacity")]
+        [Min(1)] public int ClipCapacity = 20;
 
         /// <summary>
-        ///     Whether or not to unload clip data after the ram capacity is hit
+        /// Whether or not to unload clip data after the ram capacity is hit
         /// </summary>
         [Tooltip("Whether or not to unload clip data after the ram capacity is hit")]
         [FormerlySerializedAs("_ramLimit")]
         public bool RamLimit = true;
 
         /// <summary>
-        ///     The maximum amount of RAM allowed in the runtime cache.  In KBs
+        /// The maximum amount of RAM allowed in the runtime cache.  In KBs
         /// </summary>
         [Tooltip("The maximum amount of RAM allowed in the runtime cache.  In KBs")]
         [FormerlySerializedAs("_ramCapacity")]
-        [Min(1)]
-        public int RamCapacity = 32768;
+        [Min(1)] public int RamCapacity = 32768;
 
-        private readonly List<string> _clipOrder = new();
+        /// <summary>
+        /// On clip added callback
+        /// </summary>
+        public TTSClipEvent OnClipAdded { get; set; } = new TTSClipEvent();
+        /// <summary>
+        /// On clip removed callback
+        /// </summary>
+        public TTSClipEvent OnClipRemoved { get; set; } = new TTSClipEvent();
 
         // Clips & their ids
-        private readonly Dictionary<string, TTSClipData> _clips = new();
+        private Dictionary<string, TTSClipData> _clips = new Dictionary<string, TTSClipData>();
+        private List<string> _clipOrder = new List<string>();
 
         /// <summary>
-        ///     On clip added callback
+        /// Simple getter for all clips
         /// </summary>
-        public TTSClipEvent OnClipAdded { get; set; } = new();
+        public TTSClipData[] GetClips() => _clips.Values.ToArray();
 
         /// <summary>
-        ///     On clip removed callback
-        /// </summary>
-        public TTSClipEvent OnClipRemoved { get; set; } = new();
-
-        /// <summary>
-        ///     Simple getter for all clips
-        /// </summary>
-        public TTSClipData[] GetClips()
-        {
-            return _clips.Values.ToArray();
-        }
-
-        /// <summary>
-        ///     Getter for a clip that also moves clip to the back of the queue
+        /// Getter for a clip that also moves clip to the back of the queue
         /// </summary>
         public TTSClipData GetClip(string clipID)
         {
             // Id not found
-            if (!_clips.ContainsKey(clipID)) return null;
+            if (!_clips.ContainsKey(clipID))
+            {
+                return null;
+            }
 
             // Sort to end
-            var clipIndex = _clipOrder.IndexOf(clipID);
+            int clipIndex = _clipOrder.IndexOf(clipID);
             _clipOrder.RemoveAt(clipIndex);
             _clipOrder.Add(clipID);
 
@@ -89,16 +87,19 @@ namespace Facebook.WitAi.TTS.Integrations
         }
 
         /// <summary>
-        ///     Add clip to cache and ensure it is most recently referenced
+        /// Add clip to cache and ensure it is most recently referenced
         /// </summary>
         /// <param name="clipData"></param>
-        public void AddClip(TTSClipData clipData)
+        public bool AddClip(TTSClipData clipData)
         {
             // Do not add null
-            if (clipData == null) return;
+            if (clipData == null)
+            {
+                return false;
+            }
             // Remove from order
-            var wasAdded = true;
-            var clipIndex = _clipOrder.IndexOf(clipData.clipID);
+            bool wasAdded = true;
+            int clipIndex = _clipOrder.IndexOf(clipData.clipID);
             if (clipIndex != -1)
             {
                 wasAdded = false;
@@ -111,27 +112,40 @@ namespace Facebook.WitAi.TTS.Integrations
             _clipOrder.Add(clipData.clipID);
 
             // Evict least recently used clips
-            while (IsCacheFull() && _clipOrder.Count > 0) RemoveClip(_clipOrder[0]);
+            while (IsCacheFull() && _clipOrder.Count > 0)
+            {
+                // Remove clip
+                RemoveClip(_clipOrder[0]);
+            }
 
-            // Call add delegate
-            if (wasAdded && _clips.Keys.Count > 0) OnClipAdded?.Invoke(clipData);
+            // Call add delegate even if removed
+            if (wasAdded && _clips.Keys.Count > 0)
+            {
+                OnClipAdded?.Invoke(clipData);
+            }
+
+            // True if successfully added
+            return _clips.Keys.Count > 0;
         }
 
         /// <summary>
-        ///     Remove clip from cache immediately
+        /// Remove clip from cache immediately
         /// </summary>
         /// <param name="clipID"></param>
         public void RemoveClip(string clipID)
         {
             // Id not found
-            if (!_clips.ContainsKey(clipID)) return;
+            if (!_clips.ContainsKey(clipID))
+            {
+                return;
+            }
 
             // Remove from dictionary
-            var clipData = _clips[clipID];
+            TTSClipData clipData = _clips[clipID];
             _clips.Remove(clipID);
 
             // Remove from order list
-            var clipIndex = _clipOrder.IndexOf(clipID);
+            int clipIndex = _clipOrder.IndexOf(clipID);
             _clipOrder.RemoveAt(clipIndex);
 
             // Call remove delegate
@@ -139,34 +153,44 @@ namespace Facebook.WitAi.TTS.Integrations
         }
 
         /// <summary>
-        ///     Check if cache is full
+        /// Check if cache is full
         /// </summary>
         protected bool IsCacheFull()
         {
             // Capacity full
-            if (ClipLimit && _clipOrder.Count > ClipCapacity) return true;
+            if (ClipLimit && _clipOrder.Count > ClipCapacity)
+            {
+                return true;
+            }
             // Ram full
-            if (RamLimit && GetCacheDiskSize() > RamCapacity) return true;
+            if (RamLimit && GetCacheDiskSize() > RamCapacity)
+            {
+                return true;
+            }
             // Free
             return false;
         }
-
         /// <summary>
-        ///     Get RAM size of cache in KBs
+        /// Get RAM size of cache in KBs
         /// </summary>
         /// <returns>Returns size in KBs rounded up</returns>
         public int GetCacheDiskSize()
         {
             long total = 0;
-            foreach (var key in _clips.Keys) total += GetClipBytes(_clips[key].clip);
-            return (int)(total / 1024) + 1;
+            foreach (var key in _clips.Keys)
+            {
+                total += GetClipBytes(_clips[key].clip);
+            }
+            return (int)(total / (long)1024) + 1;
         }
-
         // Return bytes occupied by clip
         public static long GetClipBytes(AudioClip clip)
         {
-            if (clip == null) return 0;
-            return clip.samples * clip.channels * 2;
+            if (clip == null)
+            {
+                return 0;
+            }
+            return ((clip.samples * clip.channels) * 2);
         }
     }
 }

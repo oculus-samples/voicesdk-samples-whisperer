@@ -9,7 +9,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public static class WitStyles
     {
@@ -22,22 +22,13 @@ namespace Facebook.WitAi
         public const float WindowPaddingBottom = 8f;
         public const float WindowPaddingLeft = 8f;
         public const float WindowPaddingRight = 8f;
-
         public const float WindowScrollBarSize = 15f;
-
         // Spacing
         public const float HeaderWidth = 350f;
         public const float HeaderPaddingBottom = 8f;
-
         public const float WizardFieldPadding = 16f;
-
         // Text padding
         public const float ButtonMargin = 5f;
-        private const float TextButtonHeight = 25f;
-        public const float TextButtonPadding = 5f;
-        public const float IconButtonSize = 16f; // Width & Height
-        private const float TabButtonHeight = 40f;
-        public const string WitLinkKey = "[COLOR]";
 
         // Icons
         public static GUIContent PasteIcon;
@@ -45,9 +36,7 @@ namespace Facebook.WitAi
         public static GUIContent ResetIcon;
         public static GUIContent AcceptIcon;
         public static GUIContent ObjectPickerIcon;
-
         public static GUIContent HelpIcon;
-
         // Label Styles
         public static GUIStyle Label;
         public static GUIStyle LabelWrap;
@@ -59,30 +48,30 @@ namespace Facebook.WitAi
 
         // Button styles
         public static GUIStyle TextButton;
+        private const float TextButtonHeight = 25f;
+        public const float TextButtonPadding = 5f;
         public static GUIStyle IconButton;
+        public const float IconButtonSize = 16f; // Width & Height
         public static GUIStyle TabButton;
+        private const float TabButtonHeight = 40f;
         public static GUIStyle HeaderButton;
-
-        public static Color HeaderTextColor = new(0.09f, 0.47f, 0.95f); // FB
-
-        // Wit link color
-        public static string WitLinkColor = "#ccccff"; // "blue" if not pro
+        public static Color HeaderTextColor = new Color(0.09f, 0.47f, 0.95f); // FB
+        // Wit error color (Red if in light non-pro editor mode)
+        public static string ErrorColor = "#cc7777";
+        // Wit link color (Blue if in light non-pro editor mode)
+        public static string WitLinkColor = "#ccccff";
+        public const string WitLinkKey = "[COLOR]";
 
         // Text Field Styles
         public static GUIStyle TextField;
         public static GUIStyle IntField;
-
         public static GUIStyle PasswordField;
-
         // Foldout Style
         public static GUIStyle Foldout;
-
         // Toggle Style
         public static GUIStyle Toggle;
-
         // Popup/Dropdown Styles
         public static GUIStyle Popup;
-
         // Texture
         public static Texture2D TextureBlack25P;
 
@@ -96,6 +85,13 @@ namespace Facebook.WitAi
             AcceptIcon = EditorGUIUtility.IconContent("FilterSelectedOnly");
             ObjectPickerIcon = EditorGUIUtility.IconContent("d_Record Off");
             HelpIcon = EditorGUIUtility.IconContent("_Help");
+
+            // Adjust colors to be more visible on light background
+            if (!EditorGUIUtility.isProSkin)
+            {
+                ErrorColor = "red";
+                WitLinkColor = "blue";
+            }
 
             // Label Styles
             Label = new GUIStyle();
@@ -120,7 +116,9 @@ namespace Facebook.WitAi
             LabelHeader.wordWrap = true;
             LabelError = new GUIStyle(Label);
             LabelError.wordWrap = true;
-            LabelError.normal.textColor = Color.red;
+            Color errorColor = Color.red;
+            ColorUtility.TryParseHtmlString(ErrorColor, out errorColor);
+            LabelError.normal.textColor = errorColor;
             LabelStatus = new GUIStyle(Label);
             TextureBlack25P = new Texture2D(1, 1);
             TextureBlack25P.SetPixel(0, 0, new Color(0, 0, 0, .25f));
@@ -134,8 +132,6 @@ namespace Facebook.WitAi
             LabelStatus.margin = new RectOffset(0, 0, 0, 0);
             LabelStatus.wordWrap = false;
             LabelStatus.fontSize = 10;
-            // Set to blue if not pro
-            if (!EditorGUIUtility.isProSkin) WitLinkColor = "blue";
 
             // Button Styles
             TextButton = new GUIStyle(EditorStyles.miniButton);

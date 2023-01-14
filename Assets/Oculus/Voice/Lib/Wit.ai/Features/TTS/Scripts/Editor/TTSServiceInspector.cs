@@ -7,26 +7,21 @@
  */
 
 using System;
-using Facebook.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Editor
+namespace Meta.WitAi.TTS.Editor
 {
     [CustomEditor(typeof(TTSService), true)]
     public class TTSServiceInspector : UnityEditor.Editor
     {
-        // Maximum text for abbreviated
-        private const int MAX_DISPLAY_TEXT = 20;
-
-        // Dropdown
-        private bool _clipFoldout;
-
         // Service
         private TTSService _service;
-
-        // Custom GUI when needed
-        public static event Action<TTSService> onAdditionalGUI;
+        // Dropdown
+        private bool _clipFoldout = false;
+        // Maximum text for abbreviated
+        private const int MAX_DISPLAY_TEXT = 20;
 
         // GUI
         public override void OnInspectorGUI()
@@ -35,12 +30,16 @@ namespace Facebook.WitAi.TTS.Editor
             base.OnInspectorGUI();
 
             // Get service
-            if (_service == null) _service = target as TTSService;
-            // Add additional gui
-            onAdditionalGUI?.Invoke(_service);
+            if (_service == null)
+            {
+                _service = target as TTSService;
+            }
 
             // Ignore if in editor
-            if (!Application.isPlaying) return;
+            if (!Application.isPlaying)
+            {
+                return;
+            }
 
             // Add spaces
             EditorGUILayout.Space();
@@ -48,29 +47,34 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUILayout.LabelField("Runtime Clip Cache", EditorStyles.boldLabel);
 
             // No clips
-            var clips = _service.GetAllRuntimeCachedClips();
+            TTSClipData[] clips = _service.GetAllRuntimeCachedClips();
             if (clips == null || clips.Length == 0)
             {
                 WitEditorUI.LayoutErrorLabel("No clips found");
                 return;
             }
-
             // Has clips
             _clipFoldout = WitEditorUI.LayoutFoldout(new GUIContent($"Clips: {clips.Length}"), _clipFoldout);
             if (_clipFoldout)
             {
                 EditorGUI.indentLevel++;
                 // Iterate clips
-                foreach (var clip in clips)
+                foreach (TTSClipData clip in clips)
                 {
                     // Get display name
-                    var displayName = clip.textToSpeak;
+                    string displayName = clip.textToSpeak;
                     // Crop if too long
-                    if (displayName.Length > MAX_DISPLAY_TEXT) displayName = displayName.Substring(0, MAX_DISPLAY_TEXT);
+                    if (displayName.Length > MAX_DISPLAY_TEXT)
+                    {
+                        displayName = displayName.Substring(0, MAX_DISPLAY_TEXT);
+                    }
                     // Add voice setting id
-                    if (clip.voiceSettings != null) displayName = $"{clip.voiceSettings.settingsID} - {displayName}";
+                    if (clip.voiceSettings != null)
+                    {
+                        displayName = $"{clip.voiceSettings.settingsID} - {displayName}";
+                    }
                     // Foldout if desired
-                    var foldout = WitEditorUI.LayoutFoldout(new GUIContent(displayName), clip);
+                    bool foldout = WitEditorUI.LayoutFoldout(new GUIContent(displayName), clip);
                     if (foldout)
                     {
                         EditorGUI.indentLevel++;
@@ -78,11 +82,9 @@ namespace Facebook.WitAi.TTS.Editor
                         EditorGUI.indentLevel--;
                     }
                 }
-
                 EditorGUI.indentLevel--;
             }
         }
-
         // Clip data
         private void OnClipGUI(TTSClipData clip)
         {
@@ -95,7 +97,7 @@ namespace Facebook.WitAi.TTS.Editor
             EditorGUILayout.ObjectField("Clip", clip.clip, typeof(AudioClip), true);
             // Load Settings
             WitEditorUI.LayoutKeyLabel("Load State", clip.loadState.ToString());
-            WitEditorUI.LayoutKeyLabel("Load Progress", clip.loadProgress * 100f + "%");
+            WitEditorUI.LayoutKeyLabel("Load Progress", (clip.loadProgress * 100f).ToString() + "%");
         }
     }
 }

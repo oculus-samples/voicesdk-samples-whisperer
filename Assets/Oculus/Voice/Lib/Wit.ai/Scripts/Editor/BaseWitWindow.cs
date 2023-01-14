@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Data.Configuration;
+using Meta.WitAi.Data.Configuration;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public abstract class BaseWitWindow : EditorWindow
     {
@@ -28,21 +28,17 @@ namespace Facebook.WitAi.Windows
             titleContent = Title;
             WitConfigurationUtility.ReloadConfigurationData();
         }
-
         // Window close
         protected virtual void OnDisable()
         {
             ScrollOffset = Vector2.zero;
         }
-
         // Handle Layout
         protected virtual void OnGUI()
         {
             Vector2 size;
-            WitEditorUI.LayoutWindow(titleContent.text, HeaderIcon, HeaderUrl, LayoutContent, ref ScrollOffset,
-                out size);
+            WitEditorUI.LayoutWindow(titleContent.text, HeaderIcon, HeaderUrl, LayoutContent, ref ScrollOffset, out size);
         }
-
         // Draw content of window
         protected abstract void LayoutContent();
     }

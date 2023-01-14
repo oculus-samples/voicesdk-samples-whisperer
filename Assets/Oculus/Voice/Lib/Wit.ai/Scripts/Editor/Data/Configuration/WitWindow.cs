@@ -6,23 +6,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Data.Configuration;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Meta.WitAi.Data.Configuration;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public class WitWindow : WitConfigurationWindow
     {
-        protected string serverToken;
         protected WitConfigurationEditor witInspector;
+        protected string serverToken;
         protected override GUIContent Title => WitTexts.SettingsTitleContent;
         protected override string HeaderUrl => witInspector ? witInspector.HeaderUrl : base.HeaderUrl;
+
+        // VLog log level
+        private static int _logLevel = -1;
+        private static string[] _logLevelNames;
+        private static LogType[] _logLevels = new LogType[] { LogType.Log, LogType.Warning, LogType.Error };
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            if (string.IsNullOrEmpty(serverToken)) serverToken = WitAuthUtility.ServerToken;
+            if (string.IsNullOrEmpty(serverToken))
+            {
+                serverToken = WitAuthUtility.ServerToken;
+            }
+            RefreshLogLevel();
             SetWitEditor();
         }
 
@@ -43,55 +53,94 @@ namespace Facebook.WitAi.Windows
 
         protected override void LayoutContent()
         {
-            // Server access token
-            GUILayout.BeginHorizontal();
-            var updated = false;
-            WitEditorUI.LayoutPasswordField(WitTexts.SettingsServerTokenContent, ref serverToken, ref updated);
-            if (updated) RelinkServerToken(false);
-            if (WitEditorUI.LayoutTextButton(WitTexts.Texts.SettingsRelinkButtonLabel)) RelinkServerToken(true);
-            if (WitEditorUI.LayoutTextButton(WitTexts.Texts.SettingsAddButtonLabel))
+            // VLog level
+            bool updated = false;
+            RefreshLogLevel();
+            int logLevel = _logLevel;
+            WitEditorUI.LayoutPopup(WitTexts.Texts.VLogLevelLabel, _logLevelNames, ref logLevel, ref updated);
+            if (updated)
             {
-                var newIndex = WitConfigurationUtility.CreateConfiguration(serverToken);
-                if (newIndex != -1) SetConfiguration(newIndex);
+                SetLogLevel(logLevel);
             }
 
+            // Server access token
+            GUILayout.BeginHorizontal();
+            updated = false;
+            WitEditorUI.LayoutPasswordField(WitTexts.SettingsServerTokenContent, ref serverToken, ref updated);
+            if (updated)
+            {
+                RelinkServerToken(false);
+            }
+            if (WitEditorUI.LayoutTextButton(WitTexts.Texts.SettingsRelinkButtonLabel))
+            {
+                RelinkServerToken(true);
+            }
+            if (WitEditorUI.LayoutTextButton(WitTexts.Texts.SettingsAddButtonLabel))
+            {
+                OpenConfigGenerationWindow();
+            }
             GUILayout.EndHorizontal();
             GUILayout.Space(WitStyles.ButtonMargin);
 
             // Configuration select
             base.LayoutContent();
             // Update inspector if needed
-            if (witInspector == null || witConfiguration == null || witInspector.configuration != witConfiguration)
+            if (witInspector == null || witConfiguration == null || witInspector.Configuration != witConfiguration)
+            {
                 SetWitEditor();
+            }
 
             // Layout configuration inspector
-            if (witConfiguration && witInspector) witInspector.OnInspectorGUI();
+            if (witConfiguration && witInspector)
+            {
+                witInspector.OnInspectorGUI();
+            }
         }
-
         // Apply server token
         private void RelinkServerToken(bool closeIfInvalid)
         {
             // Open Setup if Invalid
-            var invalid = !WitConfigurationUtility.IsServerTokenValid(serverToken);
+            bool invalid = !WitConfigurationUtility.IsServerTokenValid(serverToken);
             if (invalid)
             {
                 // Clear if desired
-                if (string.IsNullOrEmpty(serverToken)) WitAuthUtility.ServerToken = serverToken;
-                // Close if desired
+                if (string.IsNullOrEmpty(serverToken))
+                {
+                    WitAuthUtility.ServerToken = serverToken;
+                }
+                // Generate new configuration
+                OpenConfigGenerationWindow();
+                // Generate new & Close
                 if (closeIfInvalid)
                 {
-                    // Open Setup
-                    WitWindowUtility.OpenSetupWindow(WitWindowUtility.OpenConfigurationWindow);
-                    // Close this Window
                     Close();
                 }
-
                 return;
             }
 
             // Set valid server token
             WitAuthUtility.ServerToken = serverToken;
             WitConfigurationUtility.SetServerToken(serverToken);
+        }
+
+        private static void RefreshLogLevel()
+        {
+            if (_logLevelNames != null && _logLevelNames.Length == _logLevels.Length)
+            {
+                return;
+            }
+            List<string> logLevelOptions = new List<string>();
+            foreach (var level in _logLevels)
+            {
+                logLevelOptions.Add(level.ToString());
+            }
+            _logLevelNames = logLevelOptions.ToArray();
+            _logLevel = logLevelOptions.IndexOf(VLog.EditorLogLevel.ToString());
+        }
+        private void SetLogLevel(int newLevel)
+        {
+            _logLevel = Mathf.Max(0, newLevel);
+            VLog.EditorLogLevel = _logLevel < _logLevels.Length ? _logLevels[_logLevel] : LogType.Log;
         }
     }
 }

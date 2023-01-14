@@ -8,28 +8,49 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Lib;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data
+namespace Meta.WitAi.Data
 {
     public class AudioBuffer : MonoBehaviour
     {
+        #region Singleton
+        private static AudioBuffer _instance;
+        private static bool _instanceInit = false;
+        public static AudioBuffer Instance
+        {
+            get
+            {
+                if (!_instance) _instance = FindObjectOfType<AudioBuffer>();
+                if (!_instance && !_instanceInit)
+                {
+                    var audioBufferObject = new GameObject("AudioBuffer");
+                    _instance = audioBufferObject.AddComponent<AudioBuffer>();
+                }
+                return _instance;
+            }
+        }
+        #endregion
+
         [SerializeField] private bool alwaysRecording;
-        [SerializeField] private AudioBufferEvents events = new();
-
-        private readonly HashSet<Component> _activeRecorders = new();
-
-        private byte[] _byteDataBuffer;
-        private RingBuffer<byte> _micDataBuffer;
-
-        private IAudioInputSource _micInput;
-        [SerializeField] private readonly AudioBufferConfiguration audioBufferConfiguration = new();
+        [SerializeField] private AudioBufferConfiguration audioBufferConfiguration = new AudioBufferConfiguration();
+        [SerializeField] private AudioBufferEvents events = new AudioBufferEvents();
 
         public AudioBufferEvents Events => events;
+
+        private IAudioInputSource _micInput;
+        private RingBuffer<byte> _micDataBuffer;
+
+        private byte[] _byteDataBuffer;
+
+        private HashSet<Component> _activeRecorders = new HashSet<Component>();
+
+        public bool IsRecording(Component component) => _activeRecorders.Contains(component);
         public bool IsInputAvailable => _micInput.IsInputAvailable;
+        public void CheckForInput() => _micInput.CheckForInput();
         public AudioEncoding AudioEncoding => _micInput.AudioEncoding;
 
         private void Awake()
@@ -40,14 +61,21 @@ namespace Facebook.WitAi.Data
             _micInput = gameObject.GetComponentInChildren<IAudioInputSource>();
             // Check all roots for Mic Input JIC
             if (_micInput == null)
+            {
                 foreach (var root in gameObject.scene.GetRootGameObjects())
                 {
                     _micInput = root.GetComponentInChildren<IAudioInputSource>();
-                    if (_micInput != null) break;
+                    if (_micInput != null)
+                    {
+                        break;
+                    }
                 }
-
+            }
             // Use default mic script
-            if (_micInput == null) _micInput = gameObject.AddComponent<Mic>();
+            if (_micInput == null)
+            {
+                _micInput = gameObject.AddComponent<Mic>();
+            }
 
             InitializeMicDataBuffer();
         }
@@ -56,7 +84,10 @@ namespace Facebook.WitAi.Data
         {
 #if UNITY_EDITOR
             // Make sure we have a mic input after a script recompile
-            if (null == _micInput) _micInput = GetComponent<IAudioInputSource>();
+            if (null == _micInput)
+            {
+                _micInput = GetComponent<IAudioInputSource>();
+            }
 #endif
 
             _micInput.OnSampleReady += OnMicSampleReady;
@@ -70,16 +101,8 @@ namespace Facebook.WitAi.Data
             _micInput.OnSampleReady -= OnMicSampleReady;
 
             if (alwaysRecording) StopRecording(this);
-        }
 
-        public bool IsRecording(Component component)
-        {
-            return _activeRecorders.Contains(component);
-        }
-
-        public void CheckForInput()
-        {
-            _micInput.CheckForInput();
+            _instanceInit = false;
         }
 
         // Callback for mic sample ready
@@ -89,7 +112,10 @@ namespace Facebook.WitAi.Data
 
             var marker = CreateMarker();
             Convert(sample);
-            if (null != events.OnByteDataReady) marker.Clone().ReadIntoWriters(events.OnByteDataReady.Invoke);
+            if (null != events.OnByteDataReady)
+            {
+                marker.Clone().ReadIntoWriters(events.OnByteDataReady.Invoke);
+            }
             events.OnSampleReady?.Invoke(marker, levelMax);
         }
 
@@ -98,11 +124,14 @@ namespace Facebook.WitAi.Data
         {
             if (null == _micDataBuffer && audioBufferConfiguration.micBufferLengthInSeconds > 0)
             {
-                var bufferSize = (int)Mathf.Ceil(2 *
-                                                 audioBufferConfiguration
-                                                     .micBufferLengthInSeconds * 1000 *
-                                                 audioBufferConfiguration.sampleLengthInMs);
-                if (bufferSize <= 0) bufferSize = 1024;
+                var bufferSize = (int) Mathf.Ceil(2 *
+                                                  audioBufferConfiguration
+                                                      .micBufferLengthInSeconds * 1000 *
+                                                  audioBufferConfiguration.sampleLengthInMs);
+                if (bufferSize <= 0)
+                {
+                    bufferSize = 1024;
+                }
                 _micDataBuffer = new RingBuffer<byte>(bufferSize);
             }
         }
@@ -113,11 +142,11 @@ namespace Facebook.WitAi.Data
             var sampleCount = samples.Length;
             const int rescaleFactor = 32767; //to convert float to Int16
 
-            for (var i = 0; i < sampleCount; i++)
+            for (int i = 0; i < sampleCount; i++)
             {
-                var data = (short)(samples[i] * rescaleFactor);
-                _micDataBuffer.Push((byte)data);
-                _micDataBuffer.Push((byte)(data >> 8));
+                short data = (short) (samples[i] * rescaleFactor);
+                _micDataBuffer.Push((byte) data);
+                _micDataBuffer.Push((byte) (data >> 8));
             }
         }
 
@@ -127,13 +156,13 @@ namespace Facebook.WitAi.Data
         }
 
         /// <summary>
-        ///     Creates a marker with an offset
+        /// Creates a marker with an offset
         /// </summary>
         /// <param name="offset">Number of seconds to offset the marker by</param>
         /// <returns></returns>
         public RingBuffer<byte>.Marker CreateMarker(float offset)
         {
-            var samples = (int)(AudioEncoding.samplerate * offset);
+            var samples = (int) (AudioEncoding.samplerate * offset);
             return _micDataBuffer.CreateMarker(samples);
         }
 
@@ -145,41 +174,32 @@ namespace Facebook.WitAi.Data
         private IEnumerator WaitForMicToStart(Component component)
         {
             yield return new WaitUntil(() => null != _micInput);
+            yield return new WaitUntil(() => _micInput.IsInputAvailable);
 
             _activeRecorders.Add(component);
-            if (!_micInput.IsRecording) _micInput.StartRecording(audioBufferConfiguration.sampleLengthInMs);
+            if (!_micInput.IsRecording)
+            {
+                _micInput.StartRecording(audioBufferConfiguration.sampleLengthInMs);
+            }
 
-            if (component is IVoiceEventProvider v) v.VoiceEvents.OnStartListening?.Invoke();
+            if (component is IVoiceEventProvider v)
+            {
+                v.VoiceEvents.OnStartListening?.Invoke();
+            }
         }
 
         public void StopRecording(Component component)
         {
             _activeRecorders.Remove(component);
-            if (_activeRecorders.Count == 0) _micInput.StopRecording();
-
-            if (component is IVoiceEventProvider v) v.VoiceEvents.OnStoppedListening?.Invoke();
-        }
-
-        #region Singleton
-
-        private static AudioBuffer _instance;
-        private static bool _instanceInit;
-
-        public static AudioBuffer Instance
-        {
-            get
+            if (_activeRecorders.Count == 0)
             {
-                if (!_instance) _instance = FindObjectOfType<AudioBuffer>();
-                if (!_instance && !_instanceInit)
-                {
-                    var audioBufferObject = new GameObject("AudioBuffer");
-                    _instance = audioBufferObject.AddComponent<AudioBuffer>();
-                }
+                _micInput.StopRecording();
+            }
 
-                return _instance;
+            if (component is IVoiceEventProvider v)
+            {
+                v.VoiceEvents.OnStoppedListening?.Invoke();
             }
         }
-
-        #endregion
     }
 }

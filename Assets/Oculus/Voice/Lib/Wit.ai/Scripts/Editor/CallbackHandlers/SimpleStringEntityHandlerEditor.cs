@@ -8,75 +8,45 @@
 
 using System;
 using System.Linq;
-using Facebook.WitAi.Data.Configuration;
+using System.Reflection;
+using Meta.WitAi.Data.Info;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.CallbackHandlers
+namespace Meta.WitAi.CallbackHandlers
 {
     [CustomEditor(typeof(SimpleStringEntityHandler))]
-    public class SimpleStringEntityHandlerEditor : Editor
+    public class SimpleStringEntityHandlerEditor : WitIntentMatcherEditor
     {
-        private int entityIndex;
-        private string[] entityNames;
-        private SimpleStringEntityHandler handler;
-        private int intentIndex;
-        private string[] intentNames;
+        // Entity values
+        private string[] _entityNames;
+        private int _entityIndex;
 
-        private void OnEnable()
+        // Set app info
+        protected override void SetAppInfo(WitAppInfo appInfo)
         {
-            handler = target as SimpleStringEntityHandler;
-            if (handler && handler.wit && null == intentNames)
-                if (handler.wit is IWitRuntimeConfigProvider provider &&
-                    null != provider.RuntimeConfiguration &&
-                    provider.RuntimeConfiguration.witConfiguration)
-                {
-                    provider.RuntimeConfiguration.witConfiguration.RefreshData();
-                    intentNames = provider.RuntimeConfiguration.witConfiguration.intents.Select(i => i.name).ToArray();
-                    intentIndex = Array.IndexOf(intentNames, handler.intent);
-                }
+            base.SetAppInfo(appInfo);
+            if (appInfo.entities != null)
+            {
+                _entityNames = appInfo.entities.Select(i => i.name).ToArray();
+                _entityIndex = Array.IndexOf(_entityNames, ((SimpleStringEntityHandler)_matcher).entity);
+            }
         }
-
-        public override void OnInspectorGUI()
+        // Custom GUI
+        protected override bool OnInspectorCustomGUI(FieldInfo fieldInfo)
         {
-            var handler = target as SimpleStringEntityHandler;
-            if (!handler) return;
-            if (!handler.wit)
-                GUILayout.Label(
-                    "Wit component is not present in the scene. Add wit to scene to get intent and entity suggestions.",
-                    EditorStyles.helpBox);
-
-            var intentChanged =
-                WitEditorUI.LayoutSerializedObjectPopup(serializedObject, "intent", intentNames, ref intentIndex);
-            if (intentChanged ||
-                (null != intentNames && intentNames.Length > 0 && null == entityNames))
-                if (handler && handler.wit && null == intentNames)
-                    if (handler.wit is IWitRuntimeConfigProvider provider &&
-                        null != provider.RuntimeConfiguration &&
-                        provider.RuntimeConfiguration.witConfiguration)
-                    {
-                        var entities = provider.RuntimeConfiguration.witConfiguration.intents[intentIndex]?.entities;
-                        if (null != entities)
-                        {
-                            entityNames = entities.Select(e => e.name).ToArray();
-                            entityIndex = Array.IndexOf(entityNames, handler.entity);
-                        }
-                    }
-
-            WitEditorUI.LayoutSerializedObjectPopup(serializedObject, "entity", entityNames, ref entityIndex);
-
-            var confidenceProperty = serializedObject.FindProperty("confidence");
-            EditorGUILayout.PropertyField(confidenceProperty);
-
-            EditorGUILayout.Space(16);
-            var formatProperty = serializedObject.FindProperty("format");
-            EditorGUILayout.PropertyField(formatProperty);
-
-            GUILayout.Space(16);
-
-            var eventProperty = serializedObject.FindProperty("onIntentEntityTriggered");
-            EditorGUILayout.PropertyField(eventProperty);
-            serializedObject.ApplyModifiedProperties();
+            base.OnInspectorCustomGUI(fieldInfo);
+            // Custom layout
+            if (string.Equals(fieldInfo.Name, "entity"))
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Entity", EditorStyles.boldLabel);
+                WitEditorUI.LayoutSerializedObjectPopup(serializedObject, "entity",
+                    _entityNames, ref _entityIndex);
+                return true;
+            }
+            // Layout intent triggered
+            return false;
         }
     }
 }

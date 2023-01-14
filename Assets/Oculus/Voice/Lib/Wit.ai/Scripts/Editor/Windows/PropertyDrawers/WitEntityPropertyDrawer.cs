@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using System.Reflection;
 using UnityEditor;
+using System.Reflection;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public class WitEntityPropertyDrawer : WitPropertyDrawer
     {
@@ -19,32 +19,34 @@ namespace Facebook.WitAi.Windows
             // Determine by ids
             switch (key)
             {
-                case LocalizedTitleKey:
-                    var title = GetFieldStringValue(property, "name");
-                    if (!string.IsNullOrEmpty(title)) return title;
-                    break;
-                case "id":
-                    return WitTexts.Texts.ConfigurationEntitiesIdLabel;
-                case "lookups":
-                    return WitTexts.Texts.ConfigurationEntitiesLookupsLabel;
-                case "roles":
-                    return WitTexts.Texts.ConfigurationEntitiesRolesLabel;
+                    case LocalizedTitleKey:
+                        string title = GetFieldStringValue(property, "name");
+                        if (!string.IsNullOrEmpty(title))
+                        {
+                            return title;
+                        }
+                        break;
+                    case "id":
+                        return WitTexts.Texts.ConfigurationEntitiesIdLabel;
+                    case "lookups":
+                        return WitTexts.Texts.ConfigurationEntitiesLookupsLabel;
+                    case "roles":
+                        return WitTexts.Texts.ConfigurationEntitiesRolesLabel;
+                    case "keywords":
+                        return WitTexts.Texts.ConfigurationEntitiesKeywordsLabel;
             }
 
             // Default to base
             return base.GetLocalizedText(property, key);
         }
-
         // Determine if should layout field
         protected override bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)
         {
             switch (subfield.Name)
             {
                 case "name":
-                case "keywords":
                     return false;
             }
-
             return base.ShouldLayoutField(property, subfield);
         }
     }

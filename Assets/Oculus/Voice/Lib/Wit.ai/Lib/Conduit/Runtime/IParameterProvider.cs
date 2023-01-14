@@ -8,28 +8,29 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     Resolves parameters for invoking callbacks.
+    /// Resolves parameters for invoking callbacks.
     /// </summary>
     internal interface IParameterProvider
     {
         /// <summary>
-        ///     Must be called after all parameters have been obtained and mapped but before any are read.
+        /// Must be called after all parameters have been obtained and mapped but before any are read.
         /// </summary>
         void Populate(Dictionary<string, object> actualParameters, Dictionary<string, string> parameterToRoleMap);
 
         /// <summary>
-        ///     Returns true if a parameter with the specified name can be provided.
+        /// Returns true if a parameter with the specified name can be provided.
         /// </summary>
         /// <param name="parameter">The name of the parameter.</param>
         /// <returns>True if a parameter with the specified name can be provided.</returns>
-        bool ContainsParameter(ParameterInfo parameter);
+        bool ContainsParameter(ParameterInfo parameter, StringBuilder log);
 
         /// <summary>
-        ///     Returns the actual value for a formal parameter.
+        /// Returns the actual value for a formal parameter.
         /// </summary>
         /// <param name="formalParameter">The parameter info.</param>
         /// <returns>The actual parameter value.</returns>

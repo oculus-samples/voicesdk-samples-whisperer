@@ -12,8 +12,14 @@ namespace Oculus.Voice.Core.Utilities
 {
     public class DateTimeUtility
     {
-        public static DateTime UtcNow => DateTime.UtcNow;
+        public static DateTime UtcNow
+        {
+            get => DateTime.UtcNow;
+        }
 
-        public static long ElapsedMilliseconds => UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
+        public static long ElapsedMilliseconds
+        {
+            get => UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
+        }
     }
 }

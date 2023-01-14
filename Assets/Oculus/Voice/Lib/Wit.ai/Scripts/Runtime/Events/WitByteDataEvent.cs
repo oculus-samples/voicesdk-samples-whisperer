@@ -9,12 +9,10 @@
 using System;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.Events
+namespace Meta.WitAi.Events
 {
     [Serializable]
-    public class WitByteDataEvent : UnityEvent<byte[], int, int>
-    {
-    }
+    public class WitByteDataEvent : UnityEvent<byte[], int, int> { }
 
     public interface IWitByteDataReadyHandler
     {

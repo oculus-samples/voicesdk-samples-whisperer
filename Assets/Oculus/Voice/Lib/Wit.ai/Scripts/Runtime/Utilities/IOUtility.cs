@@ -11,7 +11,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     public static class IOUtility
     {
@@ -22,7 +22,7 @@ namespace Facebook.WitAi.Utilities
         }
 
         /// <summary>
-        ///     Creates a directory recursively if desired and returns true if successful
+        /// Creates a directory recursively if desired and returns true if successful
         /// </summary>
         /// <param name="directoryPath">The directory to be created</param>
         /// <param name="recursively">Will traverse parent directories if needed</param>
@@ -30,16 +30,25 @@ namespace Facebook.WitAi.Utilities
         public static bool CreateDirectory(string directoryPath, bool recursively = true)
         {
             // Null
-            if (string.IsNullOrEmpty(directoryPath)) return false;
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return false;
+            }
 
             // Already exists
-            if (Directory.Exists(directoryPath)) return true;
+            if (Directory.Exists(directoryPath))
+            {
+                return true;
+            }
 
             // Check parent
             if (recursively)
             {
-                var parentDirectoryPath = Path.GetDirectoryName(directoryPath);
-                if (!string.IsNullOrEmpty(parentDirectoryPath) && !CreateDirectory(parentDirectoryPath)) return false;
+                string parentDirectoryPath = Path.GetDirectoryName(directoryPath);
+                if (!string.IsNullOrEmpty(parentDirectoryPath) && !CreateDirectory(parentDirectoryPath, true))
+                {
+                    return false;
+                }
             }
 
             try
@@ -57,7 +66,7 @@ namespace Facebook.WitAi.Utilities
         }
 
         /// <summary>
-        ///     Deletes a directory and returns true if the directory no longer exists
+        /// Deletes a directory and returns true if the directory no longer exists
         /// </summary>
         /// <param name="directoryPath">The directory to be created</param>
         /// <param name="forceIfFilled">Whether to force a deletion if the directory contains contents</param>
@@ -65,7 +74,10 @@ namespace Facebook.WitAi.Utilities
         public static bool DeleteDirectory(string directoryPath, bool forceIfFilled = true)
         {
             // Already gone
-            if (!Directory.Exists(directoryPath)) return true;
+            if (!Directory.Exists(directoryPath))
+            {
+                return true;
+            }
 
             try
             {

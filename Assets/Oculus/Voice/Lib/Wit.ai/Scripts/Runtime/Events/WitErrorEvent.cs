@@ -9,12 +9,13 @@
 using System;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.Events
+namespace Meta.WitAi.Events
 {
     /// <summary>
-    ///     An error event with two parameters.
-    ///     Param 1: error - the type of error that occurred
-    ///     Param 2: message - A human readable message describing the error
+    /// An error event with two parameters.
+    ///
+    /// Param 1: error - the type of error that occurred
+    /// Param 2: message - A human readable message describing the error
     /// </summary>
     [Serializable]
     public class WitErrorEvent : UnityEvent<string, string>

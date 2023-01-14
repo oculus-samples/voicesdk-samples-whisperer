@@ -7,17 +7,16 @@
  */
 
 using System;
-using Facebook.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Data;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.TTS.Events
+namespace Meta.WitAi.TTS.Events
 {
     [Serializable]
     public class TTSClipDownloadEvent : UnityEvent<TTSClipData, string>
     {
     }
-
     [Serializable]
     public class TTSClipDownloadErrorEvent : UnityEvent<TTSClipData, string, string>
     {
@@ -27,15 +26,15 @@ namespace Facebook.WitAi.TTS.Events
     public class TTSDownloadEvents
     {
         [Tooltip("Called when a audio clip download begins")]
-        public TTSClipDownloadEvent OnDownloadBegin = new();
+        public TTSClipDownloadEvent OnDownloadBegin = new TTSClipDownloadEvent();
 
         [Tooltip("Called when a audio clip is downloaded successfully")]
-        public TTSClipDownloadEvent OnDownloadSuccess = new();
+        public TTSClipDownloadEvent OnDownloadSuccess = new TTSClipDownloadEvent();
 
         [Tooltip("Called when a audio clip downloaded has been cancelled")]
-        public TTSClipDownloadEvent OnDownloadCancel = new();
+        public TTSClipDownloadEvent OnDownloadCancel = new TTSClipDownloadEvent();
 
         [Tooltip("Called when a audio clip downloaded has failed")]
-        public TTSClipDownloadErrorEvent OnDownloadError = new();
+        public TTSClipDownloadErrorEvent OnDownloadError = new TTSClipDownloadErrorEvent();
     }
 }

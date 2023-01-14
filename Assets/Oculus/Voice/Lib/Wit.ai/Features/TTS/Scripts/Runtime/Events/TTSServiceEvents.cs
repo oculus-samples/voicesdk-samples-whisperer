@@ -9,21 +9,21 @@
 using System;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Events
+namespace Meta.WitAi.TTS.Events
 {
     [Serializable]
     public class TTSServiceEvents
     {
         [Tooltip("Called when a audio clip has been added to the runtime cache")]
-        public TTSClipEvent OnClipCreated = new();
+        public TTSClipEvent OnClipCreated  = new TTSClipEvent();
 
         [Tooltip("Called when a audio clip has been removed from the runtime cache")]
-        public TTSClipEvent OnClipUnloaded = new();
+        public TTSClipEvent OnClipUnloaded  = new TTSClipEvent();
 
         // Streaming events
-        public TTSStreamEvents Stream = new();
+        public TTSStreamEvents Stream = new TTSStreamEvents();
 
         // Download events
-        public TTSDownloadEvents Download = new();
+        public TTSDownloadEvents Download = new TTSDownloadEvents();
     }
 }

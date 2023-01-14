@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Integrations;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Integrations;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Facebook.WitAi.TTS.Samples
+namespace Meta.WitAi.TTS.Samples
 {
     public class TTSCacheToggle : MonoBehaviour
     {
@@ -21,50 +21,46 @@ namespace Facebook.WitAi.TTS.Samples
         [SerializeField] private Button _button;
 
         // Current disk cache location
-        private TTSDiskCacheLocation _cacheLocation = (TTSDiskCacheLocation)(-1);
-
-        // Check for changes
-        private void Update()
-        {
-            if (_cacheLocation != GetCurrentCacheLocation()) RefreshLocation();
-        }
+        private TTSDiskCacheLocation _cacheLocation = (TTSDiskCacheLocation) (-1);
 
         // Add listeners
         private void OnEnable()
         {
             // Obtain disk cache if possible
-            if (_diskCache == null) _diskCache = FindObjectOfType<TTSDiskCache>();
+            if (_diskCache == null)
+            {
+                _diskCache = GameObject.FindObjectOfType<TTSDiskCache>();
+            }
             // Reset location text
             RefreshLocation();
             _button.onClick.AddListener(ToggleCache);
         }
-
-        // Remove listeners
-        private void OnDisable()
-        {
-            _button.onClick.RemoveListener(ToggleCache);
-        }
-
         // Current disk cache location
-        private TTSDiskCacheLocation GetCurrentCacheLocation()
+        private TTSDiskCacheLocation GetCurrentCacheLocation() => _diskCache == null ? TTSDiskCacheLocation.Stream : _diskCache.DiskCacheDefaultSettings.DiskCacheLocation;
+        // Check for changes
+        private void Update()
         {
-            return _diskCache == null
-                ? TTSDiskCacheLocation.Stream
-                : _diskCache.DiskCacheDefaultSettings.DiskCacheLocation;
+            if (_cacheLocation != GetCurrentCacheLocation())
+            {
+                RefreshLocation();
+            }
         }
-
         // Refresh location & button text
         private void RefreshLocation()
         {
             _cacheLocation = GetCurrentCacheLocation();
             _cacheLabel.text = $"Disk Cache: {_cacheLocation}";
         }
-
+        // Remove listeners
+        private void OnDisable()
+        {
+            _button.onClick.RemoveListener(ToggleCache);
+        }
         // Toggle cache
         public void ToggleCache()
         {
             // Toggle to next option
-            var cacheLocation = GetCurrentCacheLocation();
+            TTSDiskCacheLocation cacheLocation = GetCurrentCacheLocation();
             switch (cacheLocation)
             {
                 case TTSDiskCacheLocation.Stream:

@@ -19,30 +19,29 @@
  */
 
 using System;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Dictation;
-using Facebook.WitAi.Dictation.Events;
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Dictation;
+using Meta.WitAi.Dictation.Events;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Utilities;
 using Oculus.Voice.Core.Bindings.Android;
+using Oculus.Voice.Dictation.Configuration;
+using UnityEngine.Events;
 
 namespace Oculus.Voice.Dictation.Bindings.Android
 {
-    public class PlatformDictationImpl : BaseAndroidConnectionImpl<PlatformDictationSDKBinding>, IDictationService,
-        IServiceEvents
+    public class PlatformDictationImpl : BaseAndroidConnectionImpl<PlatformDictationSDKBinding>, IDictationService, IServiceEvents
     {
         private readonly IDictationService _baseService;
-        private WitDictationRuntimeConfiguration _dictationRuntimeConfiguration;
-
-        private DictationListenerBinding _listenerBinding;
         private bool _serviceAvailable = true;
-
-        public Action OnServiceNotAvailableEvent;
-
+        private WitDictationRuntimeConfiguration _dictationRuntimeConfiguration;
         public PlatformDictationImpl(IDictationService dictationService)
             : base("com.oculus.assistant.api.unity.dictation.UnityDictationServiceFragment")
         {
             _baseService = dictationService;
         }
+
+        private DictationListenerBinding _listenerBinding;
 
         public bool PlatformSupportsDictation => service.IsSupported && _serviceAvailable;
         public bool Active => service.Active;
@@ -54,6 +53,25 @@ namespace Oculus.Voice.Dictation.Bindings.Android
         {
             get => _baseService.DictationEvents;
             set => _baseService.DictationEvents = value;
+        }
+
+        public Action OnServiceNotAvailableEvent;
+
+        public override void Connect(string version)
+        {
+            base.Connect(version);
+            _listenerBinding = new DictationListenerBinding(this, this);
+            service.SetListener(_listenerBinding);
+        }
+
+        public override void Disconnect()
+        {
+            base.Disconnect();
+        }
+
+        public void SetDictationRuntimeConfiguration(WitDictationRuntimeConfiguration configuration)
+        {
+            _dictationRuntimeConfiguration = configuration;
         }
 
         public void Activate()
@@ -85,23 +103,6 @@ namespace Oculus.Voice.Dictation.Bindings.Android
         {
             _serviceAvailable = false;
             OnServiceNotAvailableEvent?.Invoke();
-        }
-
-        public override void Connect(string version)
-        {
-            base.Connect(version);
-            _listenerBinding = new DictationListenerBinding(this, this);
-            service.SetListener(_listenerBinding);
-        }
-
-        public override void Disconnect()
-        {
-            base.Disconnect();
-        }
-
-        public void SetDictationRuntimeConfiguration(WitDictationRuntimeConfiguration configuration)
-        {
-            _dictationRuntimeConfiguration = configuration;
         }
     }
 }

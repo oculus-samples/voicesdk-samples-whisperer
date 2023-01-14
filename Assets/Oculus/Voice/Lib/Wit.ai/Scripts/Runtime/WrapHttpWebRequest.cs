@@ -11,59 +11,28 @@ using System.IO;
 using System.Net;
 using UnityEngine;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public class WrapHttpWebRequest : IRequest
     {
-        private HttpWebRequest _httpWebRequest;
+        HttpWebRequest _httpWebRequest;
 
         public WrapHttpWebRequest(HttpWebRequest httpWebRequest)
         {
-            if (Application.isBatchMode) httpWebRequest.KeepAlive = false;
+            if (Application.isBatchMode)
+            {
+                httpWebRequest.KeepAlive = false;
+            }
             _httpWebRequest = httpWebRequest;
         }
 
-        public WebHeaderCollection Headers
-        {
-            get => _httpWebRequest.Headers;
-            set => _httpWebRequest.Headers = value;
-        }
-
-        public string Method
-        {
-            get => _httpWebRequest.Method;
-            set => _httpWebRequest.Method = value;
-        }
-
-        public string ContentType
-        {
-            get => _httpWebRequest.ContentType;
-            set => _httpWebRequest.ContentType = value;
-        }
-
-        public long ContentLength
-        {
-            get => _httpWebRequest.ContentLength;
-            set => _httpWebRequest.ContentLength = value;
-        }
-
-        public bool SendChunked
-        {
-            get => _httpWebRequest.SendChunked;
-            set => _httpWebRequest.SendChunked = value;
-        }
-
-        public string UserAgent
-        {
-            get => _httpWebRequest.UserAgent;
-            set => _httpWebRequest.UserAgent = value;
-        }
-
-        public int Timeout
-        {
-            get => _httpWebRequest.Timeout;
-            set => _httpWebRequest.Timeout = value;
-        }
+        public WebHeaderCollection Headers { get => _httpWebRequest.Headers; set => _httpWebRequest.Headers = value; }
+        public string Method { get => _httpWebRequest.Method; set => _httpWebRequest.Method = value; }
+        public string ContentType { get => _httpWebRequest.ContentType; set => _httpWebRequest.ContentType = value; }
+        public long ContentLength { get => _httpWebRequest.ContentLength; set => _httpWebRequest.ContentLength = value; }
+        public bool SendChunked { get => _httpWebRequest.SendChunked; set => _httpWebRequest.SendChunked = value; }
+        public string UserAgent { get => _httpWebRequest.UserAgent; set => _httpWebRequest.UserAgent = value; }
+        public int Timeout { get => _httpWebRequest.Timeout; set => _httpWebRequest.Timeout = value; }
 
         public void Abort()
         {
@@ -93,7 +62,7 @@ namespace Facebook.WitAi
 
         public WebResponse EndGetResponse(IAsyncResult asyncResult)
         {
-            return _httpWebRequest.EndGetResponse(asyncResult);
+            return (_httpWebRequest).EndGetResponse(asyncResult);
         }
     }
 }

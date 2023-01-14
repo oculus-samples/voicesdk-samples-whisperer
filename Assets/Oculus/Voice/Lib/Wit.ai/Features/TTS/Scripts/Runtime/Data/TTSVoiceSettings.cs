@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace Facebook.WitAi.TTS.Data
+namespace Meta.WitAi.TTS.Data
 {
     public abstract class TTSVoiceSettings
     {
@@ -14,7 +14,7 @@ namespace Facebook.WitAi.TTS.Data
         public const string DEFAULT_ID = "Default Voice";
 
         /// <summary>
-        ///     The unique voice settings id
+        /// The unique voice settings id
         /// </summary>
         public string settingsID = DEFAULT_ID;
     }

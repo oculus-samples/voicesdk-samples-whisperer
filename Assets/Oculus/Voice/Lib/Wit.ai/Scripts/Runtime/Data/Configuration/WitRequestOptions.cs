@@ -7,35 +7,63 @@
  */
 
 using System;
-using Facebook.WitAi.Interfaces;
+using System.Collections.Generic;
+using System.Text;
+using Meta.WitAi.Interfaces;
+using UnityEngine;
 
-namespace Facebook.WitAi.Configuration
+namespace Meta.WitAi.Configuration
 {
     public class WitRequestOptions
     {
         /// <summary>
-        ///     An interface that provides a list of entities that should be used for nlu resolution.
+        /// An interface that provides a list of entities that should be used for nlu resolution.
         /// </summary>
         public IDynamicEntitiesProvider dynamicEntities;
 
         /// <summary>
-        ///     The maximum number of intent matches to return
+        /// The maximum number of intent matches to return
         /// </summary>
         public int nBestIntents = -1;
 
         /// <summary>
-        ///     Callback for completion
+        /// The tag for snapshot
         /// </summary>
-        public Action<WitRequest> onResponse;
+        public string tag;
 
         /// <summary>
-        ///     A GUID - For internal use
+        /// A GUID - For internal use
         /// </summary>
         public string requestID = Guid.NewGuid().ToString();
 
         /// <summary>
-        ///     The tag for snapshot
+        /// Additional parameters to be used for custom
+        /// implementation overrides.
         /// </summary>
-        public string tag;
+        public Dictionary<string, string> additionalParameters = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Callback for completion
+        /// </summary>
+        public Action<WitRequest> onResponse;
+
+        // Get json string
+        public string ToJsonString()
+        {
+            // Get default json
+            string results = JsonUtility.ToJson(this);
+
+            // Append parameters before final }
+            StringBuilder parameters = new StringBuilder();
+            foreach (var key in additionalParameters.Keys)
+            {
+                string value = additionalParameters[key].Replace("\"", "\\\"");
+                parameters.Append($",\"{key}\":\"{value}\"");
+            }
+            results = results.Insert(results.Length - 1, parameters.ToString());
+
+            // Return json
+            return results;
+        }
     }
 }

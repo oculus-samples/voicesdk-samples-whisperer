@@ -10,24 +10,26 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi.Utilities
+namespace Meta.WitAi.Utilities
 {
     public class FloatToStringEvent : MonoBehaviour
     {
         [SerializeField] private string format;
-        [SerializeField] private StringEvent onFloatToString = new();
+        [SerializeField] private StringEvent onFloatToString = new StringEvent();
 
         public void ConvertFloatToString(float value)
         {
             if (string.IsNullOrEmpty(format))
+            {
                 onFloatToString?.Invoke(value.ToString());
+            }
             else
+            {
                 onFloatToString?.Invoke(value.ToString(format));
+            }
         }
     }
 
     [Serializable]
-    public class StringEvent : UnityEvent<string>
-    {
-    }
+    public class StringEvent : UnityEvent<string> {}
 }

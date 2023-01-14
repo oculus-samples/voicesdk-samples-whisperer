@@ -6,19 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi.Interfaces;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data.Entities
+namespace Meta.WitAi.Data.Entities
 {
     public class DynamicEntityDataProvider : MonoBehaviour, IDynamicEntitiesProvider
     {
         [SerializeField] internal WitDynamicEntitiesData[] entitiesDefinition;
-
         public WitDynamicEntities GetDynamicEntities()
         {
-            var entities = new WitDynamicEntities();
-            foreach (var entity in entitiesDefinition) entities.Merge(entity);
+            WitDynamicEntities entities = new WitDynamicEntities();
+            foreach (var entity in entitiesDefinition)
+            {
+                entities.Merge(entity);
+            }
 
             return entities;
         }

@@ -25,32 +25,37 @@ namespace Oculus.Voice.Demo
 {
     public class ShortResponseInstructions : MonoBehaviour
     {
-        private const string SHAPE_KEY = "[SHAPE]";
-
         // Instructions label
-        [Header("UI Settings")] [SerializeField]
-        private Text _instructionsLabel;
-
+        [Header("UI Settings")]
+        [SerializeField] private Text _instructionsLabel;
         // Handles shape changes
         private ShortResponseColorHandler _handler;
 
         [Header("Text Settings")]
-        private readonly string _shapeMissingText = "Say a phrase to select a shape such as 'Select Cube'.";
-
-        private readonly string _shapeSelectedText = $"{SHAPE_KEY} Selected.  Say a color to set the [SHAPE]'s color.";
+        private string _shapeMissingText = "Say a phrase to select a shape such as 'Select Cube'.";
+        private string _shapeSelectedText = $"{SHAPE_KEY} Selected.  Say a color to set the [SHAPE]'s color.";
+        private const string SHAPE_KEY = "[SHAPE]";
 
         // Add delegates
         private void OnEnable()
         {
-            if (_handler == null) _handler = gameObject.GetComponent<ShortResponseColorHandler>();
+            if (_handler == null)
+            {
+                _handler = gameObject.GetComponent<ShortResponseColorHandler>();
+            }
             ShapeSelected(null);
-            _handler.OnShapeSelected += ShapeSelected;
+            if (_handler != null)
+            {
+                _handler.OnShapeSelected += ShapeSelected;
+            }
         }
-
         // Remove delegates
         private void OnDisable()
         {
-            _handler.OnShapeSelected -= ShapeSelected;
+            if (_handler != null)
+            {
+                _handler.OnShapeSelected -= ShapeSelected;
+            }
         }
 
         // Shape selected
@@ -62,7 +67,7 @@ namespace Oculus.Voice.Demo
             }
             else
             {
-                var shapeName = newShape.gameObject.name;
+                string shapeName = newShape.gameObject.name;
                 _instructionsLabel.text = _shapeSelectedText.Replace(SHAPE_KEY, shapeName);
             }
         }

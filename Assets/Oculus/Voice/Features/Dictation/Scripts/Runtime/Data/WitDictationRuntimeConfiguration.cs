@@ -10,13 +10,14 @@ using System;
 using Oculus.Voice.Dictation.Configuration;
 using UnityEngine;
 
-namespace Facebook.WitAi.Configuration
+namespace Meta.WitAi.Configuration
 {
     [Serializable]
     public class WitDictationRuntimeConfiguration : WitRuntimeConfiguration
     {
-        [Header("Dictation")] [SerializeField] public DictationConfiguration dictationConfiguration;
+        [Header("Dictation")]
+        [SerializeField] public DictationConfiguration dictationConfiguration;
 
-        protected override Vector2 RecordingTimeRange => new(-1, 300);
+        protected override Vector2 RecordingTimeRange => new Vector2(-1, 300);
     }
 }

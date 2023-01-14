@@ -18,14 +18,16 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Configuration;
+using Meta.WitAi.Configuration;
+using Meta.WitAi;
+using Meta.WitAi;
 using UnityEngine;
 
 namespace Oculus.Voice.Bindings.Android
 {
     public class VoiceSDKConfigBinding
     {
-        private readonly WitRuntimeConfiguration configuration;
+        private WitRuntimeConfiguration configuration;
 
         public VoiceSDKConfigBinding(WitRuntimeConfiguration config)
         {
@@ -34,13 +36,11 @@ namespace Oculus.Voice.Bindings.Android
 
         public AndroidJavaObject ToJavaObject()
         {
-            var witConfig =
+            AndroidJavaObject witConfig =
                 new AndroidJavaObject("com.oculus.assistant.api.voicesdk.immersivevoicecommands.WitConfiguration");
-            witConfig.Set("clientAccessToken", configuration.witConfiguration.clientAccessToken);
+            witConfig.Set("clientAccessToken", configuration.witConfiguration.GetClientAccessToken());
 
-            var witRuntimeConfig =
-                new AndroidJavaObject(
-                    "com.oculus.assistant.api.voicesdk.immersivevoicecommands.WitRuntimeConfiguration");
+            AndroidJavaObject witRuntimeConfig = new AndroidJavaObject("com.oculus.assistant.api.voicesdk.immersivevoicecommands.WitRuntimeConfiguration");
             witRuntimeConfig.Set("witConfiguration", witConfig);
 
             witRuntimeConfig.Set("minKeepAliveVolume", configuration.minKeepAliveVolume);
@@ -60,6 +60,10 @@ namespace Oculus.Voice.Bindings.Android
                 configuration.sendAudioToWit);
             witRuntimeConfig.Set("preferredActivationOffset",
                 configuration.preferredActivationOffset);
+            witRuntimeConfig.Set("clientName",
+                WitConstants.CLIENT_NAME);
+            witRuntimeConfig.Set("serverVersion",
+                WitConstants.API_VERSION);
 
             return witRuntimeConfig;
         }

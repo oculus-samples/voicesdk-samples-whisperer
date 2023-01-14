@@ -7,20 +7,20 @@
  */
 
 using System.Reflection;
-using Facebook.WitAi.Utilities;
+using Meta.WitAi.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Drawers
+namespace Meta.WitAi.Drawers
 {
     [CustomPropertyDrawer(typeof(DynamicRangeAttribute))]
     public class DynamicRangeAttributeDrawer : PropertyDrawer
     {
-        private float _max;
-        private float _min;
-        private object _parentValue;
-        private PropertyInfo _rangePropertyField;
         private Object _targetObject;
+        private float _min;
+        private float _max;
+        private PropertyInfo _rangePropertyField;
+        private object _parentValue;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -31,7 +31,7 @@ namespace Facebook.WitAi.Drawers
             var parentProperty = property.serializedObject.FindProperty(parentPropertyName);
 
             var targetObject = property.serializedObject.targetObject;
-            if (targetObject != _targetObject)
+            if(targetObject != _targetObject)
             {
                 _targetObject = targetObject;
                 var targetObjectClassType = targetObject.GetType();
@@ -50,13 +50,14 @@ namespace Facebook.WitAi.Drawers
             _max = attr.DefaultMax;
             if (null != _rangePropertyField)
             {
-                var range = (Vector2)_rangePropertyField.GetValue(_parentValue);
+                var range = (Vector2) _rangePropertyField.GetValue(_parentValue);
                 _min = range.x;
                 _max = range.y;
             }
 
             property.floatValue = EditorGUI.Slider(position, label, property.floatValue,
                 _min, _max);
+
         }
     }
 }

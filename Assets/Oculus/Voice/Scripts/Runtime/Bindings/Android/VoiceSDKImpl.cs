@@ -19,26 +19,24 @@
  */
 
 using System;
-using Facebook.WitAi;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
 using Oculus.Voice.Core.Bindings.Android;
 using Oculus.Voice.Interfaces;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Oculus.Voice.Bindings.Android
 {
     public class VoiceSDKImpl : BaseAndroidConnectionImpl<VoiceSDKBinding>,
         IPlatformVoiceService, IVCBindingEvents
     {
-        private readonly IVoiceService _baseVoiceService;
+        private bool _isServiceAvailable = true;
+        public Action OnServiceNotAvailableEvent;
+        private IVoiceService _baseVoiceService;
 
         private bool _isActive;
-        private bool _isServiceAvailable = true;
-
-        private VoiceSDKListenerBinding eventBinding;
-        public Action OnServiceNotAvailableEvent;
 
         public VoiceSDKImpl(IVoiceService baseVoiceService) : base(
             "com.oculus.assistant.api.unity.immersivevoicecommands.UnityIVCServiceFragment")
@@ -51,80 +49,14 @@ namespace Oculus.Voice.Bindings.Android
         public bool Active => service.Active && _isActive;
         public bool IsRequestActive => service.IsRequestActive;
         public bool MicActive => service.MicActive;
-
         public void SetRuntimeConfiguration(WitRuntimeConfiguration configuration)
         {
             service.SetRuntimeConfiguration(configuration);
         }
 
+        private VoiceSDKListenerBinding eventBinding;
+
         public ITranscriptionProvider TranscriptionProvider { get; set; }
-
-        public void Activate(string text)
-        {
-            service.Activate(text);
-        }
-
-        public void Activate(string text, WitRequestOptions requestOptions)
-        {
-            service.Activate(text, requestOptions);
-        }
-
-        public void Activate()
-        {
-            if (_isActive) return;
-
-            _isActive = true;
-            service.Activate();
-        }
-
-        public void Activate(WitRequestOptions requestOptions)
-        {
-            if (_isActive) return;
-
-            _isActive = true;
-            service.Activate(requestOptions);
-        }
-
-        public void ActivateImmediately()
-        {
-            if (_isActive) return;
-
-            _isActive = true;
-            service.ActivateImmediately();
-        }
-
-        public void ActivateImmediately(WitRequestOptions requestOptions)
-        {
-            if (_isActive) return;
-
-            _isActive = true;
-            service.ActivateImmediately(requestOptions);
-        }
-
-        public void Deactivate()
-        {
-            _isActive = false;
-            service.Deactivate();
-        }
-
-        public void DeactivateAndAbortRequest()
-        {
-            _isActive = false;
-            service.Deactivate();
-        }
-
-        public VoiceEvents VoiceEvents
-        {
-            get => _baseVoiceService.VoiceEvents;
-            set => _baseVoiceService.VoiceEvents = value;
-        }
-
-        public void OnServiceNotAvailable(string error, string message)
-        {
-            _isActive = false;
-            _isServiceAvailable = false;
-            OnServiceNotAvailableEvent?.Invoke();
-        }
 
         public override void Connect(string version)
         {
@@ -140,12 +72,64 @@ namespace Oculus.Voice.Bindings.Android
         public override void Disconnect()
         {
             base.Disconnect();
-            if (null != eventBinding) eventBinding.VoiceEvents.OnStoppedListening.RemoveListener(OnStoppedListening);
+            if (null != eventBinding)
+            {
+                eventBinding.VoiceEvents.OnStoppedListening.RemoveListener(OnStoppedListening);
+            }
         }
 
         private void OnStoppedListening()
         {
             _isActive = false;
+        }
+
+        public void Activate(string text, WitRequestOptions requestOptions)
+        {
+            eventBinding.VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
+            service.Activate(text, requestOptions);
+        }
+
+        public void Activate(WitRequestOptions requestOptions)
+        {
+            if (_isActive) return;
+
+            _isActive = true;
+            eventBinding.VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
+            service.Activate(requestOptions);
+        }
+
+        public void ActivateImmediately(WitRequestOptions requestOptions)
+        {
+            if (_isActive) return;
+
+            _isActive = true;
+            eventBinding.VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
+            service.ActivateImmediately(requestOptions);
+        }
+
+        public void Deactivate()
+        {
+            _isActive = false;
+            service.Deactivate();
+        }
+
+        public void DeactivateAndAbortRequest()
+        {
+            _isActive = false;
+            service.Deactivate();
+        }
+
+        public void OnServiceNotAvailable(string error, string message)
+        {
+            _isActive = false;
+            _isServiceAvailable = false;
+            OnServiceNotAvailableEvent?.Invoke();
+        }
+
+        public VoiceEvents VoiceEvents
+        {
+            get => _baseVoiceService.VoiceEvents;
+            set => _baseVoiceService.VoiceEvents = value;
         }
     }
 }

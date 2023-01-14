@@ -9,17 +9,17 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Inspectors
+namespace Meta.WitAi.Inspectors
 {
     [CustomEditor(typeof(WitService))]
     public class WitServiceInspector : Editor
     {
         private string activationMessage;
+        private WitService wit;
+        private float micMin;
+        private float micMax;
         private string lastTranscription;
         private float micCurrent;
-        private float micMax;
-        private float micMin;
-        private WitService wit;
 
         public override void OnInspectorGUI()
         {
@@ -27,16 +27,23 @@ namespace Facebook.WitAi.Inspectors
 
             if (Application.isPlaying)
             {
-                wit = (WitService)target;
+                wit = (WitService) target;
 
                 if (wit.Active)
                 {
-                    if (GUILayout.Button("Deactivate")) wit.Deactivate();
+                    if (GUILayout.Button("Deactivate"))
+                    {
+                        wit.Deactivate();
+                    }
 
                     if (wit.MicActive)
+                    {
                         GUILayout.Label("Listening...");
+                    }
                     else
+                    {
                         GUILayout.Label("Processing...");
+                    }
                 }
                 else
                 {

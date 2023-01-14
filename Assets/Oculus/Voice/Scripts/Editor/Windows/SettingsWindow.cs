@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Windows;
+using Meta.WitAi;
+using Meta.WitAi.Windows;
 using Oculus.Voice.Utility;
 using UnityEngine;
 

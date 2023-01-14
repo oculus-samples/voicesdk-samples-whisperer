@@ -8,56 +8,53 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Scripting;
 
 namespace Meta.Conduit
 {
     /// <summary>
-    ///     An action entry in the manifest.
+    /// An action entry in the manifest.
     /// </summary>
     internal class ManifestAction
     {
         /// <summary>
-        ///     Called via JSON reflection, need preserver or it will be stripped on compile
+        /// Called via JSON reflection, need preserver or it will be stripped on compile
         /// </summary>
-        [Preserve]
-        public ManifestAction()
-        {
-        }
+        [UnityEngine.Scripting.Preserve]
+        public ManifestAction() { }
 
         /// <summary>
-        ///     This is the internal fully qualified name of the method in the codebase.
+        /// This is the internal fully qualified name of the method in the codebase.
         /// </summary>
         public string ID { get; set; }
 
         /// <summary>
-        ///     The fully qualified name of the assembly containing the code for the action.
+        /// The fully qualified name of the assembly containing the code for the action.
         /// </summary>
         public string Assembly { get; set; }
 
         /// <summary>
-        ///     The name of the action as exposed to the backend.
+        /// The name of the action as exposed to the backend.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        ///     The parameters used by the action.
+        /// The parameters used by the action.
         /// </summary>
-        public List<ManifestParameter> Parameters { get; set; } = new();
+        public List<ManifestParameter> Parameters { get; set; } = new List<ManifestParameter>();
 
         /// <summary>
-        ///     Returns the fully qualified name of the declaring type of the action.
+        /// Returns the fully qualified name of the declaring type of the action.
         /// </summary>
         public string DeclaringTypeName => ID.Substring(0, ID.LastIndexOf('.'));
 
         /// <summary>
-        ///     Additional names by which the backend can refer to this action.
+        /// Additional names by which the backend can refer to this action.
         /// </summary>
-        public List<string> Aliases { get; set; } = new();
+        public List<string> Aliases { get; set; } = new List<string>();
 
         public override bool Equals(object obj)
         {
-            return obj is ManifestAction other && Equals(other);
+            return obj is ManifestAction other && this.Equals(other);
         }
 
         public override int GetHashCode()
@@ -73,8 +70,7 @@ namespace Meta.Conduit
 
         private bool Equals(ManifestAction other)
         {
-            return ID == other.ID && Assembly == other.Assembly && Name == other.Name &&
-                   Parameters.SequenceEqual(other.Parameters) && Aliases.SequenceEqual(other.Aliases);
+            return this.ID == other.ID && this.Assembly == other.Assembly && this.Name == other.Name && this.Parameters.SequenceEqual(other.Parameters) && this.Aliases.SequenceEqual(other.Aliases);
         }
     }
 }

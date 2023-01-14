@@ -25,16 +25,19 @@ namespace Oculus.Voice.Core.Bindings.Android
 {
     public class AndroidServiceConnection : IConnection
     {
-        private readonly string serviceFragmentClass;
-        private readonly string serviceGetter;
+        private AndroidJavaObject mAssistantServiceConnection;
+
+        private string serviceFragmentClass;
+        private string serviceGetter;
+
+        public bool IsConnected => null != mAssistantServiceConnection;
+
+        public AndroidJavaObject AssistantServiceConnection => mAssistantServiceConnection;
 
         /// <summary>
-        ///     Creates a connection manager of the given type
+        /// Creates a connection manager of the given type
         /// </summary>
-        /// <param name="serviceFragmentClassName">
-        ///     The fully qualified class name of the service fragment that will manage this
-        ///     connection
-        /// </param>
+        /// <param name="serviceFragmentClassName">The fully qualified class name of the service fragment that will manage this connection</param>
         /// <param name="serviceGetterMethodName">The name of the method that will return an instance of the service</param>
         /// TODO: We should make the getBlahService simply getService() within each fragment implementation.
         public AndroidServiceConnection(string serviceFragmentClassName, string serviceGetterMethodName)
@@ -43,22 +46,18 @@ namespace Oculus.Voice.Core.Bindings.Android
             serviceGetter = serviceGetterMethodName;
         }
 
-        public AndroidJavaObject AssistantServiceConnection { get; private set; }
-
-        public bool IsConnected => null != AssistantServiceConnection;
-
         public void Connect(string version)
         {
-            if (null == AssistantServiceConnection)
+            if (null == mAssistantServiceConnection)
             {
                 AndroidJNIHelper.debug = true;
 
-                var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-                var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
+                AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                AndroidJavaObject activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
 
-                using (var assistantBackgroundFragment = new AndroidJavaClass(serviceFragmentClass))
+                using (AndroidJavaClass assistantBackgroundFragment = new AndroidJavaClass(serviceFragmentClass))
                 {
-                    AssistantServiceConnection =
+                    mAssistantServiceConnection =
                         assistantBackgroundFragment.CallStatic<AndroidJavaObject>("createAndAttach", activity, version);
                 }
             }
@@ -66,12 +65,12 @@ namespace Oculus.Voice.Core.Bindings.Android
 
         public void Disconnect()
         {
-            AssistantServiceConnection.Call("detach");
+            mAssistantServiceConnection.Call("detach");
         }
 
         public AndroidJavaObject GetService()
         {
-            return AssistantServiceConnection.Call<AndroidJavaObject>(serviceGetter);
+            return mAssistantServiceConnection.Call<AndroidJavaObject>(serviceGetter);
         }
     }
 }

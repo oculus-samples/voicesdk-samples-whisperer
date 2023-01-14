@@ -18,28 +18,71 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Data.Entities;
-using Facebook.WitAi.Data.Intents;
-using Facebook.WitAi.Data.Traits;
-using Facebook.WitAi.TTS.Editor;
-using Facebook.WitAi.TTS.Editor.Preload;
-using Facebook.WitAi.Windows;
-using Oculus.Voice.Windows;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using Meta.WitAi.Windows;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data.Entities;
+using Meta.WitAi.TTS.Editor;
+using Meta.WitAi.TTS.Editor.Preload;
+using Meta.WitAi.Data.Info;
+using Oculus.Voice.Windows;
 
 namespace Oculus.Voice.Utility
 {
     public static class VoiceSDKMenu
     {
-        #region Scriptable Objects
+        #region WINDOWS
+        [MenuItem("Oculus/Voice SDK/Settings", false, 100)]
+        private static void OpenConfigurationWindow()
+        {
+            WitWindowUtility.OpenConfigurationWindow();
+        }
+        [MenuItem("Oculus/Voice SDK/Understanding Viewer", false, 100)]
+        private static void OpenUnderstandingWindow()
+        {
+            WitWindowUtility.OpenUnderstandingWindow();
+        }
+        [MenuItem("Oculus/Voice SDK/About", false, 200)]
+        private static void OpenAboutWindow()
+        {
+            ScriptableWizard.DisplayWizard<AboutWindow>(VoiceSDKStyles.Texts.AboutTitleLabel, VoiceSDKStyles.Texts.AboutCloseLabel);
+        }
+        #endregion
 
+        #region DRAWERS
+        [CustomPropertyDrawer(typeof(WitEndpointConfig))]
+        public class VoiceCustomEndpointPropertyDrawer : WitEndpointConfigDrawer
+        {
+
+        }
+        [CustomPropertyDrawer(typeof(WitAppInfo))]
+        public class VoiceCustomApplicationPropertyDrawer : VoiceApplicationDetailProvider
+        {
+
+        }
+        [CustomPropertyDrawer(typeof(WitIntentInfo))]
+        public class VoiceCustomIntentPropertyDrawer : WitIntentPropertyDrawer
+        {
+
+        }
+        [CustomPropertyDrawer(typeof(WitEntityInfo))]
+        public class VoiceCustomEntityPropertyDrawer : WitEntityPropertyDrawer
+        {
+
+        }
+        [CustomPropertyDrawer(typeof(WitTraitInfo))]
+        public class VoiceCustomTraitPropertyDrawer : WitTraitPropertyDrawer
+        {
+
+        }
+        #endregion
+
+        #region Scriptable Objects
         [MenuItem("Assets/Create/Voice SDK/Dynamic Entities")]
         public static void CreateDynamicEntities()
         {
-            var asset =
+            WitDynamicEntitiesData asset =
                 ScriptableObject.CreateInstance<WitDynamicEntitiesData>();
 
             var path = EditorUtility.SaveFilePanel("Save Dynamic Entity", Application.dataPath,
@@ -56,59 +99,6 @@ namespace Oculus.Voice.Utility
                 Selection.activeObject = asset;
             }
         }
-
-        #endregion
-
-        #region WINDOWS
-
-        [MenuItem("Oculus/Voice SDK/Settings", false, 100)]
-        private static void OpenConfigurationWindow()
-        {
-            WitWindowUtility.OpenConfigurationWindow();
-        }
-
-        [MenuItem("Oculus/Voice SDK/Understanding Viewer", false, 100)]
-        private static void OpenUnderstandingWindow()
-        {
-            WitWindowUtility.OpenUnderstandingWindow();
-        }
-
-        [MenuItem("Oculus/Voice SDK/About", false, 200)]
-        private static void OpenAboutWindow()
-        {
-            ScriptableWizard.DisplayWizard<AboutWindow>(VoiceSDKStyles.Texts.AboutTitleLabel,
-                VoiceSDKStyles.Texts.AboutCloseLabel);
-        }
-
-        #endregion
-
-        #region DRAWERS
-
-        [CustomPropertyDrawer(typeof(WitEndpointConfig))]
-        public class VoiceCustomEndpointPropertyDrawer : WitEndpointConfigDrawer
-        {
-        }
-
-        [CustomPropertyDrawer(typeof(WitApplication))]
-        public class VoiceCustomApplicationPropertyDrawer : VoiceApplicationDetailProvider
-        {
-        }
-
-        [CustomPropertyDrawer(typeof(WitIntent))]
-        public class VoiceCustomIntentPropertyDrawer : WitIntentPropertyDrawer
-        {
-        }
-
-        [CustomPropertyDrawer(typeof(WitEntity))]
-        public class VoiceCustomEntityPropertyDrawer : WitEntityPropertyDrawer
-        {
-        }
-
-        [CustomPropertyDrawer(typeof(WitTrait))]
-        public class VoiceCustomTraitPropertyDrawer : WitTraitPropertyDrawer
-        {
-        }
-
         #endregion
 
         #region TTS
@@ -130,13 +120,11 @@ namespace Oculus.Voice.Utility
         {
             TTSEditorUtilities.CreateSpeaker();
         }
-
         [MenuItem("Assets/Create/Voice SDK/TTS/Preload Settings", false, 200)]
         public static void CreateTTSPreloadSettings()
         {
             TTSPreloadUtility.CreatePreloadSettings();
         }
-
         #endregion
     }
 }

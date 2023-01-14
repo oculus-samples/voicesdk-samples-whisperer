@@ -7,10 +7,10 @@
  */
 
 using System;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Json;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data
+namespace Meta.WitAi.Data
 {
     public class WitFloatValue : WitValue
     {
@@ -25,8 +25,13 @@ namespace Facebook.WitAi.Data
         {
             float fValue = 0;
             if (value is float f)
+            {
                 fValue = f;
-            else if (null != value && !float.TryParse("" + value, out fValue)) return false;
+            }
+            else if(null != value && !float.TryParse("" + value, out fValue))
+            {
+                return false;
+            }
 
             return Math.Abs(GetFloatValue(response) - fValue) < equalityTolerance;
         }

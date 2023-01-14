@@ -8,31 +8,31 @@
 
 using System;
 using System.Collections.Generic;
-using Facebook.WitAi.Data;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Data;
+using Meta.WitAi.Json;
 using Meta.Conduit.Editor;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     /// <summary>
-    ///     Validates whether a data type if supported by Wit.
+    /// Validates whether a data type if supported by Wit.
     /// </summary>
-    public class WitParameterValidator : IParameterValidator
+    internal class WitParameterValidator : IParameterValidator
     {
         /// <summary>
-        ///     These are the types that we natively support.
+        /// These are the types that we natively support.
         /// </summary>
-        private readonly HashSet<Type> builtInTypes = new() { typeof(string), typeof(int) };
+        private readonly HashSet<Type> _builtInTypes = new HashSet<Type>()
+            { typeof(string), typeof(int), typeof(DateTime), typeof(float), typeof(double), typeof(decimal) };
 
         /// <summary>
-        ///     Tests if a parameter type can be supplied directly to a callback method from.
+        /// Tests if a parameter type can be supplied directly to a callback method from.
         /// </summary>
         /// <param name="type">The data type.</param>
         /// <returns>True if the parameter type is supported. False otherwise.</returns>
         public bool IsSupportedParameterType(Type type)
         {
-            return type.IsEnum || builtInTypes.Contains(type) || type == typeof(WitResponseNode) ||
-                   type == typeof(VoiceSession);
+            return type.IsEnum || _builtInTypes.Contains(type) || type == typeof(WitResponseNode) || type == typeof(VoiceSession);
         }
     }
 }

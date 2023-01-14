@@ -7,37 +7,35 @@
  */
 
 using System;
-using Facebook.WitAi.Data.Configuration;
+using System.Reflection;
 using UnityEditor;
+using Meta.WitAi.Data.Configuration;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public static class WitWindowUtility
     {
         // Window types
         public static Type SetupWindowType => FindChildClass(typeof(WitWelcomeWizard));
         public static Type ConfigurationWindowType => FindChildClass(typeof(WitWindow));
-
         public static Type UnderstandingWindowType => FindChildClass(typeof(WitUnderstandingViewer));
-
         // Finds a child class if possible
         private static Type FindChildClass(Type baseType)
         {
-            var result = baseType;
-            var currentAssembly = baseType.Assembly;
-            Array.Find(AppDomain.CurrentDomain.GetAssemblies(), assembly =>
+            Type result = baseType;
+            Assembly currentAssembly = baseType.Assembly;
+            Array.Find(AppDomain.CurrentDomain.GetAssemblies(), (assembly) =>
             {
                 if (assembly != currentAssembly)
                 {
-                    var types = assembly.GetTypes();
-                    var index = Array.FindIndex(types, assemblyType => { return assemblyType.BaseType == baseType; });
+                    Type[] types = assembly.GetTypes();
+                    int index = Array.FindIndex(types, (assemblyType) => { return assemblyType.BaseType == baseType; });
                     if (index != -1)
                     {
                         result = types[index];
                         return true;
                     }
                 }
-
                 return false;
             });
             return result;
@@ -47,12 +45,10 @@ namespace Facebook.WitAi.Windows
         public static void OpenSetupWindow(Action<WitConfiguration> onSetupComplete)
         {
             // Get wizard (Title is overwritten)
-            var wizard = (WitWelcomeWizard)ScriptableWizard.DisplayWizard(WitTexts.Texts.SetupTitleLabel,
-                SetupWindowType, WitTexts.Texts.SetupSubmitButtonLabel);
+            WitWelcomeWizard wizard = (WitWelcomeWizard)ScriptableWizard.DisplayWizard(WitTexts.Texts.SetupTitleLabel, SetupWindowType, WitTexts.Texts.SetupSubmitButtonLabel);
             // Set success callback
             wizard.successAction = onSetupComplete;
         }
-
         // Opens Configuration Window
         public static void OpenConfigurationWindow(WitConfiguration configuration = null)
         {
@@ -64,12 +60,11 @@ namespace Facebook.WitAi.Windows
             }
 
             // Get window & show
-            var window = (WitConfigurationWindow)EditorWindow.GetWindow(ConfigurationWindowType);
+            WitConfigurationWindow window = (WitConfigurationWindow)EditorWindow.GetWindow(ConfigurationWindowType);
             window.autoRepaintOnSceneChange = true;
             window.SetConfiguration(configuration);
             window.Show();
         }
-
         // Opens Understanding Window to specific configuration
         public static void OpenUnderstandingWindow(WitConfiguration configuration = null)
         {
@@ -81,7 +76,7 @@ namespace Facebook.WitAi.Windows
             }
 
             // Get window & show
-            var window = (WitConfigurationWindow)EditorWindow.GetWindow(UnderstandingWindowType);
+            WitConfigurationWindow window = (WitConfigurationWindow)EditorWindow.GetWindow(UnderstandingWindowType);
             window.autoRepaintOnSceneChange = true;
             window.SetConfiguration(configuration);
             window.Show();

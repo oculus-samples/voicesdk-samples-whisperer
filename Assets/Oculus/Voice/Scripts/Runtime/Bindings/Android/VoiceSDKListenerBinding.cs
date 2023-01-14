@@ -18,25 +18,26 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Events;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Oculus.Voice.Bindings.Android
 {
     public class VoiceSDKListenerBinding : AndroidJavaProxy
     {
-        public enum StoppedListeningReason
-        {
+        private IVoiceService _voiceService;
+        private readonly IVCBindingEvents _bindingEvents;
+
+        public VoiceEvents VoiceEvents => _voiceService.VoiceEvents;
+
+        public enum StoppedListeningReason : int {
             NoReasonProvided = 0,
             Inactivity = 1,
             Timeout = 2,
-            Deactivation = 3
+            Deactivation = 3,
         }
-
-        private readonly IVCBindingEvents _bindingEvents;
-        private readonly IVoiceService _voiceService;
 
         public VoiceSDKListenerBinding(IVoiceService voiceService, IVCBindingEvents bindingEvents) : base(
             "com.oculus.assistant.api.voicesdk.immersivevoicecommands.IVCEventsListener")
@@ -45,18 +46,22 @@ namespace Oculus.Voice.Bindings.Android
             _bindingEvents = bindingEvents;
         }
 
-        public VoiceEvents VoiceEvents => _voiceService.VoiceEvents;
-
         public void onResponse(string responseJson)
         {
-            var responseData = WitResponseJson.Parse(responseJson);
-            if (responseData != null) VoiceEvents.OnResponse?.Invoke(responseData);
+            WitResponseNode responseData = WitResponseNode.Parse(responseJson);
+            if (responseData != null)
+            {
+                VoiceEvents.OnResponse?.Invoke(responseData);
+            }
         }
 
         public void onPartialResponse(string responseJson)
         {
-            var responseData = WitResponseJson.Parse(responseJson);
-            if (responseData != null && responseData.HasResponse()) VoiceEvents.OnPartialResponse?.Invoke(responseData);
+            WitResponseNode responseData = WitResponseNode.Parse(responseJson);
+            if (responseData != null && responseData.HasResponse())
+            {
+                VoiceEvents.OnPartialResponse?.Invoke(responseData);
+            }
         }
 
         public void onError(string error, string message, string errorBody)
@@ -92,8 +97,7 @@ namespace Oculus.Voice.Bindings.Android
         public void onStoppedListening(int reason)
         {
             VoiceEvents.OnStoppedListening?.Invoke();
-            switch ((StoppedListeningReason)reason)
-            {
+            switch((StoppedListeningReason)reason){
                 case StoppedListeningReason.NoReasonProvided:
                     break;
                 case StoppedListeningReason.Inactivity:

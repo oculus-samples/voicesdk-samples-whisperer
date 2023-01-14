@@ -6,8 +6,8 @@
  */
 
 using System.Collections.Generic;
-using Facebook.WitAi;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Whisperer

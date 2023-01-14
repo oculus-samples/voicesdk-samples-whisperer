@@ -6,18 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
-using UnityEngine;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
 using UnityEngine.Events;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public class WitService : MonoBehaviour, IWitRuntimeConfigProvider, IVoiceEventProvider
     {
@@ -31,23 +32,26 @@ namespace Facebook.WitAi
         private bool _isActive;
         private long _minSampleByteCount = 1024 * 10;
 
+        private IVoiceEventProvider _voiceEventProvider;
+        private IWitRuntimeConfigProvider _runtimeConfigProvider;
         private ITranscriptionProvider _activeTranscriptionProvider;
         private Coroutine _timeLimitCoroutine;
+        private IWitRequestProvider _witRequestProvider;
 
         // Transcription based endpointing
         private bool _receivedTranscription;
         private float _lastWordTime;
 
         // Parallel Requests
-        private readonly HashSet<WitRequest> _transmitRequests = new();
-        private readonly HashSet<WitRequest> _queuedRequests = new();
+        private HashSet<WitRequest> _transmitRequests = new HashSet<WitRequest>();
+        private HashSet<WitRequest> _queuedRequests = new HashSet<WitRequest>();
         private Coroutine _queueHandler;
 
         #region Interfaces
-
         private IWitByteDataReadyHandler[] _dataReadyHandlers;
         private IWitByteDataSentHandler[] _dataSentHandlers;
         private IDynamicEntitiesProvider[] _dynamicEntityProviders;
+        private float _time;
 
         #endregion
 
@@ -56,24 +60,32 @@ namespace Facebook.WitAi
 #endif
 
         /// <summary>
-        ///     Returns true if wit is currently active and listening with the mic
+        /// Returns true if wit is currently active and listening with the mic
         /// </summary>
         public bool Active => _isActive || IsRequestActive;
 
         public bool IsRequestActive => null != _recordingRequest && _recordingRequest.IsActive;
 
-        public IVoiceEventProvider VoiceEventProvider { get; set; }
+        public IVoiceEventProvider VoiceEventProvider
+        {
+            get => _voiceEventProvider;
+            set => _voiceEventProvider = value;
+        }
 
-        public IWitRuntimeConfigProvider ConfigurationProvider { get; set; }
+        public IWitRuntimeConfigProvider ConfigurationProvider
+        {
+            get => _runtimeConfigProvider;
+            set => _runtimeConfigProvider = value;
+        }
 
         public WitRuntimeConfiguration RuntimeConfiguration =>
-            ConfigurationProvider.RuntimeConfiguration;
+            _runtimeConfigProvider.RuntimeConfiguration;
 
-        public VoiceEvents VoiceEvents => VoiceEventProvider.VoiceEvents;
+        public VoiceEvents VoiceEvents => _voiceEventProvider.VoiceEvents;
 
         /// <summary>
-        ///     Gets/Sets a custom transcription provider. This can be used to replace any built in asr
-        ///     with an on device model or other provided source
+        /// Gets/Sets a custom transcription provider. This can be used to replace any built in asr
+        /// with an on device model or other provided source
         /// </summary>
         public ITranscriptionProvider TranscriptionProvider
         {
@@ -112,77 +124,111 @@ namespace Facebook.WitAi
             }
         }
 
-        public IWitRequestProvider WitRequestProvider { get; set; }
+        public IWitRequestProvider WitRequestProvider
+        {
+            get => _witRequestProvider;
+            set => _witRequestProvider = value;
+        }
 
         public bool MicActive => AudioBuffer.Instance.IsRecording(this);
 
         protected bool ShouldSendMicData => RuntimeConfiguration.sendAudioToWit ||
-                                            null == _activeTranscriptionProvider;
+                                                  null == _activeTranscriptionProvider;
 
         #region LIFECYCLE
-
         // Find transcription provider & Mic
         protected void Awake()
         {
             _dataReadyHandlers = GetComponents<IWitByteDataReadyHandler>();
             _dataSentHandlers = GetComponents<IWitByteDataSentHandler>();
         }
-
         // Add mic delegates
         protected void OnEnable()
         {
-            ConfigurationProvider = GetComponent<IWitRuntimeConfigProvider>();
-            VoiceEventProvider = GetComponent<IVoiceEventProvider>();
+            _runtimeConfigProvider = GetComponent<IWitRuntimeConfigProvider>();
+            _voiceEventProvider = GetComponent<IVoiceEventProvider>();
 
             if (null == _activeTranscriptionProvider && null != RuntimeConfiguration &&
                 RuntimeConfiguration.customTranscriptionProvider)
+            {
                 TranscriptionProvider = RuntimeConfiguration.customTranscriptionProvider;
+            }
 
-            AudioBuffer.Instance.Events.OnMicLevelChanged.AddListener(OnMicLevelChanged);
-            AudioBuffer.Instance.Events.OnByteDataReady.AddListener(OnByteDataReady);
-            AudioBuffer.Instance.Events.OnSampleReady += OnMicSampleReady;
+            SetMicDelegates(true);
 
             _dynamicEntityProviders = GetComponents<IDynamicEntitiesProvider>();
         }
-
+        // Remove mic delegates
         protected void OnDisable()
         {
-            var e = AudioBuffer.Instance?.Events;
-            if (e != null)
+            AudioBufferEvents e = AudioBuffer.Instance?.Events;
+            SetMicDelegates(false);
+        }
+        // On scene refresh
+        protected virtual void OnLevelWasLoaded(int level)
+        {
+            SetMicDelegates(true);
+        }
+        // Toggle audio events
+        private AudioBuffer _buffer;
+        private bool _bufferDelegates = false;
+        protected void SetMicDelegates(bool add)
+        {
+            // Obtain buffer
+            if (_buffer == null)
+            {
+                _buffer = AudioBuffer.Instance;
+                _bufferDelegates = false;
+            }
+            // Get events if possible
+            AudioBufferEvents e = _buffer?.Events;
+            if (e == null)
+            {
+                return;
+            }
+            // Already set
+            if (_bufferDelegates == add)
+            {
+                return;
+            }
+            // Set delegates
+            _bufferDelegates = add;
+
+            // Add delegates
+            if (add)
+            {
+                e.OnMicLevelChanged.AddListener(OnMicLevelChanged);
+                e.OnByteDataReady.AddListener(OnByteDataReady);
+                e.OnSampleReady += OnMicSampleReady;
+            }
+            // Remove delegates
+            else
             {
                 e.OnMicLevelChanged.RemoveListener(OnMicLevelChanged);
                 e.OnByteDataReady.RemoveListener(OnByteDataReady);
                 e.OnSampleReady -= OnMicSampleReady;
             }
         }
-
         #endregion
 
         #region ACTIVATION
-
         /// <summary>
-        ///     Activate the microphone and send data to Wit for NLU processing.
+        /// Activate the microphone and send data to Wit for NLU processing.
         /// </summary>
-        public void Activate()
-        {
-            Activate(new WitRequestOptions());
-        }
-
-        /// <summary>
-        ///     Activate the microphone and send data to Wit for NLU processing.
-        /// </summary>
+        public void Activate() => Activate(new WitRequestOptions());
         public void Activate(WitRequestOptions requestOptions)
         {
             if (!IsConfigurationValid())
             {
-                Debug.LogError("Cannot activate without valid Wit Configuration.");
+                VLog.E($"Your AppVoiceExperience \"{gameObject.name}\" does not have a wit config assigned. Understanding Viewer activations will not trigger in game events..");
                 return;
             }
-
             if (_isActive) return;
             StopRecording();
-            _lastSampleMarker =
-                AudioBuffer.Instance.CreateMarker(ConfigurationProvider.RuntimeConfiguration.preferredActivationOffset);
+            _lastSampleMarker = AudioBuffer.Instance.CreateMarker(ConfigurationProvider.RuntimeConfiguration.preferredActivationOffset);
+
+            // Handle option setup
+            VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
 
             if (!AudioBuffer.Instance.IsRecording(this) && ShouldSendMicData)
             {
@@ -198,20 +244,14 @@ namespace Facebook.WitAi
             _lastMinVolumeLevelTime = float.PositiveInfinity;
             _currentRequestOptions = requestOptions;
         }
-
-        public void ActivateImmediately()
-        {
-            ActivateImmediately(new WitRequestOptions());
-        }
-
+        public void ActivateImmediately() => ActivateImmediately(new WitRequestOptions());
         public void ActivateImmediately(WitRequestOptions requestOptions)
         {
             if (!IsConfigurationValid())
             {
-                Debug.LogError("Cannot activate without valid Wit Configuration.");
+                VLog.E($"Your AppVoiceExperience \"{gameObject.name}\" does not have a wit config assigned. Understanding Viewer activations will not trigger in game events..");
                 return;
             }
-
             // Make sure we aren't checking activation time until
             // the mic starts recording. If we're already recording for a live
             // recording, we just triggered an activation so we will reset the
@@ -220,12 +260,13 @@ namespace Facebook.WitAi
             _lastWordTime = float.PositiveInfinity;
             _receivedTranscription = false;
 
+            // Handle option setup
+            VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
+
             if (ShouldSendMicData)
             {
-                _recordingRequest = WitRequestProvider != null
-                    ? WitRequestProvider.CreateWitRequest(RuntimeConfiguration.witConfiguration, requestOptions,
-                        _dynamicEntityProviders)
-                    : RuntimeConfiguration.witConfiguration.SpeechRequest(requestOptions, _dynamicEntityProviders);
+                _recordingRequest = WitRequestProvider != null ? WitRequestProvider.CreateWitRequest(RuntimeConfiguration.witConfiguration, requestOptions, _dynamicEntityProviders)
+                    : RuntimeConfiguration.witConfiguration.CreateSpeechRequest(requestOptions, _dynamicEntityProviders);
                 _recordingRequest.audioEncoding = AudioBuffer.Instance.AudioEncoding;
                 _recordingRequest.onPartialTranscription = OnPartialTranscription;
                 _recordingRequest.onFullTranscription = OnFullTranscription;
@@ -248,51 +289,43 @@ namespace Facebook.WitAi
             {
                 var file = Application.dataPath + "/test.pcm";
                 sampleFile = File.Open(file, FileMode.Create);
-                Debug.Log("Writing recording to file: " + file);
+                VLog.D("Writing recording to file: " + file);
             }
 #endif
             _lastSampleMarker = AudioBuffer.Instance.CreateMarker(ConfigurationProvider
                 .RuntimeConfiguration.preferredActivationOffset);
         }
-
         /// <summary>
-        ///     Send text data to Wit.ai for NLU processing
-        /// </summary>
-        /// <param name="text">Text to be processed</param>
-        public void Activate(string text)
-        {
-            Activate(text, new WitRequestOptions());
-        }
-
-        /// <summary>
-        ///     Send text data to Wit.ai for NLU processing
+        /// Send text data to Wit.ai for NLU processing
         /// </summary>
         /// <param name="text">Text to be processed</param>
         /// <param name="requestOptions">Additional options</param>
+        public void Activate(string text) => Activate(text, new WitRequestOptions());
         public void Activate(string text, WitRequestOptions requestOptions)
         {
             if (!IsConfigurationValid())
             {
-                Debug.LogError("Cannot activate without valid Wit Configuration.");
+                VLog.E($"Your AppVoiceExperience \"{gameObject.name}\" does not have a wit config assigned. Understanding Viewer activations will not trigger in game events..");
                 return;
             }
 
+            // Handle option setup
+            VoiceEvents.OnRequestOptionSetup?.Invoke(requestOptions);
+
+            // Send transcription
             SendTranscription(text, requestOptions);
         }
-
         /// <summary>
-        ///     Check configuration, client access token & app id
+        /// Check configuration, client access token & app id
         /// </summary>
         public virtual bool IsConfigurationValid()
         {
             return RuntimeConfiguration.witConfiguration != null &&
-                   !string.IsNullOrEmpty(RuntimeConfiguration.witConfiguration.clientAccessToken);
+                   !string.IsNullOrEmpty(RuntimeConfiguration.witConfiguration.GetClientAccessToken());
         }
-
         #endregion
 
         #region RECORDING
-
         // Stop any recording
         private void StopRecording()
         {
@@ -303,46 +336,49 @@ namespace Facebook.WitAi
 #if DEBUG_SAMPLE
             if (null != sampleFile)
             {
-                Debug.Log($"Wrote test samples to {Application.dataPath}/test.pcm");
+                VLog.D($"Wrote test samples to {Application.dataPath}/test.pcm");
                 sampleFile?.Close();
                 sampleFile = null;
             }
 #endif
         }
-
         // When wit is ready, start recording
         private void OnWitReadyForData()
         {
-            _lastMinVolumeLevelTime = Time.time;
-            if (!AudioBuffer.Instance.IsRecording(this)) StartRecording();
+            _lastMinVolumeLevelTime = _time;
+            if (!AudioBuffer.Instance.IsRecording(this))
+            {
+                StartRecording();
+            }
         }
-
         // Handle begin recording
         private void StartRecording()
         {
             // Check for input
-            if (!AudioBuffer.Instance.IsInputAvailable) AudioBuffer.Instance.CheckForInput();
+            if (!AudioBuffer.Instance.IsInputAvailable)
+            {
+                AudioBuffer.Instance.CheckForInput();
+            }
             // Wait for input and then try again
             if (!AudioBuffer.Instance.IsInputAvailable)
             {
-                VoiceEvents.OnError.Invoke("Input Error",
-                    "No input source was available. Cannot activate for voice input.");
+                VoiceEvents.OnError.Invoke("Input Error", "No input source was available. Cannot activate for voice input.");
                 return;
             }
-
             // Already recording
-            if (AudioBuffer.Instance.IsRecording(this)) return;
+            if (AudioBuffer.Instance.IsRecording(this))
+            {
+                return;
+            }
 
             // Start recording
             AudioBuffer.Instance.StartRecording(this);
         }
-
         // Callback for mic start
         private void OnMicStartListening()
         {
             VoiceEvents?.OnStartListening?.Invoke();
         }
-
         // Callback for mic end
         private void OnMicStoppedListening()
         {
@@ -353,8 +389,10 @@ namespace Facebook.WitAi
         {
             VoiceEvents?.OnByteDataReady.Invoke(buffer, offset, length);
 
-            for (var i = 0; null != _dataReadyHandlers && i < _dataReadyHandlers.Length; i++)
+            for (int i = 0; null != _dataReadyHandlers && i < _dataReadyHandlers.Length; i++)
+            {
                 _dataReadyHandlers[i].OnWitDataReady(buffer, offset, length);
+            }
         }
 
         // Callback for mic sample ready
@@ -363,41 +401,49 @@ namespace Facebook.WitAi
             if (null == _lastSampleMarker) return;
 
             if (_minSampleByteCount > _lastSampleMarker.RingBuffer.Capacity)
+            {
                 _minSampleByteCount = _lastSampleMarker.RingBuffer.Capacity;
+            }
 
-            if (IsRequestActive && _recordingRequest.IsRequestStreamActive &&
-                _lastSampleMarker.AvailableByteCount >= _minSampleByteCount)
+            if (IsRequestActive && _recordingRequest.IsRequestStreamActive && _lastSampleMarker.AvailableByteCount >= _minSampleByteCount)
             {
                 // Flush the marker since the last read and send it to Wit
                 _lastSampleMarker.ReadIntoWriters(
                     (buffer, offset, length) =>
                     {
                         _recordingRequest.Write(buffer, offset, length);
-#if DEBUG_SAMPLE
+                        #if DEBUG_SAMPLE
                         sampleFile?.Write(buffer, offset, length);
-#endif
+                        #endif
                     },
                     (buffer, offset, length) => VoiceEvents?.OnByteDataSent?.Invoke(buffer, offset, length),
                     (buffer, offset, length) =>
                     {
-                        for (var i = 0; i < _dataSentHandlers.Length; i++)
+                        for (int i = 0; i < _dataSentHandlers.Length; i++)
+                        {
                             _dataSentHandlers[i]?.OnWitDataSent(buffer, offset, length);
+                        }
                     });
 
                 if (_receivedTranscription)
                 {
-                    if (Time.time - _lastWordTime >
+                    float elapsed = _time - _lastWordTime;
+                    if (elapsed >
                         RuntimeConfiguration.minTranscriptionKeepAliveTimeInSeconds)
                     {
-                        Debug.Log("Deactivated due to inactivity. No new words detected.");
+                        VLog.D($"Deactivated due to inactivity. No new words detected in {elapsed:0.00} seconds.");
                         DeactivateRequest(VoiceEvents?.OnStoppedListeningDueToInactivity);
                     }
                 }
-                else if (Time.time - _lastMinVolumeLevelTime >
-                         RuntimeConfiguration.minKeepAliveTimeInSeconds)
+                else
                 {
-                    Debug.Log("Deactivated input due to inactivity.");
-                    DeactivateRequest(VoiceEvents?.OnStoppedListeningDueToInactivity);
+                    float elapsed = _time - _lastMinVolumeLevelTime;
+                    if (elapsed >
+                        RuntimeConfiguration.minKeepAliveTimeInSeconds)
+                    {
+                        VLog.D($"Deactivated due to inactivity. No sound detected in {elapsed:0.00} seconds.");
+                        DeactivateRequest(VoiceEvents?.OnStoppedListeningDueToInactivity);
+                    }
                 }
             }
             else if (_isSoundWakeActive && levelMax > RuntimeConfiguration.soundWakeThreshold)
@@ -409,6 +455,11 @@ namespace Facebook.WitAi
             }
         }
 
+        private void Update()
+        {
+            _time = Time.time;
+        }
+
         // Mic level change
         private void OnMicLevelChanged(float level)
         {
@@ -416,55 +467,47 @@ namespace Facebook.WitAi
 
             if (level > RuntimeConfiguration.minKeepAliveVolume)
             {
-                _lastMinVolumeLevelTime = Time.time;
+                _lastMinVolumeLevelTime = _time;
                 _minKeepAliveWasHit = true;
             }
-
             VoiceEvents?.OnMicLevelChanged?.Invoke(level);
         }
-
         // Mic level changed in transcription
         private void OnTranscriptionMicLevelChanged(float level)
         {
-            if (null != TranscriptionProvider && TranscriptionProvider.OverrideMicLevel) OnMicLevelChanged(level);
+            if (null != TranscriptionProvider && TranscriptionProvider.OverrideMicLevel)
+            {
+                OnMicLevelChanged(level);
+            }
         }
-
         #endregion
 
         #region DEACTIVATION
-
         /// <summary>
-        ///     Stop listening and submit the collected microphone data to wit for processing.
+        /// Stop listening and submit the collected microphone data to wit for processing.
         /// </summary>
         public void Deactivate()
         {
-            DeactivateRequest(AudioBuffer.Instance.IsRecording(this)
-                ? VoiceEvents?.OnStoppedListeningDueToDeactivation
-                : null);
+            DeactivateRequest(AudioBuffer.Instance.IsRecording(this) ? VoiceEvents?.OnStoppedListeningDueToDeactivation : null, false);
         }
-
         /// <summary>
-        ///     Stop listening and abort any requests that may be active without waiting for a response.
+        /// Stop listening and abort any requests that may be active without waiting for a response.
         /// </summary>
         public void DeactivateAndAbortRequest()
         {
             VoiceEvents?.OnAborting.Invoke();
-            DeactivateRequest(
-                AudioBuffer.Instance.IsRecording(this) ? VoiceEvents?.OnStoppedListeningDueToDeactivation : null, true);
+            DeactivateRequest(AudioBuffer.Instance.IsRecording(this) ? VoiceEvents?.OnStoppedListeningDueToDeactivation : null, true);
         }
-
         // Stop listening if time expires
         private IEnumerator DeactivateDueToTimeLimit()
         {
             yield return new WaitForSeconds(RuntimeConfiguration.maxRecordingTime);
             if (IsRequestActive)
             {
-                Debug.Log(
-                    $"Deactivated input due to timeout.\nMax Record Time: {RuntimeConfiguration.maxRecordingTime}");
-                DeactivateRequest(VoiceEvents?.OnStoppedListeningDueToTimeout);
+                VLog.D($"Deactivated input due to timeout.\nMax Record Time: {RuntimeConfiguration.maxRecordingTime}");
+                DeactivateRequest(VoiceEvents?.OnStoppedListeningDueToTimeout, false);
             }
         }
-
         private void DeactivateRequest(UnityEvent onComplete = null, bool abort = false)
         {
             // Stop timeout coroutine
@@ -481,14 +524,17 @@ namespace Facebook.WitAi
             _activeTranscriptionProvider?.Deactivate();
 
             // Deactivate recording request
-            var isRecordingRequestActive = IsRequestActive;
+            bool isRecordingRequestActive = IsRequestActive;
             DeactivateWitRequest(_recordingRequest, abort);
 
             // Abort transmitting requests
             if (abort)
             {
                 AbortQueue();
-                foreach (var request in _transmitRequests) DeactivateWitRequest(request, true);
+                foreach (var request in _transmitRequests)
+                {
+                    DeactivateWitRequest(request, true);
+                }
                 _transmitRequests.Clear();
             }
             // Transmit recording request
@@ -508,49 +554,46 @@ namespace Facebook.WitAi
             // Perform on complete event
             onComplete?.Invoke();
         }
-
         // Deactivate wit request
         private void DeactivateWitRequest(WitRequest request, bool abort)
         {
             if (request != null && request.IsActive)
             {
                 if (abort)
+                {
                     request.AbortRequest();
+                }
                 else
+                {
                     request.CloseRequestStream();
+                }
             }
         }
-
         #endregion
 
         #region TRANSCRIPTION
-
         private void OnPartialTranscription(string transcription)
         {
             // Clear record data
             _receivedTranscription = true;
-            _lastWordTime = Time.time;
+            _lastWordTime = _time;
             // Delegate
             VoiceEvents?.OnPartialTranscription.Invoke(transcription);
         }
-
         private void OnFullTranscription(string transcription)
         {
-            // End existing request
-            DeactivateRequest();
             // Delegate
             VoiceEvents?.OnFullTranscription?.Invoke(transcription);
             // Send transcription
             if (RuntimeConfiguration.customTranscriptionProvider)
+            {
                 SendTranscription(transcription, new WitRequestOptions());
+            }
         }
-
         private void SendTranscription(string transcription, WitRequestOptions requestOptions)
         {
             // Create request & add response delegate
-            var request =
-                RuntimeConfiguration.witConfiguration.MessageRequest(transcription, requestOptions,
-                    _dynamicEntityProviders);
+            WitRequest request = RuntimeConfiguration.witConfiguration.CreateMessageRequest(transcription, requestOptions, _dynamicEntityProviders);
             request.onResponse += HandleResult;
             request.onPartialResponse += HandlePartialResult;
 
@@ -560,11 +603,9 @@ namespace Facebook.WitAi
             // Add to queue
             AddToQueue(request);
         }
-
         #endregion
 
         #region QUEUE
-
         // Add request to wait queue
         private void AddToQueue(WitRequest request)
         {
@@ -580,9 +621,11 @@ namespace Facebook.WitAi
             _queuedRequests.Add(request);
 
             // If not running, begin
-            if (_queueHandler == null) _queueHandler = StartCoroutine(PerformDequeue());
+            if (_queueHandler == null)
+            {
+                _queueHandler = StartCoroutine(PerformDequeue());
+            }
         }
-
         // Abort request
         private void AbortQueue()
         {
@@ -591,11 +634,12 @@ namespace Facebook.WitAi
                 StopCoroutine(_queueHandler);
                 _queueHandler = null;
             }
-
-            foreach (var request in _queuedRequests) DeactivateWitRequest(request, true);
+            foreach (var request in _queuedRequests)
+            {
+                DeactivateWitRequest(request, true);
+            }
             _queuedRequests.Clear();
         }
-
         // Coroutine used to send transcriptions when possible
         private IEnumerator PerformDequeue()
         {
@@ -609,7 +653,7 @@ namespace Facebook.WitAi
                 if (_transmitRequests.Count < RuntimeConfiguration.maxConcurrentRequests)
                 {
                     // Dequeue
-                    var request = _queuedRequests.First();
+                    WitRequest request = _queuedRequests.First();
                     _queuedRequests.Remove(request);
 
                     // Transmit
@@ -621,53 +665,64 @@ namespace Facebook.WitAi
             // Kill coroutine
             _queueHandler = null;
         }
-
         #endregion
 
         #region RESPONSE
-
         /// <summary>
-        ///     Main thread call to handle partial response callbacks
+        /// Main thread call to handle partial response callbacks
         /// </summary>
         private void HandlePartialResult(WitRequest request)
         {
             if (request != null && request.ResponseData != null)
+            {
                 VoiceEvents?.OnPartialResponse?.Invoke(request.ResponseData);
+            }
         }
-
         /// <summary>
-        ///     Main thread call to handle result callbacks
+        /// Main thread call to handle result callbacks
         /// </summary>
         private void HandleResult(WitRequest request)
         {
             // If result is obtained before transcription
-            if (request == _recordingRequest) DeactivateRequest();
+            if (request == _recordingRequest)
+            {
+                DeactivateRequest(null, false);
+            }
 
             // Handle success
-            if (request.StatusCode == (int)HttpStatusCode.OK)
+            if (request.StatusCode == (int) HttpStatusCode.OK)
             {
                 if (null != request.ResponseData)
+                {
                     VoiceEvents?.OnResponse?.Invoke(request.ResponseData);
+                }
                 else
+                {
                     VoiceEvents?.OnError?.Invoke("No Data", "No data was returned from the server.");
+                }
             }
             // Handle failure
             else
             {
                 if (request.StatusCode != WitRequest.ERROR_CODE_ABORTED)
+                {
                     VoiceEvents?.OnError?.Invoke("HTTP Error " + request.StatusCode,
                         request.StatusDescription);
+                }
                 else
+                {
                     VoiceEvents?.OnAborted?.Invoke();
+                }
             }
-
             // Remove from transmit list, missing if aborted
-            if (_transmitRequests.Contains(request)) _transmitRequests.Remove(request);
+            if ( _transmitRequests.Contains(request))
+            {
+                _transmitRequests.Remove(request);
+            }
 
             // Complete delegate
             VoiceEvents?.OnRequestCompleted?.Invoke();
         }
-
         #endregion
     }
 

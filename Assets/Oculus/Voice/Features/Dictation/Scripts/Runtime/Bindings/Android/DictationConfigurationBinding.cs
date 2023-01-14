@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Configuration;
+using Meta.WitAi.Configuration;
 using Oculus.Voice.Dictation.Configuration;
 using UnityEngine;
 
@@ -26,8 +26,8 @@ namespace Oculus.Voice.Dictation.Bindings.Android
 {
     public class DictationConfigurationBinding
     {
-        private readonly DictationConfiguration _dictationConfiguration;
         private readonly WitDictationRuntimeConfiguration _runtimeConfiguration;
+        private readonly DictationConfiguration _dictationConfiguration;
         private readonly int MAX_PLATFORM_SUPPORTED_RECORDING_TIME_SECONDS = 300;
 
         public DictationConfigurationBinding(WitDictationRuntimeConfiguration runtimeConfiguration)
@@ -47,15 +47,17 @@ namespace Oculus.Voice.Dictation.Bindings.Android
 
         public AndroidJavaObject ToJavaObject()
         {
-            var jo = new AndroidJavaObject(
-                "com.oculus.assistant.api.voicesdk.dictation.PlatformDictationConfiguration");
+            AndroidJavaObject jo = new AndroidJavaObject("com.oculus.assistant.api.voicesdk.dictation.PlatformDictationConfiguration");
             jo.Set("multiPhrase", _dictationConfiguration.multiPhrase);
             jo.Set("scenario", _dictationConfiguration.scenario);
             jo.Set("inputType", _dictationConfiguration.inputType);
             if (_runtimeConfiguration != null)
             {
-                var maxRecordingTime = (int)_runtimeConfiguration.maxRecordingTime;
-                if (maxRecordingTime < 0) maxRecordingTime = MAX_PLATFORM_SUPPORTED_RECORDING_TIME_SECONDS;
+                int maxRecordingTime = (int) _runtimeConfiguration.maxRecordingTime;
+                if (maxRecordingTime < 0)
+                {
+                    maxRecordingTime = MAX_PLATFORM_SUPPORTED_RECORDING_TIME_SECONDS;
+                }
                 jo.Set("interactionTimeoutSeconds", maxRecordingTime);
             }
 

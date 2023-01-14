@@ -8,16 +8,15 @@
 
 #if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public static class WitSettingsUtility
     {
         #region SHARED
-
         // Whether settings have been loaded or not
         public static bool IsLoaded { get; private set; }
 
@@ -26,33 +25,37 @@ namespace Facebook.WitAi
         {
             get
             {
-                if (_settings.configSettings == null) LoadSettings();
+                if (_settings.configSettings == null)
+                {
+                    LoadSettings();
+                }
                 return _settings;
             }
         }
-
         private static WitSettings _settings;
 
         // Settings save path
         private const string SETTINGS_PATH = "ProjectSettings/wit.config";
-
         // Server token dictionary path
-        private static string GetSettingsFilePath()
-        {
-            return Application.dataPath.Replace("Assets", SETTINGS_PATH).Replace("\\", "/");
-        }
-
+        private static string GetSettingsFilePath() => Application.dataPath.Replace("Assets", SETTINGS_PATH).Replace("\\", "/");
         // Load Settings
         public static void LoadSettings()
         {
             // Ignore
-            if (IsLoaded) return;
+            if (IsLoaded)
+            {
+                return;
+            }
 
             // Loaded
             IsLoaded = true;
 
             // Get file path
-            var settingsFilePath = GetSettingsFilePath();
+            string settingsFilePath = GetSettingsFilePath();
+            if (string.IsNullOrEmpty(settingsFilePath))
+            {
+                return;
+            }
             if (!File.Exists(settingsFilePath))
             {
                 Debug.LogWarning($"Wit Settings Utility - Generating new settings file\nPath{settingsFilePath}");
@@ -61,7 +64,7 @@ namespace Facebook.WitAi
             }
 
             // Read file
-            var settingsContents = string.Empty;
+            string settingsContents = string.Empty;
             try
             {
                 settingsContents = File.ReadAllText(settingsFilePath);
@@ -69,8 +72,7 @@ namespace Facebook.WitAi
             // Catch error
             catch (Exception e)
             {
-                Debug.LogError(
-                    $"Wit Settings Utility - Failed to load settings file\nPath{settingsFilePath}\nError: {e}");
+                Debug.LogError($"Wit Settings Utility - Failed to load settings file\nPath{settingsFilePath}\nError: {e}");
                 _settings = new WitSettings();
                 return;
             }
@@ -83,20 +85,18 @@ namespace Facebook.WitAi
             // Catch error
             catch (Exception e)
             {
-                Debug.LogError(
-                    $"Wit Settings Utility - Failed to decode settings file\nPath{settingsFilePath}\nError: {e}");
+                Debug.LogError($"Wit Settings Utility - Failed to decode settings file\nPath{settingsFilePath}\nError: {e}");
                 _settings = new WitSettings();
             }
         }
-
         // Save Settings
         public static void SaveSettings()
         {
             // Get path
-            var settingsFilePath = GetSettingsFilePath();
+            string settingsFilePath = GetSettingsFilePath();
 
             // Encode file
-            var settingsContents = string.Empty;
+            string settingsContents = string.Empty;
             try
             {
                 settingsContents = JsonUtility.ToJson(_settings);
@@ -104,8 +104,7 @@ namespace Facebook.WitAi
             // Catch error
             catch (Exception e)
             {
-                Debug.LogError(
-                    $"Wit Settings Utility - Failed to encode settings file\nPath{settingsFilePath}\nError: {e}");
+                Debug.LogError($"Wit Settings Utility - Failed to encode settings file\nPath{settingsFilePath}\nError: {e}");
                 return;
             }
 
@@ -117,39 +116,28 @@ namespace Facebook.WitAi
             // Catch error
             catch (Exception e)
             {
-                Debug.LogError(
-                    $"Wit Settings Utility - Failed to save settings file\nPath{settingsFilePath}\nError: {e}");
+                Debug.LogError($"Wit Settings Utility - Failed to save settings file\nPath{settingsFilePath}\nError: {e}");
             }
         }
-
         #endregion
 
         #region TOKENS
-
         // Get index for app id
-        private static int GetConfigIndexWithAppID(string appID)
-        {
-            return Settings.configSettings == null
-                ? -1
-                : Array.FindIndex(Settings.configSettings, c => string.Equals(appID, c.appID));
-        }
-
+        private static int GetConfigIndexWithAppID(string appID) => Settings.configSettings == null ? -1 : Array.FindIndex(Settings.configSettings, (c) => string.Equals(appID, c.appID));
         // Get index for server token
-        private static int GetConfigIndexWithServerToken(string serverToken)
-        {
-            return Settings.configSettings == null
-                ? -1
-                : Array.FindIndex(Settings.configSettings, c => string.Equals(serverToken, c.serverToken));
-        }
+        private static int GetConfigIndexWithServerToken(string serverToken) => Settings.configSettings == null ? -1 : Array.FindIndex(Settings.configSettings, (c) => string.Equals(serverToken, c.serverToken));
 
         // Get server token
         public static string GetServerToken(string appID, string defaultServerToken = "")
         {
             // Invalid
-            if (string.IsNullOrEmpty(appID)) return string.Empty;
+            if (string.IsNullOrEmpty(appID))
+            {
+                return string.Empty;
+            }
 
             // Add if missing
-            var index = GetConfigIndexWithAppID(appID);
+            int index = GetConfigIndexWithAppID(appID);
             if (index == -1)
             {
                 AddNewConfigSetting(appID, defaultServerToken);
@@ -159,15 +147,17 @@ namespace Facebook.WitAi
             // Success
             return Settings.configSettings[index].serverToken;
         }
-
         // Get app id from server token
         public static string GetServerTokenAppID(string serverToken, string defaultAppID = "")
         {
             // Invalid
-            if (string.IsNullOrEmpty(serverToken)) return string.Empty;
+            if (string.IsNullOrEmpty(serverToken))
+            {
+                return string.Empty;
+            }
 
             // Add if missing
-            var index = GetConfigIndexWithServerToken(serverToken);
+            int index = GetConfigIndexWithServerToken(serverToken);
             if (index == -1)
             {
                 AddNewConfigSetting(defaultAppID, serverToken);
@@ -177,33 +167,37 @@ namespace Facebook.WitAi
             // Success
             return Settings.configSettings[index].appID;
         }
-
         // Add setting
         private static void AddNewConfigSetting(string newAppID, string newServerToken)
         {
             // Generate config
-            var config = new WitConfigSettings();
+            WitConfigSettings config = new WitConfigSettings();
             config.appID = newAppID;
             config.serverToken = newServerToken;
 
             // Add config
-            var all = new List<WitConfigSettings>();
-            if (_settings.configSettings != null) all.AddRange(_settings.configSettings);
+            List<WitConfigSettings> all = new List<WitConfigSettings>();
+            if (_settings.configSettings != null)
+            {
+                all.AddRange(_settings.configSettings);
+            }
             all.Add(config);
             _settings.configSettings = all.ToArray();
 
             // Save settings
             SaveSettings();
         }
-
         // Set server token
         public static void SetServerToken(string appID, string newServerToken)
         {
             // Invalid
-            if (string.IsNullOrEmpty(appID)) return;
+            if (string.IsNullOrEmpty(appID))
+            {
+                return;
+            }
 
             // Add if missing
-            var index = GetConfigIndexWithAppID(appID);
+            int index = GetConfigIndexWithAppID(appID);
             if (index == -1)
             {
                 AddNewConfigSetting(appID, newServerToken);
@@ -211,13 +205,12 @@ namespace Facebook.WitAi
             // If token changed, adjust
             else if (!string.Equals(newServerToken, _settings.configSettings[index].serverToken))
             {
-                var config = _settings.configSettings[index];
+                WitConfigSettings config = _settings.configSettings[index];
                 config.serverToken = newServerToken;
                 _settings.configSettings[index] = config;
                 SaveSettings();
             }
         }
-
         #endregion
     }
 }
