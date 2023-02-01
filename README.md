@@ -124,6 +124,6 @@ The entity `color` is used to identify when the user has communicated a color se
 - `red`
 
 ## Licenses
-The *Oculus Integration* package is released under the *[Oculus SDK License Agreement](https://developer.oculus.com/licenses/oculussdk)*.
-The MIT licence applies to the files and assets in the Assets/Project folder.
+[The Oculus License](https://developer.oculus.com/licenses/oculussdk) applies to the SDK and supporting material.
+The MIT licence applies to the files and assets in the Assets/Whisperer folder.
 Otherwise, if an individual file does not indicate which license it is subject to, then the Oculus License applies.
