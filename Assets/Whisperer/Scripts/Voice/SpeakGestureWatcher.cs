@@ -78,7 +78,14 @@ namespace Whisperer
 
             var havePose = leftDist < _handsDistThresh && rightDist < _handsDistThresh;
             if (!_allowSpeak || !_hands.SpeakHandsReady) havePose = false;
-
+            #if UNITY_EDITOR
+            var isSpaceDown = Input.GetKey(KeyCode.Space);
+            havePose = havePose || isSpaceDown;
+            if (isSpaceDown)
+            {
+                RaycastDirection = _head.forward.normalized;
+            }
+            #endif
             /// Set pose state
             if (havePose != _haveSpeakPose)
             {
@@ -106,7 +113,11 @@ namespace Whisperer
 
         private void LookForListenables()
         {
-            if (_haveSpeakPose &&
+            var isEditorDebugKey = false;
+            #if UNITY_EDITOR
+            isEditorDebugKey = Input.GetKey(KeyCode.Space);
+            #endif
+            if ((_haveSpeakPose || isEditorDebugKey) &&
                 Utilities.ConeCast(_head.transform.position,
                     RaycastDirection,
                     _distance,
@@ -232,7 +243,7 @@ namespace Whisperer
 
             /// When we are in speak pose and have not yet activated wit,
             /// we can select a new listenable object.
-            if (!_selectLocked && _haveSpeakPose)
+                if (!_selectLocked && _haveSpeakPose)
                 LookForListenables();
         }
 

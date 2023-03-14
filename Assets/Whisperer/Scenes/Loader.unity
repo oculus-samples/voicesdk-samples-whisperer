@@ -1452,6 +1452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   events:
+    _overriddenCallbacks: []
     OnResponse:
       m_PersistentCalls:
         m_Calls: []
@@ -1474,6 +1475,9 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     OnMicLevelChanged:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRequestOptionSetup:
       m_PersistentCalls:
         m_Calls: []
     OnRequestCreated:
@@ -1586,22 +1590,6 @@ PrefabInstance:
     - target: {fileID: 4232131511075272223, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
       propertyPath: m_Name
       value: HeightOffset
-      objectReference: {fileID: 0}
-    - target: {fileID: 4713929768810477140, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
-      propertyPath: m_BackGroundColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4713929768810477140, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
-      propertyPath: m_BackGroundColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4713929768810477140, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
-      propertyPath: m_BackGroundColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4713929768810477140, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
-      propertyPath: m_BackGroundColor.r
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7886081297138781397, guid: 28e611b4e2fcb2f4386b9b4b3759e460, type: 3}
       propertyPath: _micInputValue
