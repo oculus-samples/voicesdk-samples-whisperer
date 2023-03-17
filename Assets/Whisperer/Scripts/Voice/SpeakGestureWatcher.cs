@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System.Collections;
 using Oculus.Voice;
 using UnityEngine;
 
@@ -107,8 +108,14 @@ namespace Whisperer
             SetHandOutline(_rightHand, false);
             _castMode = false;
 
-            if (!_selectLocked)
+            if (_selectLocked)
+            {
+                StartCoroutine(UnselectListenableAfter3Sec());
+            }
+            else
+            {
                 SetSelectedListenable(null);
+            }
         }
 
         private void LookForListenables()
@@ -127,7 +134,11 @@ namespace Whisperer
                     _layerMask))
             {
                 var l = _hitCollider.GetComponent<Listenable>();
-                if (l is not null && l.AllowSelect) SetSelectedListenable(l);
+                if (l is not null && l.AllowSelect)
+                {
+                    SetSelectedListenable(l);
+                    StopCoroutine(UnselectListenableAfter3Sec());
+                }
             }
             else
             {
@@ -166,7 +177,11 @@ namespace Whisperer
 
             if (listenable is null) _selectLocked = false;
         }
-
+        IEnumerator UnselectListenableAfter3Sec()
+        {
+            yield return new WaitForSeconds(3);
+            SetSelectedListenable(null);
+        }
         private void StartedProcessing(Listenable listenable)
         {
             if (_haveListenable)
