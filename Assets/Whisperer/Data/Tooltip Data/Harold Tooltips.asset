@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f44cbd819f0e3e46ad89be9f10d976e, type: 3}
   m_Name: Harold Tooltips
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   exampleUtterances:
   - Hello there
   - Who are you?
@@ -27,3 +27,5 @@ MonoBehaviour:
   - Who's a pretty bird?
   - Tell me something
   - I'm confused!
+  - Say "My name is Harold"
+  - Say "I'm a wise companion animal"

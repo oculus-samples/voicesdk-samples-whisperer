@@ -9,6 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Meta.WitAi;
 using Meta.WitAi.Json;
+using Meta.WitAi.TTS;
+using Meta.WitAi.TTS.Utilities;
 using Oculus.Voice;
 using UnityEngine;
 
@@ -28,6 +30,8 @@ namespace Whisperer
         [SerializeField] private ResponseDefinition _genericResponses;
         [SerializeField] private ResponseDefinition _pollyCrackerResponse;
         [SerializeField] private ResponseDefinition _helloResponses;
+
+        [SerializeField] private TTSSpeaker _speaker;
 
         private int _hintIndex,
             _hintListIndex,
@@ -112,7 +116,8 @@ namespace Whisperer
                 eventArgs.Action == "pretty_bird" ||
                 eventArgs.Action == "wake_up_bea" ||
                 eventArgs.Action == "bird_song" ||
-                eventArgs.Action == "polly_want_cracker"
+                eventArgs.Action == "polly_want_cracker" ||
+                eventArgs.Action == "say_something"
                )
                 return;
 
@@ -152,8 +157,15 @@ namespace Whisperer
             }
 
             if (_selectingSeeds && color != "none") action = color;
-
-            HandleAction(action);
+            if (action == "say_something")
+            {
+                var whatToSay = witResponse.GetFirstEntityValue("something:something");
+                SaySomething(action, whatToSay);
+            }
+            else
+            {
+                HandleAction(action);
+            }
         }
 
         protected override void HandleAction(string action)
@@ -329,6 +341,23 @@ namespace Whisperer
             _pollyCrackerIndex = (_pollyCrackerIndex + 1) % _randomizedPollyCrackerResponse.Count;
 
             return true;
+        }
+
+        private void SaySomething(string action, string whatToSay)
+        {
+            if (string.IsNullOrEmpty(whatToSay))
+            {
+                ProcessComplete(action, false);
+                return;
+            }
+            
+            Invoke("Squack", 0.5f);
+            if (_speaker == null)
+            {
+                _speaker = FindObjectOfType<TTSSpeaker>();
+            }
+            _speaker.Speak(whatToSay);
+            ProcessComplete(action, true);
         }
 
         #endregion
