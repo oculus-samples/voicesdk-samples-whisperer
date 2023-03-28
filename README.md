@@ -45,6 +45,14 @@ For more information on setting up an App, check out the [Wit.ai Quickstart](htt
 
 - The inset menu button on the left controller (`☰`) will open the in-game panel displaying an instruction card and demonstration video, as well as buttons to restart the current level or return the starting scene.
 
+### Unity Editor Play Mode Navigation
+
+- To move the camera around, use your mouse.
+
+- To select an object, look towards it and hold down space key.
+
+- To jump from one level to another, use 1, 2, 3, and 4 keys on the keyboard.
+
 ## Project Structure
 
 The `Loader` scene contains two game objects that persist throughout the entire experience: `Player Rig` and `Management`.

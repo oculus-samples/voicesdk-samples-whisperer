@@ -86,6 +86,28 @@ namespace Whisperer
                 LoadLogos();
         }
 
+        private void Update()
+        {
+            #if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                LoadLevel(1, false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                LoadLevel(2, false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                LoadLevel(3, false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                LoadLevel(4, false);
+            }
+            #endif
+        }
+
         private void LoadLogos()
         {
             SceneManager.sceneLoaded += DisplayLogos;
