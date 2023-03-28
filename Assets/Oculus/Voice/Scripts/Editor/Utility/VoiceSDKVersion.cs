@@ -25,6 +25,6 @@ namespace Oculus.Voice.Utility
     public class VoiceSDKVersion : MonoBehaviour
     {
         // This version is auto-updated for a release build
-        public const string VERSION = "49.0.0.173.358";
+        public const string VERSION = "50.0.0.94.257";
     }
 }

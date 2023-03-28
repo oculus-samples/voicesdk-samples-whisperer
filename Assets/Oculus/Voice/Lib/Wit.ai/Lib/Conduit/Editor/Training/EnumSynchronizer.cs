@@ -245,9 +245,7 @@ namespace Meta.Conduit.Editor
 
         private EnumCodeWrapper GetEnumWrapper(ManifestEntity manifestEntity)
         {
-            var qualifiedTypeName = string.IsNullOrEmpty(manifestEntity.Namespace)
-                ? $"{manifestEntity.ID}"
-                : $"{manifestEntity.Namespace}.{manifestEntity.ID}";
+            var qualifiedTypeName = manifestEntity.GetQualifiedTypeName();
             var assemblies = _assemblyWalker.GetTargetAssemblies()
                 .Where(assembly => assembly.FullName == manifestEntity.Assembly).ToList();
 
@@ -272,6 +270,11 @@ namespace Meta.Conduit.Editor
 
         private EnumCodeWrapper GetEnumWrapper(Type enumType, string entityName)
         {
+            if (!enumType.IsEnum)
+            {
+                return null;
+            }
+            
             _assemblyWalker.GetSourceCode(enumType, out string sourceFile, out bool singleUnit);
             if (!singleUnit)
             {

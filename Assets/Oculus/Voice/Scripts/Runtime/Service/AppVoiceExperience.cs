@@ -55,7 +55,7 @@ namespace Oculus.Voice
         private IVoiceSDKLogger voiceSDKLoggerImpl;
 #if UNITY_ANDROID && !UNITY_EDITOR
         // This version is auto-updated for a release build
-        private readonly string PACKAGE_VERSION = "49.0.0.173.358";
+        private readonly string PACKAGE_VERSION = "50.0.0.94.257";
 #endif
 
         private bool Initialized => null != voiceServiceImpl;
