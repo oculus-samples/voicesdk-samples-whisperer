@@ -23,6 +23,7 @@ namespace Whisperer
         [SerializeField] private Transform _leftHand;
         [SerializeField] private Transform _rightHand;
         [SerializeField] private Transform _speakGesturePoint;
+        [SerializeField] private Transform _speakGestureVisualizer;
         [SerializeField] private AppVoiceExperience _appVoiceExperience;
         [SerializeField] private RigHandsControl _hands;
 
@@ -110,7 +111,7 @@ namespace Whisperer
 
             if (_selectLocked)
             {
-                StartCoroutine(UnselectListenableAfter3Sec());
+                StartCoroutine(UnselectListenableAfterDelay());
             }
             else
             {
@@ -133,11 +134,14 @@ namespace Whisperer
                     out _hitCollider,
                     _layerMask))
             {
-                var l = _hitCollider.GetComponent<Listenable>();
-                if (l is not null && l.AllowSelect)
+                if (!_haveListenable)
                 {
-                    SetSelectedListenable(l);
-                    StopCoroutine(UnselectListenableAfter3Sec());
+                    var l = _hitCollider.GetComponent<Listenable>();
+                    if (l is not null && l.AllowSelect)
+                    {
+                        SetSelectedListenable(l);
+                        StopCoroutine(UnselectListenableAfterDelay());
+                    }
                 }
             }
             else
@@ -177,9 +181,9 @@ namespace Whisperer
 
             if (listenable is null) _selectLocked = false;
         }
-        IEnumerator UnselectListenableAfter3Sec()
+        IEnumerator UnselectListenableAfterDelay()
         {
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1.5f);
             SetSelectedListenable(null);
         }
         private void StartedProcessing(Listenable listenable)
@@ -258,8 +262,31 @@ namespace Whisperer
 
             /// When we are in speak pose and have not yet activated wit,
             /// we can select a new listenable object.
-                if (!_selectLocked && _haveSpeakPose)
+            if (_haveSpeakPose)
                 LookForListenables();
+            
+            if (!_haveListenable)
+            {
+                // show raycast
+                var raycastStart = _head.transform.position;
+                var raycastEnd = raycastStart + RaycastDirection * _distance;
+                Debug.DrawLine(raycastStart, raycastEnd, Color.red);
+
+                RaycastHit hitInfo;
+                var hit = Physics.Raycast(raycastStart, RaycastDirection, out hitInfo, _distance, ~0);
+                if (hit)
+                {
+                    var hitPoint = hitInfo.point;
+                    var hitNormal = hitInfo.normal;
+                    var hitNormalOffset = hitPoint + hitNormal * 0.01f;
+                    Debug.DrawLine(hitPoint, hitNormalOffset, Color.green);
+                    _speakGestureVisualizer.transform.position = hitPoint;
+                }
+            }
+            else
+            {
+                _speakGestureVisualizer.transform.position = _selectedListenable.transform.position;
+            }
         }
 
         #endregion

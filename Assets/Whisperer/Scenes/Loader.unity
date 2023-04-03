@@ -224,6 +224,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4852061571279439020, guid: a89561c2ba096ad4dbf37bbb423d6f3c, type: 3}
   m_PrefabInstance: {fileID: 538609451}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &960368954 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+  m_PrefabInstance: {fileID: 6265115249152116235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1094966836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -981,6 +986,7 @@ Transform:
   - {fileID: 141372738396448644}
   - {fileID: 1094966838}
   - {fileID: 1577747703}
+  - {fileID: 960368954}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1892,6 +1898,7 @@ MonoBehaviour:
   _leftHand: {fileID: 4997935705569156639}
   _rightHand: {fileID: 4997935705569156637}
   _speakGesturePoint: {fileID: 4997935705569156634}
+  _speakGestureVisualizer: {fileID: 960368954}
   _appVoiceExperience: {fileID: 4867744298586720718}
   _hands: {fileID: 1419077457}
   _sphereCastRadius: 0.1
@@ -2026,3 +2033,68 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6124741675891878883, guid: 17aa6ef3b0906a64fa63e59762fe45e4, type: 3}
   m_PrefabInstance: {fileID: 6124741677057110678}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6265115249152116235
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1432255454984728859}
+    m_Modifications:
+    - target: {fileID: 2402709457338827812, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: _micInputValue
+      value: 
+      objectReference: {fileID: 4733812566584520865}
+    - target: {fileID: 2402709457338827812, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: _speakGestureWatcher
+      value: 
+      objectReference: {fileID: 5929036011208422334}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339441, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265115250109339442, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
+      propertyPath: m_Name
+      value: GestureVisualCue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 30f343739e7c847b79845874c24b3e3b, type: 3}
