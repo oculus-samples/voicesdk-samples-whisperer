@@ -21,7 +21,7 @@ Then, clone this repo using the "Code" button above, or with:
 git clone git@github.com:wit-ai/voicesdk_samples_whisperer.git
 ```
 
-All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v45 of the Voice SDK.
+All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v50 of the Voice SDK.
 
 To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the project in Unity [2021.3.9f1](https://unity3d.com/unity/whats-new/2021.3.9). Then open the `Assets/Scenes/Loader` scene and press play.
 
