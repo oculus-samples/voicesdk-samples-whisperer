@@ -128,123 +128,37 @@ namespace Whisperer
             if (eventArgs.Success && eventArgs.Action != "") RepeatIntent(haroldPhrase);
         }
 
-        /// <summary>
-        ///     Determine the action to perform based on Wit's reponse
-        /// </summary>
-        /// <param name="witResponse"></param>
-        protected override void DetermineAction(WitResponseNode witResponse)
-        {
-            Debug.Log(witResponse.ToString());
-            var data = witResponse.GetFirstIntentData();
-            var action = data == null ? "" : data.name;
-
-            Debug.Log(action);
-
-            // If wit response contains a color, set action to the specific color for scene 3's color selection
-            var color = witResponse.GetFirstEntityValue("color:color");
-
-            switch (color)
-            {
-                case "yellow":
-                    break;
-                case "red":
-                    break;
-                case "blue":
-                    break;
-                default:
-                    color = "none";
-                    break;
-            }
-
-            if (_selectingSeeds && color != "none") action = color;
-            if (action == "say_something")
-            {
-                var whatToSay = witResponse.GetFirstEntityValue("something:something");
-                SaySomething(action, whatToSay);
-            }
-            else
-            {
-                HandleAction(action);
-            }
-        }
-
         protected override void HandleAction(string action)
         {
             Debug.Log(action);
-
-            var success = true;
-
-            switch (action)
-            {
-                case "help":
-                    success = GiveHint();
-                    Debug.Log("sucess = " + success);
-                    break;
-
-                case "blue":
-                    success = SelectSeedColor(action);
-                    break;
-
-                case "yellow":
-                    success = SelectSeedColor(action);
-                    break;
-
-                case "red":
-                    success = SelectSeedColor(action);
-                    break;
-
-                case "wake_up_bea":
-                    success = WakeUpBea();
-                    break;
-
-                case "bird_song":
-                    success = SingASong();
-                    break;
-
-                case "ask_bird_name":
-                    success = AskBirdName();
-                    break;
-
-                case "pretty_bird":
-                    success = PrettyBird();
-                    break;
-
-                case "generic_response":
-                    success = GenericResponse();
-                    break;
-
-                case "hello":
-                    success = Hello();
-                    break;
-
-                case "polly_want_cracker":
-                    success = PollyWantCracker();
-                    break;
-
-                default:
-                    success = false;
-                    break;
-            }
-
-            ProcessComplete(action, success);
         }
 
         #endregion
 
         #region Harold Actions
-
-        private bool SelectSeedColor(string color)
+        
+        [MatchIntent("select_color")]
+        [MatchIntent("SelectSeed")]
+        public void SelectSeedColor(SeedColor color)
         {
             if (!_selectingSeeds)
-                return false;
+            {
+                ProcessComplete("select_color", false);
+                return;
+            }
 
-            SetSpeechText(color.ToUpper() + "!!");
-            return true;
+            SetSpeechText(color.ToString().ToUpper() + "!!");
+            ProcessComplete("select_color", true);
         }
 
-        public bool GiveHint()
+        [MatchIntent("help")]
+        public void GiveHint()
         {
-            if (HintDefinitions.Count == 0) return false;
+            if (HintDefinitions.Count == 0)
+            {           
+                ProcessComplete("help", false);
+                return;
+            }
             Debug.Log("about to give hint");
             /// practice safe indexing
             _hintListIndex = Mathf.Min(_hintListIndex, HintDefinitions.Count - 1);
@@ -256,27 +170,29 @@ namespace Whisperer
             _hintIndex = (_hintIndex + 1) % HintDefinitions[_hintListIndex].hints.Count;
             if (_hintIndex == 0) _hintListIndex = (_hintListIndex + 1) % HintDefinitions.Count;
 
-            return true;
+            ProcessComplete("help", true);
         }
 
-        private bool WakeUpBea()
+        [MatchIntent("wake_up_bea")]
+        public void WakeUpBea()
         {
             if (_quietMode)
                 DontWakeBeaResponse();
             else
                 MakeNoise();
-
-            return true;
+            
+            ProcessComplete("wake_up_bea", true);
         }
 
-        private bool SingASong()
+        [MatchIntent("bird_song")]
+        public void SingASong()
         {
             if (_quietMode)
                 DontWakeBeaResponse();
             else
                 Sing();
 
-            return true;
+            ProcessComplete("bird_song", true);
         }
 
         private void DontWakeBeaResponse()
@@ -293,61 +209,88 @@ namespace Whisperer
             _speechBubble.SetSpeech(intent, 2f);
         }
 
-        private bool AskBirdName()
+        [MatchIntent("ask_bird_name")]
+        public void AskBirdName()
         {
-            if (_randomizedBirdNameResponses.Count == 0) return false;
+            if (_randomizedBirdNameResponses.Count == 0)
+            {
+                ProcessComplete("ask_bird_name", false);
+                return;
+            };
 
             HaroldResponds(_randomizedBirdNameResponses[_birdNameIndex].Phrases);
             _birdNameIndex = (_birdNameIndex + 1) % _randomizedBirdNameResponses.Count;
 
-            return true;
+            ProcessComplete("ask_bird_name", true);
         }
 
-        private bool PrettyBird()
+        [MatchIntent("pretty_bird")]
+        public void PrettyBird()
         {
-            if (_randomizedPrettyBirdResponses.Count == 0) return false;
+            if (_randomizedPrettyBirdResponses.Count == 0)  {
+                ProcessComplete("pretty_bird", false);
+                return ;
+            }
 
             HaroldResponds(_randomizedPrettyBirdResponses[_prettyBirdIndex].Phrases);
             _prettyBirdIndex = (_prettyBirdIndex + 1) % _randomizedPrettyBirdResponses.Count;
 
-            return true;
+            ProcessComplete("pretty_bird", true);
         }
 
-        private bool GenericResponse()
+        [MatchIntent("generic_response")]
+        public void GenericResponse()
         {
-            if (_randomizedGenericResponses.Count == 0) return false;
+            if (_randomizedGenericResponses.Count == 0)
+            {
+                ProcessComplete("generic_response", false);
+                return ;
+            }
 
             HaroldResponds(_randomizedGenericResponses[_genericResponseIndex].Phrases);
             _genericResponseIndex = (_genericResponseIndex + 1) % _randomizedGenericResponses.Count;
+            ProcessComplete("generic_response", true);
 
-            return true;
         }
 
-        private bool Hello()
+        [MatchIntent("hello")]
+        public void Hello()
         {
-            if (_randomizedHelloResponses.Count == 0) return false;
+            if (_randomizedHelloResponses.Count == 0)
+            {
+                ProcessComplete("hello", false);
+                return ;
+            }
 
             HaroldResponds(_randomizedHelloResponses[_helloThereResponseIndex].Phrases);
             _helloThereResponseIndex = (_helloThereResponseIndex + 1) % _randomizedHelloResponses.Count;
 
-            return true;
+            ProcessComplete("hello", true);
         }
 
-        private bool PollyWantCracker()
+        [MatchIntent("polly_want_cracker")]
+        public void PollyWantCracker()
         {
-            if (_randomizedPollyCrackerResponse.Count == 0) return false;
+            if (_randomizedPollyCrackerResponse.Count == 0)
+            {
+                ProcessComplete("polly_want_cracker", false);
+                return ;
+            }
 
             HaroldResponds(_randomizedPollyCrackerResponse[_pollyCrackerIndex].Phrases);
             _pollyCrackerIndex = (_pollyCrackerIndex + 1) % _randomizedPollyCrackerResponse.Count;
-
-            return true;
+            
+            ProcessComplete("polly_want_cracker", true);
         }
 
-        private void SaySomething(string action, string whatToSay)
+        [MatchIntent("say_something")]
+        public void SaySomething(WitResponseNode witResponse)
         {
+            var whatToSay = witResponse.GetFirstEntityValue("something:something");
+
             if (string.IsNullOrEmpty(whatToSay))
             {
-                ProcessComplete(action, false);
+                ProcessComplete("say_something", false);
                 return;
             }
             
@@ -357,7 +300,8 @@ namespace Whisperer
                 _speaker = FindObjectOfType<TTSSpeaker>();
             }
             _speaker.Speak(whatToSay);
-            ProcessComplete(action, true);
+            ProcessComplete("say_something", true);
+
         }
 
         #endregion

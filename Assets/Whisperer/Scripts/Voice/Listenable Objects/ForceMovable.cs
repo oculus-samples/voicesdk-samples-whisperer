@@ -47,76 +47,33 @@ namespace Whisperer
 
         #region Wit Event Handling
 
-        protected override void DetermineAction(WitResponseNode witResponse)
-        {
-            var data = witResponse.GetFirstIntentData();
-            var intent = data == null ? "" : data.name;
-
-            var direction = witResponse.GetFirstEntityValue("direction:direction");
-            var strength = witResponse.GetFirstEntityValue("move_strength:move_strength");
-
-            // Set force strength 
-            float forceMultiplier = 1;
-
-            // If utterance contains no strength, use normal
-            strength = strength ?? "normal";
-
-            if (strength == "weak") forceMultiplier = _littleMod;
-            if (strength == "strong") forceMultiplier = _lotMod;
-
-            // If utterance contains no direction, assume one depending on the intent
-            if (direction == "")
-            {
-                if (intent == "move") direction = "away";
-                if (intent == "push") direction = "away";
-                if (intent == "pull") direction = "toward";
-                if (intent == "jump") direction = "up";
-            }
-
-            // If we have move intent, but we do have a direction, lets assign move
-            if (intent == "" && direction != "")
-                intent = "move";
-
-            // Levitate mode
-            if (_levitatable) // If we're levitating, use modified force
-                if (!rb.useGravity)
-                    forceMultiplier = forceMultiplier * _floatMod;
-
-            switch (intent)
-            {
-                case "move":
-                    ForceMove(direction, forceMultiplier);
-                    break;
-                case "jump":
-                    ForceMove(direction, forceMultiplier);
-                    break;
-                case "pull":
-                    ForceMove(direction, forceMultiplier);
-                    break;
-                case "push":
-                    ForceMove(direction, forceMultiplier);
-                    break;
-                case "levitate":
-                    Levitate();
-                    break;
-                case "drop":
-                    Drop();
-                    break;
-                default:
-                    ProcessComplete(intent, false);
-                    break;
-            }
-        }
-
         /// <summary>
         ///     Moves a rigidbody in a direction
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="multiplier"></param>
-        protected virtual void ForceMove(string direction, float multiplier = 1)
+        [MatchIntent("move")]
+        [MatchIntent("jump")]
+        [MatchIntent("pull")]
+        [MatchIntent("push")]
+        public virtual void ForceMove(ForceDirection direction, WitResponseNode witResponse)
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
+            float multiplier = 1;
             var success = false;
+            var strength = witResponse.GetFirstEntityValue("move_strength:move_strength");
 
+            // Set force strength 
+
+            // If utterance contains no strength, use normal
+            strength = strength ?? "normal";
+
+            if (strength == "weak") multiplier = _littleMod;
+            if (strength == "strong") multiplier = _lotMod;
+            
             var toCamera = Camera.main.transform.position - transform.position;
             toCamera.y = rb.useGravity ? 0 : toCamera.y;
             toCamera.Normalize();
@@ -124,38 +81,38 @@ namespace Whisperer
 
             switch (direction)
             {
-                case "left":
+                case ForceDirection.left:
                     AddForceDirection(Quaternion.Euler(0, 90, 0) * toCamera, multiplier);
                     success = true;
                     break;
 
-                case "right":
+                case ForceDirection.right:
                     AddForceDirection(Quaternion.Euler(0, -90, 0) * toCamera, multiplier);
                     success = true;
                     break;
 
-                case "toward":
+                case ForceDirection.toward:
                     AddForceDirection(toCamera, multiplier);
                     success = true;
                     break;
 
-                case "away":
+                case ForceDirection.away:
                     AddForceDirection(-toCamera, multiplier);
                     success = true;
                     break;
 
-                case "up":
+                case ForceDirection.up:
                     AddForceDirection(Vector3.up, multiplier);
                     success = true;
                     break;
 
-                case "across":
+                case ForceDirection.across:
                     var toCenter = new Vector3(0f, transform.position.y, 0f) - transform.position;
                     AddForceDirection(toCenter.normalized, multiplier * _lotMod);
                     success = true;
                     break;
 
-                case "wall":
+                case ForceDirection.wall:
                     var wallVector = transform.position - new Vector3(0f, transform.position.y, 0f);
                     AddForceDirection(wallVector.normalized, multiplier * _lotMod);
                     success = true;
@@ -174,8 +131,13 @@ namespace Whisperer
             rb.AddForce(direction * _baseForce * multiplier, ForceMode.Impulse);
         }
 
-        protected void Levitate()
+        [MatchIntent("levitate")]
+        public void Levitate()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (_levitatable)
             {
                 rb.useGravity = false;
@@ -196,8 +158,13 @@ namespace Whisperer
             }
         }
 
-        protected void Drop()
+        [MatchIntent("drop")]
+        public void Drop()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (_levitatable)
             {
                 EnableGravity();

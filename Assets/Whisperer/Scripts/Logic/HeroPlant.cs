@@ -6,6 +6,8 @@
  */
 
 using System.Collections;
+using Meta.WitAi;
+using Meta.WitAi.Json;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,10 +15,10 @@ namespace Whisperer
 {
     public class HeroPlant : ForceMovable
     {
-            /// <summary>
-            ///     Hero Move Setup
-            /// </summary>
-            [Header("Hero Move Setup")] [SerializeField]
+        /// <summary>
+        ///     Hero Move Setup
+        /// </summary>
+        [Header("Hero Move Setup")] [SerializeField]
         private Transform _targetSpotTransform;
 
         [SerializeField] private float _distanceThreshold = 0.35f;
@@ -58,61 +60,35 @@ namespace Whisperer
 
             GetComponentInChildren<Animator>().SetTrigger("Grow");
         }
-
-        /*protected override void ForceMove(string direction, float multiplier = 1)
+        
+        [MatchIntent("move")]
+        [MatchIntent("jump")]
+        [MatchIntent("pull")]
+        [MatchIntent("push")]
+        public override void ForceMove(ForceDirection direction, WitResponseNode node)
         {
-            bool success = false;
-
-            Vector3 upVec = Vector3.up * _upMod;
-
-            switch (direction)
+            if(!IsSelected || !_actionState)
             {
-                case "left":
-                    AddForceDirection(Vector3.left + upVec, multiplier);
-                    success = true;
-                    break;
-                case "right":
-                    AddForceDirection(Vector3.right + upVec, multiplier);
-                    success = true;
-                    break;
-                case "toward":
-                    AddForceDirection(Vector3.back + upVec, multiplier);
-                    success = true;
-                    break;
-                case "away":
-                    AddForceDirection(Vector3.forward + upVec, multiplier);
-                    success = true;
-                    break;
-                case "up":
-                    AddForceDirection(Vector3.up, multiplier);
-                    success = true;
-                    break;
-                default:
-                    success = false;
-                    break;
+                return;
             }
-            ProcessComplete("move", success);
-        }*/
-
-        protected override void ForceMove(string direction, float multiplier = 1)
-        {
+            float multiplier = 1;
             var success = false;
 
             switch (direction)
             {
-                case "left":
+                case ForceDirection.left:
                     RigidbodyMove(Vector3.left, multiplier);
                     success = true;
                     break;
-                case "right":
+                case ForceDirection.right:
                     RigidbodyMove(Vector3.right, multiplier);
                     success = true;
                     break;
-                case "toward":
+                case ForceDirection.toward:
                     RigidbodyMove(Vector3.back, multiplier);
                     success = true;
                     break;
-                case "away":
+                case ForceDirection.away:
                     RigidbodyMove(Vector3.forward, multiplier);
                     success = true;
                     break;

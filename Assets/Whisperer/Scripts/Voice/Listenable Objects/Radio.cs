@@ -30,50 +30,13 @@ namespace Whisperer
             _randTime = Random.value * 100;
         }
 
-        protected override void DetermineAction(WitResponseNode witResponse)
-        {
-            var data = witResponse.GetFirstIntentData();
-            var action = data == null ? "" : data.name;
-
-            // if there is no intent, look for "on" or "off" in the transcription
-            if (action == "")
-            {
-                if (_witUI.LastTranscriptionCache.ToLower().Contains("on")) action = "turn_on";
-
-                if (_witUI.LastTranscriptionCache.ToLower().Contains("off")) action = "turn_off";
-            }
-
-            switch (action)
-            {
-                case "turn_on":
-                    PlayMusic();
-                    break;
-                case "turn_on_radio":
-                    PlayMusic();
-                    break;
-                case "wit$play_music":
-                    PlayMusic();
-                    break;
-                case "turn_off":
-                    StopMusic();
-                    break;
-                case "turn_off_radio":
-                    StopMusic();
-                    break;
-                case "wit$stop_music":
-                    StopMusic();
-                    break;
-                case "change_station":
-                    ChangeStation();
-                    break;
-                default:
-                    ProcessComplete(action, false);
-                    break;
-            }
-        }
-
+        [MatchIntent("change_station")]
         public void ChangeStation()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (!IsOn)
             {
                 Debug.Log("Radio needs to be ON to change station");
@@ -91,8 +54,15 @@ namespace Whisperer
             }
         }
 
+        [MatchIntent("turn_on")]
+        [MatchIntent("turn_on_radio")]
+        [MatchIntent("wit$play_music")]
         public void PlayMusic()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (IsOn)
             {
                 Debug.Log("Music already playing");
@@ -108,8 +78,15 @@ namespace Whisperer
             ProcessComplete("turn_on_radio", true);
         }
 
+        [MatchIntent("turn_off")]
+        [MatchIntent("turn_off_radio")]
+        [MatchIntent("wit$stop_music")]
         public void StopMusic()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (!IsOn)
             {
                 Debug.Log("Music already stopped");

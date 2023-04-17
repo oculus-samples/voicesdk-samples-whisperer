@@ -167,7 +167,9 @@ namespace Whisperer
                 SetSelected(_selected);
         }
 
-        protected abstract void DetermineAction(WitResponseNode witResponse);
+        protected virtual void DetermineAction(WitResponseNode witResponse)
+        {
+        }
 
         protected virtual void HandleAction(string action)
         {

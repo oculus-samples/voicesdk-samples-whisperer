@@ -16,27 +16,13 @@ namespace Whisperer
         public Animator animator;
         public bool IsOpen { get; private set; }
 
-        protected override void DetermineAction(WitResponseNode witResponse)
-        {
-            var data = witResponse.GetFirstIntentData();
-            var action = data == null ? "" : data.name;
-
-            switch (action)
-            {
-                case "open":
-                    Open();
-                    break;
-                case "close":
-                    Close();
-                    break;
-                default:
-                    ProcessComplete(action, false);
-                    break;
-            }
-        }
-
+        [MatchIntent("open")]
         public void Open()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             // If we're alread open, send non-actionable state 
             if (IsOpen)
             {
@@ -51,8 +37,13 @@ namespace Whisperer
             }
         }
 
+        [MatchIntent("close")]
         public void Close()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             // If we're alread closed, send non-actionable state 
             if (!IsOpen)
             {

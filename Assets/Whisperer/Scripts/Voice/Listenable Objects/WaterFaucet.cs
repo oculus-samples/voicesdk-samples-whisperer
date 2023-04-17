@@ -16,47 +16,15 @@ namespace Whisperer
         [SerializeField] private Animator _animator;
         public bool IsOn { get; private set; }
 
-        protected override void DetermineAction(WitResponseNode witResponse)
-        {
-            var data = witResponse.GetFirstIntentData();
-            var action = data == null ? "" : data.name;
-
-            // if there is no intent, look for "on" or "off" in the transcription
-            if (action == "")
-            {
-                if (_witUI.LastTranscriptionCache.ToLower().Contains("on")) action = "turn_on";
-
-                if (_witUI.LastTranscriptionCache.ToLower().Contains("off")) action = "turn_off";
-            }
-
-            switch (action)
-            {
-                case "turn_on":
-                    TurnOnWater();
-                    break;
-                case "turn_on_water":
-                    TurnOnWater();
-                    break;
-                case "open":
-                    TurnOnWater();
-                    break;
-                case "turn_off":
-                    TurnOffWater();
-                    break;
-                case "turn_off_water":
-                    TurnOffWater();
-                    break;
-                case "close":
-                    TurnOffWater();
-                    break;
-                default:
-                    ProcessComplete(action, false);
-                    break;
-            }
-        }
-
+        [MatchIntent("turn_on")]
+        [MatchIntent("turn_on_water")]
+        [MatchIntent("open")]
         public void TurnOnWater()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (IsOn)
             {
                 ProcessComplete("turn_on", true);
@@ -69,8 +37,15 @@ namespace Whisperer
             }
         }
 
+        [MatchIntent("turn_off_water")]
+        [MatchIntent("turn_off")]
+        [MatchIntent("close")]
         public void TurnOffWater()
         {
+            if(!IsSelected || !_actionState)
+            {
+                return;
+            }
             if (!IsOn)
             {
                 ProcessComplete("turn_off", true);
