@@ -78,6 +78,14 @@ namespace Whisperer
 
             if (_sleeping) Sleep();
             else Idle();
+            
+            if (_speaker == null)
+            {
+                _speaker = FindObjectOfType<TTSSpeaker>();
+            }
+            _speaker.Events.OnTextPlaybackStart.AddListener(OnTextPlaybackStart);
+            _speaker.Events.OnTextPlaybackFinished.AddListener(OnTextPlaybackStop);
+
         }
 
         protected override void OnDestroy()
@@ -85,6 +93,8 @@ namespace Whisperer
             LevelLoader.Instance?.OnLevelLoadComplete.RemoveListener(FindSceneListenables);
             _listenables.ForEach(listenable => UnsubToListenableEvents(listenable));
             _appVoiceExperience?.VoiceEvents.onFullTranscription.RemoveListener(CacheTranscription);
+            _speaker.Events.OnTextPlaybackStart.RemoveListener(OnTextPlaybackStart);
+            _speaker.Events.OnTextPlaybackFinished.RemoveListener(OnTextPlaybackStop);
 
             base.OnDestroy();
         }
@@ -294,16 +304,20 @@ namespace Whisperer
                 return;
             }
             
-            Invoke("Squack", 0.5f);
-            if (_speaker == null)
-            {
-                _speaker = FindObjectOfType<TTSSpeaker>();
-            }
             _speaker.Speak(whatToSay);
             ProcessComplete("say_something", true);
 
         }
 
+        void OnTextPlaybackStart(string text)
+        {
+            _animator.SetTrigger("Talk");
+        }
+        void OnTextPlaybackStop(string text)
+        {
+            _animator.SetTrigger("Idle_Alt");
+            Invoke("Squack", 0.5f);
+        }
         #endregion
 
         #region Harold Speech
@@ -331,16 +345,16 @@ namespace Whisperer
         private IEnumerator DelayThenSetSpeechText(string speechText, float showDelay, float hideDelay)
         {
             yield return new WaitForSeconds(showDelay);
-            Invoke("Squack", 0f);
             _witUI.FadeOut();
             _speechBubble.SetSpeech(speechText, hideDelay);
+            _speaker.Speak(speechText);
         }
 
         private void SetSpeechText(string speechText)
         {
-            Invoke("Squack", 0.5f);
             _witUI.FadeOut();
             _speechBubble.SetSpeech(speechText, 2f);
+            _speaker.Speak(speechText);
         }
 
         private void CacheTranscription(string transcription)
