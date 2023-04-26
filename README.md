@@ -83,6 +83,28 @@ If an object derived from [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Liste
 
 > Example: If a [`ForceMovable.cs`](Assets/Whisperer/Scripts/Voice/Listenable Objects/ForceMovable.cs) is selected and the utterance "*Move right a lot*" is detected by Wit.ai, we read the intent and entities from the `WitResponseNode` to determine the direction and strength of move force applied. *Whisperer* reads the returned intent (`move`), direction entity (`right`) and strength entity (`strong`) and performs an appropriate action.
 
+## Conduit Implementation
+
+This code base uses [Conduit framework](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/) from Voice SDK.
+
+To use Conduit, simply annotate the callback method with the `MatchIntent` attribute and annotate the assembly containing the callback method with the `ConduitAssembly` attribute. When changes are made to the callback method, such as adding, removing, or changing it, Unity generates a new manifest file. Please note that `Use Conduit` should be checked in your wit config asset file [as documented here](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/#benefits-to-using-conduit).
+
+For example, in [HeroPlant.cs](Assets/Whisperer/Scripts/Logic/HeroPlant.cs#L68) the `ForceMove` method takes two parameters: a `ForceDirection` enum and a `WitResponseNode`.
+
+In this code `ForceMove` is decorated with the `MatchIntent` attribute, with possible intent values: `move`, `jump`, `pull`, and `push`. By using the [Conduit framework](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/), these callback methods can be automatically registered without the need for manual registration.
+
+
+```csharp
+[MatchIntent("move")]
+[MatchIntent("jump")]
+[MatchIntent("pull")]
+[MatchIntent("push")]
+public override void ForceMove(ForceDirection direction, WitResponseNode node)
+{
+    // method implementation
+}
+```
+
 
 ## Intents and Entities
 These intents are used to move objects in the scene. The move, pull, push, and jump intents can be used with `strength` and `direction` entities. For example, "*Push away from me a little bit.*"
