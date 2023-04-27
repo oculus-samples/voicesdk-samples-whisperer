@@ -18,6 +18,18 @@ namespace Whisperer
 {
     public class HaroldTheBird : Listenable
     {
+        private const string SELECT_COLOR_INTENT = "select_color";
+        private const string SELECT_SEED_INTENT = "select_seed";
+        private const string HELP_INTENT = "help";
+        private const string ASK_BIRD_NAME_INTENT = "ask_bird_name";
+        private const string PRETTY_BIRD_INTENT = "pretty_bird";
+        private const string WAKE_UP_BEA_INTENT = "wake_up_bea";
+        private const string BIRD_SONG_INTENT = "bird_song";
+        private const string POLLY_WANT_CRACKER_INTENT = "polly_want_cracker";
+        private const string SAY_SOMETHING_INTENT = "say_something";
+        private const string GENERIC_RESPONSE_INTENT = "generic_response";
+        private const string HELLO_INTENT = "hello";
+
         [SerializeField] private SpeechBubble _speechBubble;
         [SerializeField] private Animator _animator;
         [SerializeField] private Vector2 _idleAnimMinMax = new(15, 30);
@@ -78,7 +90,7 @@ namespace Whisperer
 
             if (_sleeping) Sleep();
             else Idle();
-            
+
             if (_speaker == null)
             {
                 _speaker = FindObjectOfType<TTSSpeaker>();
@@ -121,13 +133,13 @@ namespace Whisperer
         {
             if (_selectingSeeds ||
                 !_transcriptionMode ||
-                eventArgs.Action == "help" ||
-                eventArgs.Action == "ask_bird_name" ||
-                eventArgs.Action == "pretty_bird" ||
-                eventArgs.Action == "wake_up_bea" ||
-                eventArgs.Action == "bird_song" ||
-                eventArgs.Action == "polly_want_cracker" ||
-                eventArgs.Action == "say_something"
+                eventArgs.Action == HELP_INTENT ||
+                eventArgs.Action == ASK_BIRD_NAME_INTENT ||
+                eventArgs.Action == PRETTY_BIRD_INTENT ||
+                eventArgs.Action == WAKE_UP_BEA_INTENT ||
+                eventArgs.Action == BIRD_SONG_INTENT ||
+                eventArgs.Action == POLLY_WANT_CRACKER_INTENT ||
+                eventArgs.Action == SAY_SOMETHING_INTENT
                )
                 return;
 
@@ -146,27 +158,27 @@ namespace Whisperer
         #endregion
 
         #region Harold Actions
-        
-        [MatchIntent("select_color")]
-        [MatchIntent("SelectSeed")]
+
+        [MatchIntent(SELECT_COLOR_INTENT)]
+        [MatchIntent(SELECT_SEED_INTENT)]
         public void SelectSeedColor(SeedColor color)
         {
             if (!_selectingSeeds)
             {
-                ProcessComplete("select_color", false);
+                ProcessComplete(SELECT_COLOR_INTENT, false);
                 return;
             }
 
             SetSpeechText(color.ToString().ToUpper() + "!!");
-            ProcessComplete("select_color", true);
+            ProcessComplete(color.ToString(), true);
         }
 
-        [MatchIntent("help")]
+        [MatchIntent(HELP_INTENT)]
         public void GiveHint()
         {
             if (HintDefinitions.Count == 0)
-            {           
-                ProcessComplete("help", false);
+            {
+                ProcessComplete(HELP_INTENT, false);
                 return;
             }
             Debug.Log("about to give hint");
@@ -180,21 +192,21 @@ namespace Whisperer
             _hintIndex = (_hintIndex + 1) % HintDefinitions[_hintListIndex].hints.Count;
             if (_hintIndex == 0) _hintListIndex = (_hintListIndex + 1) % HintDefinitions.Count;
 
-            ProcessComplete("help", true);
+            ProcessComplete(HELP_INTENT, true);
         }
 
-        [MatchIntent("wake_up_bea")]
+        [MatchIntent(WAKE_UP_BEA_INTENT)]
         public void WakeUpBea()
         {
             if (_quietMode)
                 DontWakeBeaResponse();
             else
                 MakeNoise();
-            
-            ProcessComplete("wake_up_bea", true);
+
+            ProcessComplete(WAKE_UP_BEA_INTENT, true);
         }
 
-        [MatchIntent("bird_song")]
+        [MatchIntent(BIRD_SONG_INTENT)]
         public void SingASong()
         {
             if (_quietMode)
@@ -202,7 +214,7 @@ namespace Whisperer
             else
                 Sing();
 
-            ProcessComplete("bird_song", true);
+            ProcessComplete(BIRD_SONG_INTENT, true);
         }
 
         private void DontWakeBeaResponse()
@@ -219,93 +231,93 @@ namespace Whisperer
             _speechBubble.SetSpeech(intent, 2f);
         }
 
-        [MatchIntent("ask_bird_name")]
+        [MatchIntent(ASK_BIRD_NAME_INTENT)]
         public void AskBirdName()
         {
             if (_randomizedBirdNameResponses.Count == 0)
             {
-                ProcessComplete("ask_bird_name", false);
+                ProcessComplete(ASK_BIRD_NAME_INTENT, false);
                 return;
             };
 
             HaroldResponds(_randomizedBirdNameResponses[_birdNameIndex].Phrases);
             _birdNameIndex = (_birdNameIndex + 1) % _randomizedBirdNameResponses.Count;
 
-            ProcessComplete("ask_bird_name", true);
+            ProcessComplete(ASK_BIRD_NAME_INTENT, true);
         }
 
-        [MatchIntent("pretty_bird")]
+        [MatchIntent(PRETTY_BIRD_INTENT)]
         public void PrettyBird()
         {
             if (_randomizedPrettyBirdResponses.Count == 0)  {
-                ProcessComplete("pretty_bird", false);
+                ProcessComplete(PRETTY_BIRD_INTENT, false);
                 return ;
             }
 
             HaroldResponds(_randomizedPrettyBirdResponses[_prettyBirdIndex].Phrases);
             _prettyBirdIndex = (_prettyBirdIndex + 1) % _randomizedPrettyBirdResponses.Count;
 
-            ProcessComplete("pretty_bird", true);
+            ProcessComplete(PRETTY_BIRD_INTENT, true);
         }
 
-        [MatchIntent("generic_response")]
+        [MatchIntent(GENERIC_RESPONSE_INTENT)]
         public void GenericResponse()
         {
             if (_randomizedGenericResponses.Count == 0)
             {
-                ProcessComplete("generic_response", false);
+                ProcessComplete(GENERIC_RESPONSE_INTENT, false);
                 return ;
             }
 
             HaroldResponds(_randomizedGenericResponses[_genericResponseIndex].Phrases);
             _genericResponseIndex = (_genericResponseIndex + 1) % _randomizedGenericResponses.Count;
-            ProcessComplete("generic_response", true);
+            ProcessComplete(GENERIC_RESPONSE_INTENT, true);
 
         }
 
-        [MatchIntent("hello")]
+        [MatchIntent(HELLO_INTENT)]
         public void Hello()
         {
             if (_randomizedHelloResponses.Count == 0)
             {
-                ProcessComplete("hello", false);
+                ProcessComplete(HELLO_INTENT, false);
                 return ;
             }
 
             HaroldResponds(_randomizedHelloResponses[_helloThereResponseIndex].Phrases);
             _helloThereResponseIndex = (_helloThereResponseIndex + 1) % _randomizedHelloResponses.Count;
 
-            ProcessComplete("hello", true);
+            ProcessComplete(HELLO_INTENT, true);
         }
 
-        [MatchIntent("polly_want_cracker")]
+        [MatchIntent(POLLY_WANT_CRACKER_INTENT)]
         public void PollyWantCracker()
         {
             if (_randomizedPollyCrackerResponse.Count == 0)
             {
-                ProcessComplete("polly_want_cracker", false);
+                ProcessComplete(POLLY_WANT_CRACKER_INTENT, false);
                 return ;
             }
 
             HaroldResponds(_randomizedPollyCrackerResponse[_pollyCrackerIndex].Phrases);
             _pollyCrackerIndex = (_pollyCrackerIndex + 1) % _randomizedPollyCrackerResponse.Count;
-            
-            ProcessComplete("polly_want_cracker", true);
+
+            ProcessComplete(POLLY_WANT_CRACKER_INTENT, true);
         }
 
-        [MatchIntent("say_something")]
+        [MatchIntent(SAY_SOMETHING_INTENT)]
         public void SaySomething(WitResponseNode witResponse)
         {
             var whatToSay = witResponse.GetFirstEntityValue("something:something");
 
             if (string.IsNullOrEmpty(whatToSay))
             {
-                ProcessComplete("say_something", false);
+                ProcessComplete(SAY_SOMETHING_INTENT, false);
                 return;
             }
-            
+
             _speaker.Speak(whatToSay);
-            ProcessComplete("say_something", true);
+            ProcessComplete(SAY_SOMETHING_INTENT, true);
 
         }
 

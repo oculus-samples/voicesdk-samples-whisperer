@@ -15,6 +15,13 @@ namespace Whisperer
     [RequireComponent(typeof(HighlightObject))]
     public class ForceMovable : Listenable
     {
+        private const string MOVE_INTENT = "move";
+        private const string JUMP_INTENT = "jump";
+        private const string PULL_INTENT = "pull";
+        private const string PUSH_INTENT = "push";
+        private const string LEVITATE_INTENT = "levitate";
+        private const string DROP_INTENT = "drop";
+
         [Header("Force Move Settings")] [SerializeField]
         protected float _baseForce = 5;
 
@@ -52,10 +59,10 @@ namespace Whisperer
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="multiplier"></param>
-        [MatchIntent("move")]
-        [MatchIntent("jump")]
-        [MatchIntent("pull")]
-        [MatchIntent("push")]
+        [MatchIntent(MOVE_INTENT)]
+        [MatchIntent(JUMP_INTENT)]
+        [MatchIntent(PULL_INTENT)]
+        [MatchIntent(PUSH_INTENT)]
         public virtual void ForceMove(ForceDirection direction, WitResponseNode witResponse)
         {
             if(!IsSelected || !_actionState)
@@ -66,14 +73,14 @@ namespace Whisperer
             var success = false;
             var strength = witResponse.GetFirstEntityValue("move_strength:move_strength");
 
-            // Set force strength 
+            // Set force strength
 
             // If utterance contains no strength, use normal
             strength = strength ?? "normal";
 
             if (strength == "weak") multiplier = _littleMod;
             if (strength == "strong") multiplier = _lotMod;
-            
+
             var toCamera = Camera.main.transform.position - transform.position;
             toCamera.y = rb.useGravity ? 0 : toCamera.y;
             toCamera.Normalize();
@@ -123,7 +130,7 @@ namespace Whisperer
                     break;
             }
 
-            ProcessComplete("move", success);
+            ProcessComplete(MOVE_INTENT, success);
         }
 
         protected void AddForceDirection(Vector3 direction, float multiplier)
@@ -131,7 +138,7 @@ namespace Whisperer
             rb.AddForce(direction * _baseForce * multiplier, ForceMode.Impulse);
         }
 
-        [MatchIntent("levitate")]
+        [MatchIntent(LEVITATE_INTENT)]
         public void Levitate()
         {
             if(!IsSelected || !_actionState)
@@ -150,15 +157,15 @@ namespace Whisperer
 
                 rb.AddForce(toCamera * .1f + Vector3.up * .05f, ForceMode.Impulse);
                 rb.AddTorque(transform.forward * .15f);
-                ProcessComplete("levitate", true);
+                ProcessComplete(LEVITATE_INTENT, true);
             }
             else
             {
-                ProcessComplete("levitate", false);
+                ProcessComplete(LEVITATE_INTENT, false);
             }
         }
 
-        [MatchIntent("drop")]
+        [MatchIntent(DROP_INTENT)]
         public void Drop()
         {
             if(!IsSelected || !_actionState)
@@ -168,11 +175,11 @@ namespace Whisperer
             if (_levitatable)
             {
                 EnableGravity();
-                ProcessComplete("drop", true);
+                ProcessComplete(DROP_INTENT, true);
             }
             else
             {
-                ProcessComplete("drop", false);
+                ProcessComplete(DROP_INTENT, false);
             }
         }
 
