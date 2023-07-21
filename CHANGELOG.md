@@ -1,3 +1,7 @@
+1.0.2 (July 21, 2023)
+- Updated the whisperer-wit-app.zip to the latest version.
+- Fixed bug that made it impossible to select seeds in level 3.
+
 1.0.1 (April 7, 2023)
 - VoiceSDK: Upgraded from v45 to v50.
 - Improved Object Selection: Disabling object locking after gaze selection for faster and easier object selection.
