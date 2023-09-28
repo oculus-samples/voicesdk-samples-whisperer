@@ -9,6 +9,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 using Meta.WitAi.Data.Info;
 using Meta.WitAi.Requests;
 
@@ -170,6 +171,63 @@ namespace Meta.WitAi.Lib
 
                 // Update client token
                 UpdateClientToken(configuration, appInfo, warnings, onUpdateComplete);
+            });
+        }
+        private static void UpdateExportInfo(IWitRequestConfiguration configuration,
+            WitAppInfo appInfo, StringBuilder warnings,
+            Action<WitAppInfo, string> onUpdateComplete)
+        {
+            GetRequest(configuration).RequestAppExportInfo(appInfo.id, (exportInfo, error) =>
+            {
+                if (!String.IsNullOrEmpty(error))
+                {
+                    warnings.AppendLine($"Could not determine export URI for {appInfo.id}.");
+                    UpdateComplete(configuration, appInfo, warnings, onUpdateComplete);
+                    return;
+                }
+                GetRequest(configuration).RequestAppExportZip(exportInfo.uri, (exportZip, downloadError) =>
+                {
+                    // Failed to update client token
+                    if (!string.IsNullOrEmpty(downloadError))
+                    {
+                        warnings.AppendLine($"App export download failed ({downloadError})");
+                    }
+                    // Got download
+                    else
+                    {
+                        var ep = new ExportParser(exportZip);
+                        appInfo.composer = ep.ImportComposerInfo(); //TODO: split out to composer-only lib.
+                        appInfo.characters = ep.ImportCharacterInfo();
+                    }
+                    // Complete
+                    UpdateVersionTagList(configuration, appInfo, warnings, onUpdateComplete);
+                });
+            });
+        }
+        private static void UpdateVersionTagList(IWitRequestConfiguration configuration,
+            WitAppInfo appInfo, StringBuilder warnings,
+            Action<WitAppInfo, string> onUpdateComplete)
+        {
+            GetRequest(configuration).RequestAppVersionTags(appInfo.id, (versionTagsBySnapshot, error) =>
+            {
+                if (!String.IsNullOrEmpty(error))
+                {
+                    warnings.AppendLine($"Could not determine export URI for {appInfo.id}.");
+                    UpdateComplete(configuration, appInfo, warnings, onUpdateComplete);
+                    return;
+                }
+
+                int totalTagCount = versionTagsBySnapshot.Sum(snap =>snap.Length);
+                appInfo.versionTags = new WitVersionTagInfo[totalTagCount];
+
+                for (int snapshot = 0, currentTag = 0; snapshot < versionTagsBySnapshot.Length; snapshot++)
+                {
+                    for (var tag = 0; tag < versionTagsBySnapshot[snapshot].Length; tag++, currentTag++)
+                    {
+                        appInfo.versionTags[currentTag] = versionTagsBySnapshot[snapshot][tag];
+                    }
+                }
+                UpdateComplete(configuration, appInfo, warnings, onUpdateComplete);
             });
         }
 
@@ -390,8 +448,8 @@ namespace Meta.WitAi.Lib
                         appInfo.voices = voiceList.ToArray();
                     }
 
-                    // Complete
-                    UpdateComplete(configuration, appInfo, warnings, onUpdateComplete);
+                    UpdateExportInfo(configuration, appInfo, warnings, onUpdateComplete);
+
                 });
         }
 

@@ -45,9 +45,9 @@ namespace Meta.WitAi
         #endif
 
         /// <summary>
-        /// Allows supression of all vlog errors
+        /// Hides all errors from the console
         /// </summary>
-        public static bool SuppressErrors { get; set; } = false;
+        public static bool SuppressLogs { get; set; } = false;
 
         /// <summary>
         /// Event for appending custom data to a log before logging to console
@@ -94,6 +94,11 @@ namespace Meta.WitAi
                 return;
             }
             #endif
+            // Suppress logs if desired
+            if (SuppressLogs)
+            {
+                return;
+            }
 
             // Use calling category if null
             string category = logCategory;
@@ -138,14 +143,7 @@ namespace Meta.WitAi
             switch (logType)
             {
                 case LogType.Error:
-                    if (SuppressErrors)
-                    {
-                        UnityEngine.Debug.LogWarning(result);
-                    }
-                    else
-                    {
-                        UnityEngine.Debug.LogError(result);
-                    }
+                    UnityEngine.Debug.LogError(result);
                     break;
                 case LogType.Warning:
                     UnityEngine.Debug.LogWarning(result);
@@ -163,22 +161,10 @@ namespace Meta.WitAi
         private static string GetCallingCategory()
         {
             // Get stack trace method
-            string path = new StackTrace()?.GetFrame(3)?.GetMethod().DeclaringType.FullName;
+            string path = new StackTrace()?.GetFrame(3)?.GetMethod().DeclaringType.Name;
             if (string.IsNullOrEmpty(path))
             {
-                return "VLog";
-            }
-            // Remove additional data
-            int index = path.LastIndexOf(".");
-            if (index != -1)
-            {
-                path = path.Substring(index + 1);
-            }
-            // Remove additional data
-            index = path.IndexOf("+<");
-            if (index != -1)
-            {
-                path = path.Substring(0, index);
+                return "NoStacktrace";
             }
             // Return path
             return path;
@@ -219,7 +205,7 @@ namespace Meta.WitAi
                     hex = "00FF00";
                     break;
             }
-            builder.Insert(startIndex, $"<color=\"#{hex}\">");
+            builder.Insert(startIndex, $"<color=#{hex}>");
             builder.Append("</color>");
             #endif
         }
