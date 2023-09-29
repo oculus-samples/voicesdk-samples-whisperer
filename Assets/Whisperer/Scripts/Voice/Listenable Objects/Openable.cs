@@ -13,10 +13,13 @@ namespace Whisperer
 {
     public class Openable : Listenable
     {
+        private const string CLOSE_INTENT = "close";
+        private const string OPEN_INTENT = "open";
+        
         public Animator animator;
         public bool IsOpen { get; private set; }
 
-        [MatchIntent("open")]
+        [MatchIntent(OPEN_INTENT)]
         public void Open()
         {
             if(!IsSelected || !_actionState)
@@ -37,7 +40,7 @@ namespace Whisperer
             }
         }
 
-        [MatchIntent("close")]
+        [MatchIntent(CLOSE_INTENT)]
         public void Close()
         {
             if(!IsSelected || !_actionState)

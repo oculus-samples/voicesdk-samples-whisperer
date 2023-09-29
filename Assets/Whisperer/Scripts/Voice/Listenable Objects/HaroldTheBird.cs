@@ -160,8 +160,20 @@ namespace Whisperer
         #region Harold Actions
 
         [MatchIntent(SELECT_COLOR_INTENT)]
-        [MatchIntent(SELECT_SEED_INTENT)]
         public void SelectSeedColor(SeedColor color)
+        {
+            if (!_selectingSeeds)
+            {
+                ProcessComplete(SELECT_COLOR_INTENT, false);
+                return;
+            }
+
+            SetSpeechText(color.ToString().ToUpper() + "!!");
+            ProcessComplete(color.ToString(), true);
+        }
+
+        [MatchIntent(SELECT_SEED_INTENT)]
+        public void SelectSeed(SeedColor color)
         {
             if (!_selectingSeeds)
             {

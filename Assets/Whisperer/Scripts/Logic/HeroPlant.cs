@@ -15,6 +15,11 @@ namespace Whisperer
 {
     public class HeroPlant : ForceMovable
     {
+        private const string MOVE_INTENT = "move";
+        private const string JUMP_INTENT = "jump";
+        private const string PULL_INTENT = "pull";
+        private const string PUSH_INTENT = "push";
+        
         /// <summary>
         ///     Hero Move Setup
         /// </summary>
@@ -60,11 +65,31 @@ namespace Whisperer
 
             GetComponentInChildren<Animator>().SetTrigger("Grow");
         }
+
+        [MatchIntent(MOVE_INTENT)]
+        public void Move(ForceDirection direction, WitResponseNode node)
+        {
+            ForceMove(direction, node);
+        }
+
+        [MatchIntent(JUMP_INTENT)]
+        public void Jump(ForceDirection direction, WitResponseNode node)
+        {
+            ForceMove(direction, node);
+        }
+
+        [MatchIntent(PULL_INTENT)]
+        public void Pull(ForceDirection direction, WitResponseNode node)
+        {
+            ForceMove(direction, node);
+        }
+
+        [MatchIntent(PUSH_INTENT)]
+        public void Push(ForceDirection direction, WitResponseNode node)
+        {
+            ForceMove(direction, node);
+        }
         
-        [MatchIntent("move")]
-        [MatchIntent("jump")]
-        [MatchIntent("pull")]
-        [MatchIntent("push")]
         public override void ForceMove(ForceDirection direction, WitResponseNode node)
         {
             if(!IsSelected || !_actionState)

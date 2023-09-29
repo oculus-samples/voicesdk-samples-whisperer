@@ -13,13 +13,35 @@ namespace Whisperer
 {
     public class WaterFaucet : Listenable
     {
+        private const string TURN_ON_INTENT = "turn_on";
+        private const string TURN_ON_WATER_INTENT = "turn_on_water";
+        private const string OPEN_INTENT = "open";
+        private const string CLOSE_INTENT = "close";
+        private const string TURN_OFF_WATER_INTENT = "turn_off_water";
+        private const string TURN_OFF_INTENT = "turn_off";
+
         [SerializeField] private Animator _animator;
         public bool IsOn { get; private set; }
 
-        [MatchIntent("turn_on")]
-        [MatchIntent("turn_on_water")]
-        [MatchIntent("open")]
+        [MatchIntent(TURN_ON_WATER_INTENT)]
         public void TurnOnWater()
+        {
+            TurnOnWaterFaucet();
+        }
+
+        [MatchIntent(TURN_ON_INTENT)]
+        public void TurnOn()
+        {
+            TurnOnWaterFaucet();
+        }
+        
+        [MatchIntent(OPEN_INTENT)]
+        public void Open()
+        {
+            TurnOnWaterFaucet();
+        }
+        
+        private void TurnOnWaterFaucet()
         {
             if(!IsSelected || !_actionState)
             {
@@ -36,11 +58,26 @@ namespace Whisperer
                 ProcessComplete("turn_on", true);
             }
         }
-
-        [MatchIntent("turn_off_water")]
-        [MatchIntent("turn_off")]
-        [MatchIntent("close")]
+        
+        [MatchIntent(CLOSE_INTENT)]
+        public void Close()
+        {
+            TurnOffWaterFaucet();
+        }
+        
+        [MatchIntent(TURN_OFF_INTENT)]
+        public void TurnOff()
+        {
+            TurnOffWaterFaucet();
+        }
+        
+        [MatchIntent(TURN_OFF_WATER_INTENT)]
         public void TurnOffWater()
+        {
+            TurnOffWaterFaucet();
+        }
+        
+        private void TurnOffWaterFaucet()
         {
             if(!IsSelected || !_actionState)
             {

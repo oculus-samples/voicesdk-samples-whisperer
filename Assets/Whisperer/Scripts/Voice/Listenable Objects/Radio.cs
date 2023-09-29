@@ -14,6 +14,16 @@ namespace Whisperer
 {
     public class Radio : Listenable
     {
+
+        private const string TURN_ON_INTENT = "turn_on";
+        private const string TURN_ON_RADIO_INTENT = "turn_on_radio";
+        private const string PLAY_MUSIC_INTENT = "wit$play_music";
+        private const string TURN_OFF_INTENT = "turn_of";
+        private const string TURN_OFF_RADIO_INTENT = "turn_off_radio";
+        private const string STOP_MUSIC_INTENT = "wit$stop_music";
+        private const string CHANGE_STATION_INTENT = "change_station";
+
+
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private List<AudioClip> _stationClips;
         [SerializeField] private List<float> _volumes;
@@ -30,7 +40,7 @@ namespace Whisperer
             _randTime = Random.value * 100;
         }
 
-        [MatchIntent("change_station")]
+        [MatchIntent(CHANGE_STATION_INTENT)]
         public void ChangeStation()
         {
             if(!IsSelected || !_actionState)
@@ -54,10 +64,25 @@ namespace Whisperer
             }
         }
 
-        [MatchIntent("turn_on")]
-        [MatchIntent("turn_on_radio")]
-        [MatchIntent("wit$play_music")]
+        [MatchIntent(TURN_ON_INTENT)]
+        public void TurnOn()
+        {
+            StartPlayingMusic();
+        }
+
+        [MatchIntent(TURN_ON_RADIO_INTENT)]
+        public void TurnOnRadio()
+        {
+            StartPlayingMusic();
+        }
+
+        [MatchIntent(PLAY_MUSIC_INTENT)]
         public void PlayMusic()
+        {
+            StartPlayingMusic();
+        }
+        
+        private void StartPlayingMusic()
         {
             if(!IsSelected || !_actionState)
             {
@@ -78,10 +103,25 @@ namespace Whisperer
             ProcessComplete("turn_on_radio", true);
         }
 
-        [MatchIntent("turn_off")]
-        [MatchIntent("turn_off_radio")]
-        [MatchIntent("wit$stop_music")]
+        [MatchIntent(TURN_OFF_INTENT)]
+        public void TurnOff()
+        {
+            StopPlayingMusic();
+        }
+        
+        [MatchIntent(TURN_OFF_RADIO_INTENT)]
+        public void TurnOffRadio()
+        {
+            StopPlayingMusic();
+        }
+        
+        [MatchIntent(STOP_MUSIC_INTENT)]
         public void StopMusic()
+        {
+            StopPlayingMusic();
+        }
+        
+        private void StopPlayingMusic()
         {
             if(!IsSelected || !_actionState)
             {

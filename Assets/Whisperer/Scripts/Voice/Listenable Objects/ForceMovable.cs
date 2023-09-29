@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System;
 using Meta.WitAi;
 using Meta.WitAi.Json;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Whisperer
         private const string PUSH_INTENT = "push";
         private const string LEVITATE_INTENT = "levitate";
         private const string DROP_INTENT = "drop";
+        private const string DIRECTION_ENTITY_KEY = "direction:direction";
+        private const string STRENGTH_ENTITY_KEY = "move_strength:move_strength";
 
         [Header("Force Move Settings")] [SerializeField]
         protected float _baseForce = 5;
@@ -41,6 +44,17 @@ namespace Whisperer
         protected float _originalForce;
         protected Rigidbody rb;
 
+        private static ForceDirection GetDirectionOrDefault(WitResponseNode response, ForceDirection defaultDirection)
+        {
+            var directionValue = response.GetFirstEntityValue(DIRECTION_ENTITY_KEY);
+            if (!Enum.TryParse(directionValue, out ForceDirection direction))
+            {
+                direction = defaultDirection;
+            }
+
+            return direction;
+        }
+
         protected void Awake()
         {
             rb = GetComponentInChildren<Rigidbody>();
@@ -54,27 +68,47 @@ namespace Whisperer
 
         #region Wit Event Handling
 
+        [MatchIntent(JUMP_INTENT)]
+        public void Jump(WitResponseNode response)
+        {
+            ForceMove(ForceDirection.up, response);
+        }
+        
+        [MatchIntent(PUSH_INTENT)]
+        public void Push(WitResponseNode response)
+        {
+            ForceMove(ForceDirection.away, response);
+        }
+        
+        [MatchIntent(PULL_INTENT)]
+        public void Pull(WitResponseNode response)
+        {
+            ForceMove(ForceDirection.toward, response);
+        }
+        
+        [MatchIntent(MOVE_INTENT)]
+        public void Move(WitResponseNode response)
+        {
+            ForceMove(ForceDirection.right, response);
+        }
+        
         /// <summary>
         ///     Moves a rigidbody in a direction
         /// </summary>
         /// <param name="direction"></param>
-        /// <param name="multiplier"></param>
-        [MatchIntent(MOVE_INTENT)]
-        [MatchIntent(JUMP_INTENT)]
-        [MatchIntent(PULL_INTENT)]
-        [MatchIntent(PUSH_INTENT)]
+        /// <param name="witResponse"></param>
         public virtual void ForceMove(ForceDirection direction, WitResponseNode witResponse)
         {
             if(!IsSelected || !_actionState)
             {
                 return;
             }
+            
             float multiplier = 1;
             var success = false;
-            var strength = witResponse.GetFirstEntityValue("move_strength:move_strength");
+            var strength = witResponse.GetFirstEntityValue(STRENGTH_ENTITY_KEY);
 
             // Set force strength
-
             // If utterance contains no strength, use normal
             strength = strength ?? "normal";
 
@@ -85,6 +119,8 @@ namespace Whisperer
             toCamera.y = rb.useGravity ? 0 : toCamera.y;
             toCamera.Normalize();
             toCamera += Vector3.up * _upMod;
+
+            direction = GetDirectionOrDefault(witResponse, direction);
 
             switch (direction)
             {
