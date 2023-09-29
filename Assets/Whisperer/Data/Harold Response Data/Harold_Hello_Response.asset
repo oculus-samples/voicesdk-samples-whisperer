@@ -28,7 +28,7 @@ MonoBehaviour:
   - Phrases:
     - Salam!
   - Phrases:
-    - "I\u2019ll never get used to this..."
+    - "I\u2019ll never get used to this ..."
   - Phrases:
     - "Oh \u201Cboo\u201D yourself!"
   - Phrases:
@@ -37,8 +37,8 @@ MonoBehaviour:
     - Greetings. I am Harold,
     - God-emperor of all parrot-kind.
   - Phrases:
-    - "I didn\u2019t hear a \u201CYour Majesty...\u201D"
+    - "I didn\u2019t hear a \u201CYour Majesty ...\u201D"
   - Phrases:
     - "Listen, I don\u2019t want any trouble!"
   - Phrases:
-    - Oh jeez, another visitor from beyond...
+    - Oh jeez, another visitor from beyond ...

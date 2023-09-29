@@ -2150,7 +2150,7 @@ MonoBehaviour:
     customTranscriptionProvider: {fileID: 0}
     alwaysRecord: 0
     preferredActivationOffset: -0.5
-  usePlatformServices: 1
+  usePlatformServices: 0
   enableConsoleLogging: 0
 --- !u!1001 &4997935705569156630
 PrefabInstance:

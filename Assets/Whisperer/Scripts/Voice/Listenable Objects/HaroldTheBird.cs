@@ -19,7 +19,6 @@ namespace Whisperer
     public class HaroldTheBird : Listenable
     {
         private const string SELECT_COLOR_INTENT = "select_color";
-        private const string SELECT_SEED_INTENT = "select_seed";
         private const string HELP_INTENT = "help";
         private const string ASK_BIRD_NAME_INTENT = "ask_bird_name";
         private const string PRETTY_BIRD_INTENT = "pretty_bird";
@@ -161,19 +160,6 @@ namespace Whisperer
 
         [MatchIntent(SELECT_COLOR_INTENT)]
         public void SelectSeedColor(SeedColor color)
-        {
-            if (!_selectingSeeds)
-            {
-                ProcessComplete(SELECT_COLOR_INTENT, false);
-                return;
-            }
-
-            SetSpeechText(color.ToString().ToUpper() + "!!");
-            ProcessComplete(color.ToString(), true);
-        }
-
-        [MatchIntent(SELECT_SEED_INTENT)]
-        public void SelectSeed(SeedColor color)
         {
             if (!_selectingSeeds)
             {
@@ -340,7 +326,6 @@ namespace Whisperer
         void OnTextPlaybackStop(string text)
         {
             _animator.SetTrigger("Idle_Alt");
-            Invoke("Squack", 0.5f);
         }
         #endregion
 
