@@ -4,9 +4,9 @@
 Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer.oculus.com/documentation/unity/voice-sdk-overview/)* for interactions. This repository includes the complete buildable Unity project.
 
 ## Requirements
-- Unity [2021.3.9f1](https://unity3d.com/unity/whats-new/2021.3.9)
+- Unity [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11)
 - Windows or Mac
-- Meta Quest 2 (standalone) or Rift (PCVR)
+- Meta Quest 2, Quest Pro
 
 ## Getting Started
 
@@ -21,9 +21,9 @@ Then, clone this repo using the "Code" button above, or with:
 git clone git@github.com:wit-ai/voicesdk_samples_whisperer.git
 ```
 
-All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v50 of the Voice SDK.
+All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v56 of the Voice SDK.
 
-To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the project in Unity [2021.3.9f1](https://unity3d.com/unity/whats-new/2021.3.9). Then open the `Assets/Scenes/Loader` scene and press play.
+To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the project in Unity [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11). Then open the `Assets/Scenes/Loader` scene and press play.
 
 ## Configuring Wit.ai
 
@@ -87,19 +87,16 @@ If an object derived from [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Liste
 
 This code base uses [Conduit framework](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/) from Voice SDK.
 
-To use Conduit, simply annotate the callback method with the `MatchIntent` attribute and annotate the assembly containing the callback method with the `ConduitAssembly` attribute. When changes are made to the callback method, such as adding, removing, or changing it, Unity generates a new manifest file. Please note that `Use Conduit` should be checked in your wit config asset file [as documented here](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/#benefits-to-using-conduit).
+To use Conduit, simply annotate the callback method with the `MatchIntent` attribute. When changes are made to the callback method, such as adding, removing, or changing it, Unity generates a new manifest file. Please note that `Use Conduit` should be checked in your wit config asset file [as documented here](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/#benefits-to-using-conduit).
 
-For example, in [HeroPlant.cs](Assets/Whisperer/Scripts/Logic/HeroPlant.cs#L68) the `ForceMove` method takes two parameters: a `ForceDirection` enum and a `WitResponseNode`.
+For example, in [HeroPlant.cs](Assets/Whisperer/Scripts/Logic/HeroPlant.cs#L68) the `Move` method takes two parameters: a `ForceDirection` enum and a `WitResponseNode`.
 
-In this code `ForceMove` is decorated with the `MatchIntent` attribute, with possible intent values: `move`, `jump`, `pull`, and `push`. By using the [Conduit framework](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/), these callback methods can be automatically registered without the need for manual registration.
+In this code `Move` is decorated with the `MatchIntent` attribute, with intent value `move`. By using the [Conduit framework](https://developer.oculus.com/documentation/unity/voice-sdk-conduit/), these callback methods can be automatically registered without the need for manual registration.
 
 
 ```csharp
 [MatchIntent("move")]
-[MatchIntent("jump")]
-[MatchIntent("pull")]
-[MatchIntent("push")]
-public override void ForceMove(ForceDirection direction, WitResponseNode node)
+public override void Move(ForceDirection direction, WitResponseNode node)
 {
     // method implementation
 }
@@ -129,7 +126,6 @@ The entity `direction` determines the direction an object is moved when accompan
 The entity `move_strength` determies the strength of the force applied to an object when it's moved.
 
 - `weak`
-- `normal`
 - `strong`
 
 Generic intents for interacting with objects such as the radio, drawers, water hose or treasure chest:
