@@ -4,9 +4,9 @@
 Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer.oculus.com/documentation/unity/voice-sdk-overview/)* for interactions. This repository includes the complete buildable Unity project.
 
 ## Requirements
-- Unity [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11)
+- Unity [2022.3.8f1](https://unity3d.com/unity/whats-new/2022.3.8)
 - Windows or Mac
-- Meta Quest 2, Quest Pro
+- Meta Quest 2, Quest Pro (standalone) or Rift (PCVR)
 
 ## Getting Started
 

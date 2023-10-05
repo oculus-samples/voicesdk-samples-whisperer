@@ -19,4 +19,6 @@
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING" />
     <uses-permission android:name="com.oculus.permission.USE_ANCHOR_API" />
     <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="true" />
+    <uses-sdk android:minSdkVersion="29"
+              android:targetSdkVersion="32" />
 </manifest>

@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: CheckMark
   m_Shader: {fileID: -6465566751694194690, guid: a9b2b41e4df89ba47a1296a6bb4fd21e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -17,6 +19,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -64,7 +67,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: a67c1b38ef9a5e34c8ad2a522fd39d4b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_e57520330335488c8aeac1345386c4fa_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: a67c1b38ef9a5e34c8ad2a522fd39d4b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_fb4d302ac0864f99a0129bc4ab726be5_Texture_1:
+        m_Texture: {fileID: 2800000, guid: a67c1b38ef9a5e34c8ad2a522fd39d4b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_fb4d302ac0864f99a0129bc4ab726be5_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: a67c1b38ef9a5e34c8ad2a522fd39d4b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -132,4 +143,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 7
