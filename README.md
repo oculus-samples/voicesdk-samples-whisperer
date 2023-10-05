@@ -10,33 +10,39 @@ Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer
 
 ## Getting Started
 
+### Getting the code
 Ensure you have [Git LFS](https://git-lfs.github.com/) installed:
 
 ```
 git lfs install
 ```
 
-Then, clone this repo using the "Code" button above, or with:
-```
-git clone git@github.com:wit-ai/voicesdk_samples_whisperer.git
-```
+Clone this repo or download it as a zip file.
 
-All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience, excluding those that are part of the Interaction SDK. The project includes v56 of the Voice SDK.
+All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience. This project includes [Voice SDK v56](https://developer.oculus.com/downloads/package/oculus-voice-sdk/56.0).
 
-To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the project in Unity [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11). Then open the `Assets/Scenes/Loader` scene and press play.
-
-## Configuring Wit.ai
+### Configuring Wit.ai
 
 Using *Whisperer* reqiures a [Wit.ai](https://wit.ai) account.
 
-
 1. Once logged in, on [wit.ai/apps](https://wit.ai/apps), click *New App* and import the [zipped app backup](https://github.com/wit-ai/voicesdk_samples_whisperer/blob/main/Assets/whisperer-wit-app.zip) included in this repo.
 
-2. Then find the `Server Access` and `Client Acess Tokens` your app setup under `Managment > Settings`. Enter these values in the appropriate fields on the Wit.ai App Config asset in the unity project.
+2. Then find the `Server Access Token` in your wit.ai app setup under `Managment > Settings`. Go to Unity Editor, in the toolbar find `Oculus > Voice SDK > Get Started`, select `Custom App`, and paste in your `Server Access Token`, click `Create` and choose a location to store the new app configuration, and wait until the Wit Configurations tab in the Voice Hub is fully populated.
+
+3. Now to go the `Assets/Whisperer/Scenes/Loader` scene, find the `Management` game object.
+    * Expand `App Voice Experience (Script) > Wit Runtime Configuration`, select the wit.ai app configuration you just created.
+    * Expand `TTS Wit (Script) > Request Settings`, select the same wit.ai app configuration.
 
 For more information on setting up an App, check out the [Wit.ai Quickstart](https://wit.ai/docs/quickstart).
 
 > **Note:** Wit.ai will need to train its model before it's ready to use. On Wit.ai, the current status of the training is indicated by the dot next to the app name.
+
+### Run the game
+You can run the game in-editor or on a Quest headset.
+
+1. To run *Whisperer* in-editor, after configuring Wit.ai (see below), open the project in Unity. Then open the `Assets/Whisperer/Scenes/Loader` scene and press play.
+
+2. To run *Whisperer* on the Quest headset, go to `File > Build Settings`, Choose `Android` Platform, click `Switch Platform`, making sure the headset is connected, then click `Build And Run`. Please consult [Set Up Development Environment and Headset](https://developer.oculus.com/documentation/unity/unity-env-device-setup/) for more details.
 
 ## How To Play
 *Whisperer's* introduction will help guide you, through narrative instruction and visual prompts, how to interact with objects using your hands and voice.
