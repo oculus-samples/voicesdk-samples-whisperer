@@ -183,6 +183,11 @@ namespace Whisperer
             var intent = data == null ? "[null]" : data.name;
             Logger.Instance.AddLog("Handle response: " + gameObject.name + " | Intent: " + intent);
 
+            if (data == null)
+            {
+                ProcessComplete("", false);
+            }
+
             if (_actionState)
                 DetermineAction(witResponse);
             else
@@ -207,7 +212,7 @@ namespace Whisperer
                 _appVoiceExperience?.VoiceEvents.OnStoppedListeningDueToTimeout.AddListener(HandleWitFailDueToTimeout);
                 _appVoiceExperience?.VoiceEvents.OnAborted.AddListener(HandleWitFailOnAborted);
                 _appVoiceExperience?.VoiceEvents.OnError.AddListener(HandleWitFailOnError);
-                _appVoiceExperience?.VoiceEvents.onFullTranscription.AddListener(LogTranscription);
+                _appVoiceExperience?.VoiceEvents.OnFullTranscription.AddListener(LogTranscription);
 
                 _subscribed = true;
 
@@ -225,7 +230,7 @@ namespace Whisperer
                     HandleWitFailDueToTimeout);
                 _appVoiceExperience?.VoiceEvents.OnAborted.RemoveListener(HandleWitFailOnAborted);
                 _appVoiceExperience?.VoiceEvents.OnError.RemoveListener(HandleWitFailOnError);
-                _appVoiceExperience?.VoiceEvents.onFullTranscription.RemoveListener(LogTranscription);
+                _appVoiceExperience?.VoiceEvents.OnFullTranscription.RemoveListener(LogTranscription);
 
                 if (_timeoutRoutine != null) StopCoroutine(_timeoutRoutine);
 

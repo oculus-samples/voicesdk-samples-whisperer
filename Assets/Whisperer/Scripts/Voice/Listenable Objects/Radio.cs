@@ -18,7 +18,7 @@ namespace Whisperer
         private const string TURN_ON_INTENT = "turn_on";
         private const string TURN_ON_RADIO_INTENT = "turn_on_radio";
         private const string PLAY_MUSIC_INTENT = "wit$play_music";
-        private const string TURN_OFF_INTENT = "turn_of";
+        private const string TURN_OFF_INTENT = "turn_off";
         private const string TURN_OFF_RADIO_INTENT = "turn_off_radio";
         private const string STOP_MUSIC_INTENT = "wit$stop_music";
         private const string CHANGE_STATION_INTENT = "change_station";

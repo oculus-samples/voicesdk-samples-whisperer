@@ -84,7 +84,6 @@ namespace Whisperer
             RandomizeResponses();
 
             // Sub to events
-            _appVoiceExperience.VoiceEvents.onFullTranscription.AddListener(CacheTranscription);
             LevelLoader.Instance.OnLevelLoadComplete.AddListener(FindSceneListenables);
 
             if (_sleeping) Sleep();
@@ -96,16 +95,16 @@ namespace Whisperer
             }
             _speaker.Events.OnTextPlaybackStart.AddListener(OnTextPlaybackStart);
             _speaker.Events.OnTextPlaybackFinished.AddListener(OnTextPlaybackStop);
-
+            _speaker.Events.OnTextPlaybackCancelled.AddListener(OnTextPlaybackStop);
         }
 
         protected override void OnDestroy()
         {
             LevelLoader.Instance?.OnLevelLoadComplete.RemoveListener(FindSceneListenables);
             _listenables.ForEach(listenable => UnsubToListenableEvents(listenable));
-            _appVoiceExperience?.VoiceEvents.onFullTranscription.RemoveListener(CacheTranscription);
             _speaker.Events.OnTextPlaybackStart.RemoveListener(OnTextPlaybackStart);
             _speaker.Events.OnTextPlaybackFinished.RemoveListener(OnTextPlaybackStop);
+            _speaker.Events.OnTextPlaybackCancelled.RemoveListener(OnTextPlaybackStop);
 
             base.OnDestroy();
         }
@@ -138,7 +137,8 @@ namespace Whisperer
                 eventArgs.Action == WAKE_UP_BEA_INTENT ||
                 eventArgs.Action == BIRD_SONG_INTENT ||
                 eventArgs.Action == POLLY_WANT_CRACKER_INTENT ||
-                eventArgs.Action == SAY_SOMETHING_INTENT
+                eventArgs.Action == SAY_SOMETHING_INTENT ||
+                eventArgs.Action == HELLO_INTENT
                )
                 return;
 
@@ -314,7 +314,7 @@ namespace Whisperer
                 return;
             }
 
-            _speaker.Speak(whatToSay);
+            _speaker.SpeakQueued(whatToSay);
             ProcessComplete(SAY_SOMETHING_INTENT, true);
 
         }
@@ -356,19 +356,14 @@ namespace Whisperer
             yield return new WaitForSeconds(showDelay);
             _witUI.FadeOut();
             _speechBubble.SetSpeech(speechText, hideDelay);
-            _speaker.Speak(speechText);
+            _speaker.SpeakQueued(speechText);
         }
 
         private void SetSpeechText(string speechText)
         {
             _witUI.FadeOut();
             _speechBubble.SetSpeech(speechText, 2f);
-            _speaker.Speak(speechText);
-        }
-
-        private void CacheTranscription(string transcription)
-        {
-            _lastWitTranscription = transcription;
+            _speaker.SpeakQueued(speechText);
         }
 
         #endregion

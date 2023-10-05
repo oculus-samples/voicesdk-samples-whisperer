@@ -18,7 +18,6 @@ namespace Whisperer
 
         protected override void Start()
         {
-            PlayerPrefs.DeleteAll();
             base.Start();
 
             _speakGestureWatcher.AllowSpeak = !_levelLogicEnabled;
@@ -67,6 +66,7 @@ namespace Whisperer
         public void ConsentAccept()
         {
             PlayerPrefs.SetInt("VoiceDataConsent", 1);
+            PlayerPrefs.Save();
 
             _consentDialog.SetActive(false);
 
