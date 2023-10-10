@@ -1016,14 +1016,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 785473862779486196, guid: 23f62a0f4eb70664a89732c19f097854, type: 3}
       propertyPath: m_text
-      value: 'Please include your own consent language here. As guidance, you must
-        provide your users with clear and comprehensive information about how their
-        data, including voice data, will be processed and, if relevant, obtain the
-        user''s consent to collect data.  Consent needs to include Meta''s processing
-        of the voice inputs to provide the service. The following language addresses
-        this particular use case and you could include in your wider consent language:
-        "Voice commands sends your voice inputs to Meta in order to process your
-        requests."'
+      value: 'Whisperer and Voice Commands\n
+
+        Whisperer uses voice commands
+        as an essential in-game input. By launching Whisperer, you understand that
+        when the voice command feature is activated Meta will process recordings
+        of your voice and transcribe them into text. Anonymized transcribed utterances
+        of your in-game voice commands (along with any matching intents, entities
+        and traits) may also be stored. This data can help Meta learn to understand
+        your voice requests better and respond more accurately.'
       objectReference: {fileID: 0}
     - target: {fileID: 785473862779486196, guid: 23f62a0f4eb70664a89732c19f097854, type: 3}
       propertyPath: m_fontSize
