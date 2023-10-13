@@ -12,16 +12,15 @@ namespace Whisperer.Scenes.Level_0
     public class ConsentContentManager : MonoBehaviour
     {
         public TextMeshProUGUI textMesh;
-        public string fileName = "UserConsent";
+        public string fileName = "UserConsent.txt";
 
         void Start()
         {
-            var filePath = Path.Combine(Application.dataPath, "Resources", fileName + ".txt");
+            var textAsset = Resources.Load<TextAsset>(fileName);
 
-            if (File.Exists(filePath))
+            if (textAsset != null)
             {
-                var content = File.ReadAllText(filePath);
-                textMesh.text = content;
+                textMesh.text = textAsset.text;
             }
         }
     }
