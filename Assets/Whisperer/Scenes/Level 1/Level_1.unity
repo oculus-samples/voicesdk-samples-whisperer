@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -155,6 +155,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2213594880396854197, guid: 71671ebd08411124495968d7470ac0d8, type: 3}
@@ -242,6 +243,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71671ebd08411124495968d7470ac0d8, type: 3}
 --- !u!114 &3386175421842051611 stripped
 MonoBehaviour:
@@ -259,8 +263,17 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 832252654667005570, guid: 112f5047efad2c941af88936269628b7, type: 3}
+      propertyPath: _offset.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3400227467119188967, guid: 112f5047efad2c941af88936269628b7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 3488048414103593771, guid: 112f5047efad2c941af88936269628b7, type: 3}
       propertyPath: m_Name
       value: Listenables Level 1
@@ -310,6 +323,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 112f5047efad2c941af88936269628b7, type: 3}
 --- !u!114 &3488048412862651669 stripped
 MonoBehaviour:
@@ -338,6 +354,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 464593622034008535, guid: 051e7fd3e163eab42ac74b6d461de557, type: 3}
@@ -481,6 +498,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 051e7fd3e163eab42ac74b6d461de557, type: 3}
 --- !u!114 &4813573762451889183 stripped
 MonoBehaviour:
@@ -509,6 +529,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5395507489520338671, guid: 582cf147dcfac1b46921550b5856f0f5, type: 3}
@@ -560,6 +581,9 @@ PrefabInstance:
       value: Chalkboard Level 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582cf147dcfac1b46921550b5856f0f5, type: 3}
 --- !u!114 &5395507489595015552 stripped
 MonoBehaviour:
@@ -572,3 +596,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35edcebe78ec3f34d837968ebb320ed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 2213594881197062365}
+  - {fileID: 3488048412862651664}
+  - {fileID: 5395507489595015551}
+  - {fileID: 4813573762451889182}

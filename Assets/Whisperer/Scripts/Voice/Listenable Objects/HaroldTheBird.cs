@@ -166,8 +166,8 @@ namespace Whisperer
                 ProcessComplete(SELECT_COLOR_INTENT, false);
                 return;
             }
-
-            SetSpeechText(color.ToString().ToUpper() + "!!");
+            
+            StartCoroutine(DelayThenSetSpeechText(color.ToString().ToUpper() + "!!", 0, 2f));
             ProcessComplete(color.ToString(), true);
         }
 
@@ -184,7 +184,7 @@ namespace Whisperer
             _hintListIndex = Mathf.Min(_hintListIndex, HintDefinitions.Count - 1);
             _hintIndex = Mathf.Min(_hintIndex, HintDefinitions[_hintListIndex].hints.Count - 1);
 
-            SetSpeechText(HintDefinitions[_hintListIndex].hints[_hintIndex]);
+            StartCoroutine(DelayThenSetSpeechText(HintDefinitions[_hintListIndex].hints[_hintIndex], 0, 2f));
 
             /// index up!
             _hintIndex = (_hintIndex + 1) % HintDefinitions[_hintListIndex].hints.Count;
@@ -356,13 +356,6 @@ namespace Whisperer
             yield return new WaitForSeconds(showDelay);
             _witUI.FadeOut();
             _speechBubble.SetSpeech(speechText, hideDelay);
-            _speaker.SpeakQueued(speechText);
-        }
-
-        private void SetSpeechText(string speechText)
-        {
-            _witUI.FadeOut();
-            _speechBubble.SetSpeech(speechText, 2f);
             _speaker.SpeakQueued(speechText);
         }
 

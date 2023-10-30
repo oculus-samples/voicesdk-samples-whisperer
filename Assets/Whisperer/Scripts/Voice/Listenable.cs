@@ -155,7 +155,6 @@ namespace Whisperer
             else
             {
                 SetSubscribed(false);
-                _appVoiceExperience.DeactivateAndAbortRequest();
             }
         }
 
