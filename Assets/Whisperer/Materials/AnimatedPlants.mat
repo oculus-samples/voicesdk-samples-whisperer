@@ -107,7 +107,7 @@ Material:
     m_Floats:
     - _AddSmoothShading: 0
     - _Add_Hatching_Texture: 0
-    - _Alive_Dead_Lerp: 1
+    - _Alive_Dead_Lerp: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

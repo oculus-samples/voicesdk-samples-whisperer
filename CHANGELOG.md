@@ -1,3 +1,12 @@
+1.0.3 (Nov 15, 2023)
+- Harold the bird talks more and faster with latest TTS package.
+- In-game progress is now saved.
+- Bunch of other visual and audio improvements.
+- Upgraded to use Voice SDK v56.
+- Upgraded from Unity 2021.3.11 to 2022.3.8.
+- The Voice Commands are now powered by VSDK Conduit.
+- Disabled Platform Service by default.
+
 1.0.2 (July 21, 2023)
 - Updated the whisperer-wit-app.zip to the latest version.
 - Fixed bug that made it impossible to select seeds in level 3.

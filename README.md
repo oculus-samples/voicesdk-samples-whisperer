@@ -19,7 +19,7 @@ git lfs install
 
 Clone this repo or download it as a zip file.
 
-All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience. This project includes [Voice SDK v56](https://developer.oculus.com/downloads/package/oculus-voice-sdk/56.0).
+All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience. This project depends on [Voice SDK v59](https://developer.oculus.com/downloads/package/meta-voice-sdk/).
 
 ### Configuring Wit.ai
 
@@ -65,7 +65,7 @@ The `Loader` scene contains two game objects that persist throughout the entire 
 
 The `Player Rig` is the XR Origin, and contains the necessary components for Unity's XR Interaction Toolkit, as well as the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component and any UI canvases.
 
-Attached to the Management game object are [`AppVoiceExperience.cs`](Assets/Oculus/Voice/Scripts/Runtime/Service/AppVoiceExperience.cs) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
+Attached to the Management game object are `AppVoiceExperience.cs` (part of Voice SDK) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
 
 #### Level Loader
 
@@ -81,7 +81,7 @@ AppVoiceExperience is the core component of the Voice SDK. It holds the referenc
 
 *Whisperer* utilizes several different methods of handling responses from Wit.ai. Depending on the type of interaction (`action`) we're trying to resolve, we use either `intents`, `entities`, or manual parsing of the text transcription.
 
-To determine when to activate and deactivate Wit.ai, the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component checks the position of the tracked hand controllers and raycasts for objects that contain the [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) class. If the player's hands are in position and an object is found, [`AppVoiceExperience.Activate()`](Assets/Oculus/Voice/Scripts/Runtime/Service/AppVoiceExperience.cs#L104-L113) is called. If at any time the player breaks the pose, Wit.ai is deactivated.
+To determine when to activate and deactivate Wit.ai, the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component checks the position of the tracked hand controllers and raycasts for objects that contain the [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) class. If the player's hands are in position and an object is found, `AppVoiceExperience.Activate()` is called. If at any time the player breaks the pose, Wit.ai is deactivated.
 
 The `AppVoiceExperience` class itself is initated in the [`LevelManager.cs`](Assets/Whisperer/Scripts/Logic/LevelManager.cs) parent class which all subsequent levels inherit from.
 
