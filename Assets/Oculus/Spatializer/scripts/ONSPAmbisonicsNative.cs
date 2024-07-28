@@ -26,7 +26,7 @@ public class ONSPAmbisonicsNative : MonoBehaviour
     // this caches the audio source so that per-frame reflection isnt needed to use them.
     private AudioSource source;
 
-// Unity 4 is deprecated; UNITY_5 still valid with plug-in
+    // Unity 4 is deprecated; UNITY_5 still valid with plug-in
 #if !UNITY_5
     /// <summary>
     ///     Update this instance.
@@ -78,7 +78,7 @@ public class ONSPAmbisonicsNative : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
-// Unity 4 is deprecated; UNITY_5 still valid with plug-in
+        // Unity 4 is deprecated; UNITY_5 still valid with plug-in
 #if UNITY_5
         Debug.Log("Ambisonic ERROR: Ambisonic support in Unity 2017 or higher");
 #else

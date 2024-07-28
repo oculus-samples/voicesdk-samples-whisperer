@@ -3,16 +3,16 @@ Filename    :   OculusSpatializerUnity.cs
 Content     :   Interface into real-time geometry reflection engine for native Unity
 Copyright   :   Copyright (c) Facebook Technologies, LLC and its affiliates. All rights reserved.
 
-Licensed under the Oculus SDK Version 3.5 (the "License"); 
-you may not use the Oculus SDK except in compliance with the License, 
-which is provided at the time of installation or download, or which 
+Licensed under the Oculus SDK Version 3.5 (the "License");
+you may not use the Oculus SDK except in compliance with the License,
+which is provided at the time of installation or download, or which
 otherwise accompanies this software in either electronic or hard copy form.
 
 You may obtain a copy of the License at
 
 https://developer.oculus.com/licenses/sdk-3.5/
 
-Unless required by applicable law or agreed to in writing, the Oculus SDK 
+Unless required by applicable law or agreed to in writing, the Oculus SDK
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
@@ -189,23 +189,23 @@ public class OculusSpatializerUnity : MonoBehaviour
                 decalTex = new Texture2D(SIZE, SIZE);
                 const int HALF_SIZE = SIZE / 2;
                 for (var i = 0; i < SIZE / 2; ++i)
-                for (var j = 0; j < SIZE / 2; ++j)
-                {
-                    // distance from center
-                    float deltaX = HALF_SIZE - i;
-                    float deltaY = HALF_SIZE - j;
-                    var dist = Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY);
-                    var t = RING_COUNT * dist / HALF_SIZE;
+                    for (var j = 0; j < SIZE / 2; ++j)
+                    {
+                        // distance from center
+                        float deltaX = HALF_SIZE - i;
+                        float deltaY = HALF_SIZE - j;
+                        var dist = Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY);
+                        var t = RING_COUNT * dist / HALF_SIZE;
 
-                    var alpha = dist < HALF_SIZE ? Mathf.Clamp01(Mathf.Sin(Mathf.PI * 2.0f * t)) : 0.0f;
-                    var col = new Color(1.0f, 1.0f, 1.0f, alpha);
+                        var alpha = dist < HALF_SIZE ? Mathf.Clamp01(Mathf.Sin(Mathf.PI * 2.0f * t)) : 0.0f;
+                        var col = new Color(1.0f, 1.0f, 1.0f, alpha);
 
-                    // Two way symmetry
-                    decalTex.SetPixel(i, j, col);
-                    decalTex.SetPixel(SIZE - i, j, col);
-                    decalTex.SetPixel(i, SIZE - j, col);
-                    decalTex.SetPixel(SIZE - i, SIZE - j, col);
-                }
+                        // Two way symmetry
+                        decalTex.SetPixel(i, j, col);
+                        decalTex.SetPixel(SIZE - i, j, col);
+                        decalTex.SetPixel(i, SIZE - j, col);
+                        decalTex.SetPixel(SIZE - i, SIZE - j, col);
+                    }
 
                 decalTex.Apply();
             }
@@ -247,8 +247,8 @@ public class OculusSpatializerUnity : MonoBehaviour
 
             var transparent = new Color(0.0f, 0.0f, 0.0f, 0.0f);
             for (var i = 0; i < SIZE; ++i)
-            for (var j = 0; j < SIZE; ++j)
-                wallTex.SetPixel(i, j, transparent);
+                for (var j = 0; j < SIZE; ++j)
+                    wallTex.SetPixel(i, j, transparent);
 
             for (var i = 0; i < SIZE; ++i)
             {

@@ -18,7 +18,7 @@ public class HighlightObject : MonoBehaviour
 
     [SerializeField] private Color highlightColor = Color.white;
 
-    [SerializeField] [Range(0f, 10f)] private float outlineWidth = 2f;
+    [SerializeField][Range(0f, 10f)] private float outlineWidth = 2f;
 
     [Header("Optional")]
     [SerializeField]
@@ -26,9 +26,9 @@ public class HighlightObject : MonoBehaviour
              + "Precompute disabled: Per-vertex calculations are performed at runtime in Awake(). This may cause a pause for large meshes.")]
     private bool precomputeOutline;
 
-    [SerializeField] [HideInInspector] private List<Mesh> bakeKeys = new();
+    [SerializeField][HideInInspector] private List<Mesh> bakeKeys = new();
 
-    [SerializeField] [HideInInspector] private List<ListVector3> bakeValues = new();
+    [SerializeField][HideInInspector] private List<ListVector3> bakeValues = new();
 
     private Material highlightMaterial;
 

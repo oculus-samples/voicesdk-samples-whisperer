@@ -12,7 +12,7 @@ using UnityEngine;
 /// <summary>
 /// Internal
 /// Needs animation event audio:
-/// 
+///
 /// </summary>
 
 namespace Whisperer

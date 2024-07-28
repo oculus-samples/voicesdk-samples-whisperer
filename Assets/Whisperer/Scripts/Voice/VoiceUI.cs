@@ -13,13 +13,14 @@ using UnityEngine.UI;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Handles the canvas UI for each listenable object, displaying the mic input level, transcription, and response
-        ///     status
-        /// </summary>
-        public class VoiceUI : ListenableUI
+    /// <summary>
+    ///     Handles the canvas UI for each listenable object, displaying the mic input level, transcription, and response
+    ///     status
+    /// </summary>
+    public class VoiceUI : ListenableUI
     {
-        [Header("Wit Status and Transcription UI References")] [SerializeField]
+        [Header("Wit Status and Transcription UI References")]
+        [SerializeField]
         protected CanvasGroup _canvasGroup;
 
         [SerializeField] private RectTransform _rectTransform;
@@ -27,13 +28,15 @@ namespace Whisperer
         [SerializeField] private Image _iconUIImage;
         [SerializeField] private RectTransform _voiceVolumeIndicator;
 
-        [Header("Tooltip UI References")] [SerializeField]
+        [Header("Tooltip UI References")]
+        [SerializeField]
         private TMP_Text _tooltipText;
 
         [SerializeField] private CanvasGroup _tooltipCanvasGroup;
         [SerializeField] private InputActionReference _tooltipInputAction;
 
-        [Header("Asset References")] [SerializeField]
+        [Header("Asset References")]
+        [SerializeField]
         private Sprite _listeningIcon;
 
         [SerializeField] private Sprite _thinkingIcon;

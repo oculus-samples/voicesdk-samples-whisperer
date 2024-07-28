@@ -9,17 +9,18 @@ using UnityEngine;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Simple floating object animation
-        /// </summary>
-        public class FloatingAnim : MonoBehaviour
+    /// <summary>
+    ///     Simple floating object animation
+    /// </summary>
+    public class FloatingAnim : MonoBehaviour
     {
         public float speed;
         [SerializeField] private Vector3 rotSpeed;
         [SerializeField] private Vector3 amount;
         [SerializeField] private Vector3 rotAmount;
 
-        [Header("Use to give appearance of random offset")] [SerializeField]
+        [Header("Use to give appearance of random offset")]
+        [SerializeField]
         private Vector3 offset;
 
         private Vector3 startPos;

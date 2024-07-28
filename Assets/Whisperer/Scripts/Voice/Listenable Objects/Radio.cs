@@ -43,7 +43,7 @@ namespace Whisperer
         [MatchIntent(CHANGE_STATION_INTENT)]
         public void ChangeStation()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
@@ -81,10 +81,10 @@ namespace Whisperer
         {
             StartPlayingMusic();
         }
-        
+
         private void StartPlayingMusic()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
@@ -108,22 +108,22 @@ namespace Whisperer
         {
             StopPlayingMusic();
         }
-        
+
         [MatchIntent(TURN_OFF_RADIO_INTENT)]
         public void TurnOffRadio()
         {
             StopPlayingMusic();
         }
-        
+
         [MatchIntent(STOP_MUSIC_INTENT)]
         public void StopMusic()
         {
             StopPlayingMusic();
         }
-        
+
         private void StopPlayingMusic()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }

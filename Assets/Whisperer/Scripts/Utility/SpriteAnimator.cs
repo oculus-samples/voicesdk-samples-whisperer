@@ -14,14 +14,16 @@ namespace Whisperer
     public class SpriteAnimator : MonoBehaviour
     {
         // Refs
-        [Header("References")] [SerializeField]
+        [Header("References")]
+        [SerializeField]
         private Image _sprite;
 
         [SerializeField] private string _pathAndBaseSpriteName;
         [SerializeField] private Vector2 _loopFrames;
 
         // Props
-        [Header("Properties")] [SerializeField]
+        [Header("Properties")]
+        [SerializeField]
         private float _fps = 24f;
 
         // Debug

@@ -13,7 +13,7 @@ namespace Whisperer
 {
     public class Level_1_Manager : LevelManager
     {
-        [Header("Level 1")] [SerializeField] private Animator _beaAnimator;
+        [Header("Level 1")][SerializeField] private Animator _beaAnimator;
 
         [SerializeField] private SpeechBubble _beaSpeech;
         [SerializeField] private HaroldTheBird _harold;
@@ -110,7 +110,7 @@ namespace Whisperer
             if (_firstRunTooltip)
                 _firstRunTooltip.Expand();
 
-            /// Wait for hero pot move                        
+            /// Wait for hero pot move
             _heroPot.SetHighlightOnlyMode(false);
             while (!_heroPotMoved) yield return null;
 

@@ -12,10 +12,10 @@ using UnityEngine.Audio;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Pools positional audio sources and routes playback of audio clips
-        /// </summary>
-        public class AudioManager : MonoBehaviour
+    /// <summary>
+    ///     Pools positional audio sources and routes playback of audio clips
+    /// </summary>
+    public class AudioManager : MonoBehaviour
     {
         public static AudioManager Instance;
 
@@ -31,7 +31,7 @@ namespace Whisperer
         [SerializeField] private List<Transform> _spatialSources = new();
         [SerializeField] private List<SoundLib.ClipData> _clipDatas = new();
 
-        [Header("Debug")] [SerializeField] private int _voicesInUsePeak;
+        [Header("Debug")][SerializeField] private int _voicesInUsePeak;
 
         public Progress MasterFader;
         public Progress AmbientFader;

@@ -25,7 +25,8 @@ namespace Whisperer
         private const string DIRECTION_ENTITY_KEY = "direction:direction";
         private const string STRENGTH_ENTITY_KEY = "move_strength:move_strength";
 
-        [Header("Force Move Settings")] [SerializeField]
+        [Header("Force Move Settings")]
+        [SerializeField]
         protected float _baseForce = 5;
 
         [SerializeField] protected float _littleMod = 0.5f;
@@ -33,7 +34,8 @@ namespace Whisperer
         [SerializeField] protected float _upMod = .12f;
         [SerializeField] protected bool _levitatable = true;
 
-        [Header("Impact SFX Settings")] [SerializeField]
+        [Header("Impact SFX Settings")]
+        [SerializeField]
         private string _impactAudioClip;
 
         [SerializeField] private float _volume = 1;
@@ -73,25 +75,25 @@ namespace Whisperer
         {
             ForceMove(ForceDirection.up, response);
         }
-        
+
         [MatchIntent(PUSH_INTENT)]
         public void Push(WitResponseNode response)
         {
             ForceMove(ForceDirection.away, response);
         }
-        
+
         [MatchIntent(PULL_INTENT)]
         public void Pull(WitResponseNode response)
         {
             ForceMove(ForceDirection.toward, response);
         }
-        
+
         [MatchIntent(MOVE_INTENT)]
         public void Move(WitResponseNode response)
         {
             ForceMove(ForceDirection.right, response);
         }
-        
+
         /// <summary>
         ///     Moves a rigidbody in a direction
         /// </summary>
@@ -99,11 +101,11 @@ namespace Whisperer
         /// <param name="witResponse"></param>
         public virtual void ForceMove(ForceDirection direction, WitResponseNode witResponse)
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
-            
+
             float multiplier = 1;
             var success = false;
             var strength = witResponse.GetFirstEntityValue(STRENGTH_ENTITY_KEY);
@@ -177,7 +179,7 @@ namespace Whisperer
         [MatchIntent(LEVITATE_INTENT)]
         public void Levitate()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
@@ -204,7 +206,7 @@ namespace Whisperer
         [MatchIntent(DROP_INTENT)]
         public void Drop()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }

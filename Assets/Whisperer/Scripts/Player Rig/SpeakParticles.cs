@@ -36,7 +36,7 @@ namespace Whisperer
             _value = _speakGestureWatcher.HaveSpeakPose ? _micInputValue.AudioLevel * 100 : 0;
             SetEmissionEnabled(_value >= _threshold);
             var rate = _speakGestureWatcher.HaveSpeakPose ? (_value - _threshold) : 0;
-            
+
             // if we are speaking and the threshold is 0, we want to make sure we emit particles
             if (isContinuous && _speakGestureWatcher.HaveSpeakPose)
             {
@@ -47,8 +47,8 @@ namespace Whisperer
             {
                 rate = 0;
             }
-            
-            _em.rateOverTime = (rate * _emissionRate );
+
+            _em.rateOverTime = (rate * _emissionRate);
 
             if (_distanceBasedSize)
             {

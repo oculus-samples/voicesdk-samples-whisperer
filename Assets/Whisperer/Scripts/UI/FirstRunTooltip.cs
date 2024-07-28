@@ -11,7 +11,8 @@ namespace Whisperer
 {
     public class FirstRunTooltip : ListenableUI
     {
-        [Header("First Run Tooltip References")] [SerializeField]
+        [Header("First Run Tooltip References")]
+        [SerializeField]
         protected RectTransform _tooltipRectTransform;
 
         [SerializeField] protected GameObject _tooltipText;

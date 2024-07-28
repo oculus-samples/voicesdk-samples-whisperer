@@ -11,7 +11,8 @@ namespace Whisperer
 {
     public class CameraColorOverlay : MonoBehaviour
     {
-        [Header("Camera Color Overlay")] [SerializeField]
+        [Header("Camera Color Overlay")]
+        [SerializeField]
         private float _zOffset = 0.001f;
 
         [SerializeField] private Renderer _rend;

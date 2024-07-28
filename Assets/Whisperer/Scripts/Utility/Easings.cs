@@ -9,10 +9,10 @@ using UnityEngine;
 
 public static class Easings
 {
-        /// <summary>
-        ///     Easing Functions enumeration
-        /// </summary>
-        public enum Functions
+    /// <summary>
+    ///     Easing Functions enumeration
+    /// </summary>
+    public enum Functions
     {
         Linear,
         QuadraticEaseIn,
@@ -47,20 +47,20 @@ public static class Easings
         BounceEaseInOut
     }
 
-        /// <summary>
-        ///     Constant Pi.
-        /// </summary>
-        private const float PI = Mathf.PI;
+    /// <summary>
+    ///     Constant Pi.
+    /// </summary>
+    private const float PI = Mathf.PI;
 
-        /// <summary>
-        ///     Constant Pi / 2.
-        /// </summary>
-        private const float HALFPI = Mathf.PI / 2.0f;
+    /// <summary>
+    ///     Constant Pi / 2.
+    /// </summary>
+    private const float HALFPI = Mathf.PI / 2.0f;
 
-        /// <summary>
-        ///     Interpolate using the specified function.
-        /// </summary>
-        public static float Interpolate(float p, Functions function)
+    /// <summary>
+    ///     Interpolate using the specified function.
+    /// </summary>
+    public static float Interpolate(float p, Functions function)
     {
         switch (function)
         {
@@ -99,65 +99,65 @@ public static class Easings
         }
     }
 
-        /// <summary>
-        ///     Modeled after the line y = x
-        /// </summary>
-        public static float Linear(float p)
+    /// <summary>
+    ///     Modeled after the line y = x
+    /// </summary>
+    public static float Linear(float p)
     {
         return p;
     }
 
-        /// <summary>
-        ///     Modeled after the parabola y = x^2
-        /// </summary>
-        public static float QuadraticEaseIn(float p)
+    /// <summary>
+    ///     Modeled after the parabola y = x^2
+    /// </summary>
+    public static float QuadraticEaseIn(float p)
     {
         return p * p;
     }
 
-        /// <summary>
-        ///     Modeled after the parabola y = -x^2 + 2x
-        /// </summary>
-        public static float QuadraticEaseOut(float p)
+    /// <summary>
+    ///     Modeled after the parabola y = -x^2 + 2x
+    /// </summary>
+    public static float QuadraticEaseOut(float p)
     {
         return -(p * (p - 2));
     }
 
-        /// <summary>
-        ///     Modeled after the piecewise quadratic
-        ///     y = (1/2)((2x)^2)             ; [0, 0.5)
-        ///     y = -(1/2)((2x-1)*(2x-3) - 1) ; [0.5, 1]
-        /// </summary>
-        public static float QuadraticEaseInOut(float p)
+    /// <summary>
+    ///     Modeled after the piecewise quadratic
+    ///     y = (1/2)((2x)^2)             ; [0, 0.5)
+    ///     y = -(1/2)((2x-1)*(2x-3) - 1) ; [0.5, 1]
+    /// </summary>
+    public static float QuadraticEaseInOut(float p)
     {
         if (p < 0.5f)
             return 2 * p * p;
         return -2 * p * p + 4 * p - 1;
     }
 
-        /// <summary>
-        ///     Modeled after the cubic y = x^3
-        /// </summary>
-        public static float CubicEaseIn(float p)
+    /// <summary>
+    ///     Modeled after the cubic y = x^3
+    /// </summary>
+    public static float CubicEaseIn(float p)
     {
         return p * p * p;
     }
 
-        /// <summary>
-        ///     Modeled after the cubic y = (x - 1)^3 + 1
-        /// </summary>
-        public static float CubicEaseOut(float p)
+    /// <summary>
+    ///     Modeled after the cubic y = (x - 1)^3 + 1
+    /// </summary>
+    public static float CubicEaseOut(float p)
     {
         var f = p - 1;
         return f * f * f + 1;
     }
 
-        /// <summary>
-        ///     Modeled after the piecewise cubic
-        ///     y = (1/2)((2x)^3)       ; [0, 0.5)
-        ///     y = (1/2)((2x-2)^3 + 2) ; [0.5, 1]
-        /// </summary>
-        public static float CubicEaseInOut(float p)
+    /// <summary>
+    ///     Modeled after the piecewise cubic
+    ///     y = (1/2)((2x)^3)       ; [0, 0.5)
+    ///     y = (1/2)((2x-2)^3 + 2) ; [0.5, 1]
+    /// </summary>
+    public static float CubicEaseInOut(float p)
     {
         if (p < 0.5f) return 4 * p * p * p;
 
@@ -165,18 +165,18 @@ public static class Easings
         return 0.5f * f * f * f + 1;
     }
 
-        /// <summary>
-        ///     Modeled after the quartic x^4
-        /// </summary>
-        public static float QuarticEaseIn(float p)
+    /// <summary>
+    ///     Modeled after the quartic x^4
+    /// </summary>
+    public static float QuarticEaseIn(float p)
     {
         return p * p * p * p;
     }
 
-        /// <summary>
-        ///     Modeled after the quartic y = 1 - (x - 1)^4
-        /// </summary>
-        public static float QuarticEaseOut(float p)
+    /// <summary>
+    ///     Modeled after the quartic y = 1 - (x - 1)^4
+    /// </summary>
+    public static float QuarticEaseOut(float p)
     {
         var f = p - 1;
         return f * f * f * (1 - p) + 1;

@@ -34,16 +34,16 @@ namespace Whisperer
         {
             TurnOnWaterFaucet();
         }
-        
+
         [MatchIntent(OPEN_INTENT)]
         public void Open()
         {
             TurnOnWaterFaucet();
         }
-        
+
         private void TurnOnWaterFaucet()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
@@ -58,28 +58,28 @@ namespace Whisperer
                 ProcessComplete("turn_on", true);
             }
         }
-        
+
         [MatchIntent(CLOSE_INTENT)]
         public void Close()
         {
             TurnOffWaterFaucet();
         }
-        
+
         [MatchIntent(TURN_OFF_INTENT)]
         public void TurnOff()
         {
             TurnOffWaterFaucet();
         }
-        
+
         [MatchIntent(TURN_OFF_WATER_INTENT)]
         public void TurnOffWater()
         {
             TurnOffWaterFaucet();
         }
-        
+
         private void TurnOffWaterFaucet()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }

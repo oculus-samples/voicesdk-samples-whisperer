@@ -15,18 +15,18 @@ namespace Whisperer
     {
         private const string CLOSE_INTENT = "close";
         private const string OPEN_INTENT = "open";
-        
+
         public Animator animator;
         public bool IsOpen { get; private set; }
 
         [MatchIntent(OPEN_INTENT)]
         public void Open()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
-            // If we're alread open, send non-actionable state 
+            // If we're alread open, send non-actionable state
             if (IsOpen)
             {
                 ProcessComplete("", true);
@@ -43,11 +43,11 @@ namespace Whisperer
         [MatchIntent(CLOSE_INTENT)]
         public void Close()
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }
-            // If we're alread closed, send non-actionable state 
+            // If we're alread closed, send non-actionable state
             if (!IsOpen)
             {
                 ProcessComplete("", true);

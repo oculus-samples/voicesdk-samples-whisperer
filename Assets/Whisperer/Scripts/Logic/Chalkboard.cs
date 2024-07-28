@@ -17,7 +17,8 @@ namespace Whisperer
         [SerializeField] private Transform _position;
         [SerializeField] private Material _mat;
 
-        [SerializeField] private int _index,
+        [SerializeField]
+        private int _index,
             _direction;
 
         private Progress _fader;

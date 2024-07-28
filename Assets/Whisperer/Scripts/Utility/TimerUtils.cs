@@ -36,10 +36,12 @@ namespace Whisperer
         /// </summary>
         public bool PingPong;
 
-        [SerializeField] private float _progress,
+        [SerializeField]
+        private float _progress,
             _duration;
 
-        [SerializeField] private int _direction,
+        [SerializeField]
+        private int _direction,
             _lastDirection = 1;
 
         [SerializeField] private bool _active;

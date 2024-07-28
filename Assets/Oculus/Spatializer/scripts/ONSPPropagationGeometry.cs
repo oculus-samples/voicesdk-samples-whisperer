@@ -5,16 +5,16 @@ Content     :   Geometry Functions
                 NOTE: ensure that Oculus Spatialization is enabled for AudioSource components
 Copyright   :   Copyright (c) Facebook Technologies, LLC and its affiliates. All rights reserved.
 
-Licensed under the Oculus SDK Version 3.5 (the "License"); 
-you may not use the Oculus SDK except in compliance with the License, 
-which is provided at the time of installation or download, or which 
+Licensed under the Oculus SDK Version 3.5 (the "License");
+you may not use the Oculus SDK except in compliance with the License,
+which is provided at the time of installation or download, or which
 otherwise accompanies this software in either electronic or hard copy form.
 
 You may obtain a copy of the License at
 
 https://developer.oculus.com/licenses/sdk-3.5/
 
-Unless required by applicable law or agreed to in writing, the Oculus SDK 
+Unless required by applicable law or agreed to in writing, the Oculus SDK
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
@@ -39,12 +39,12 @@ public class ONSPPropagationGeometry : MonoBehaviour
     public static int OSPSuccess = 0;
 
     //
-    // FUNCTIONS FOR UPLOADING MESHES VIA GAME OBJECT 
+    // FUNCTIONS FOR UPLOADING MESHES VIA GAME OBJECT
     //
 
     private static readonly int terrainDecimation = 4;
     //-------
-    // PUBLIC 
+    // PUBLIC
 
     /// The path to the serialized mesh file that holds the preprocessed mesh geometry.
     public string filePathRelative = "";
@@ -54,7 +54,7 @@ public class ONSPPropagationGeometry : MonoBehaviour
     public bool includeChildMeshes = true;
 
     //-------
-    // PRIVATE 
+    // PRIVATE
     private IntPtr geometryHandle = IntPtr.Zero;
     public static string GeometryAssetPath => Application.streamingAssetsPath + "/" + GeometryAssetDirectory;
     public string filePath => GeometryAssetPath + "/" + filePathRelative;
@@ -275,27 +275,27 @@ public class ONSPPropagationGeometry : MonoBehaviour
 #else
                     // Custom material that is highly transmissive
                     treeMaterials[0].absorption.points = new List<ONSPPropagationMaterial.Point>{
-                                    new ONSPPropagationMaterial.Point(125f,  .03f), 
-                        new ONSPPropagationMaterial.Point(250f,  .06f), 
-                        new ONSPPropagationMaterial.Point(500f,  .11f), 
-                        new ONSPPropagationMaterial.Point(1000f, .17f), 
-                        new ONSPPropagationMaterial.Point(2000f, .27f), 
+                                    new ONSPPropagationMaterial.Point(125f,  .03f),
+                        new ONSPPropagationMaterial.Point(250f,  .06f),
+                        new ONSPPropagationMaterial.Point(500f,  .11f),
+                        new ONSPPropagationMaterial.Point(1000f, .17f),
+                        new ONSPPropagationMaterial.Point(2000f, .27f),
                         new ONSPPropagationMaterial.Point(4000f, .31f) };
 
                     treeMaterials[0].scattering.points = new List<ONSPPropagationMaterial.Point>{
-                                    new ONSPPropagationMaterial.Point(125f,  .20f), 
-                        new ONSPPropagationMaterial.Point(250f,  .3f), 
-                        new ONSPPropagationMaterial.Point(500f,  .4f), 
-                        new ONSPPropagationMaterial.Point(1000f, .5f), 
-                        new ONSPPropagationMaterial.Point(2000f, .7f), 
+                                    new ONSPPropagationMaterial.Point(125f,  .20f),
+                        new ONSPPropagationMaterial.Point(250f,  .3f),
+                        new ONSPPropagationMaterial.Point(500f,  .4f),
+                        new ONSPPropagationMaterial.Point(1000f, .5f),
+                        new ONSPPropagationMaterial.Point(2000f, .7f),
                         new ONSPPropagationMaterial.Point(4000f, .8f) };
 
                     treeMaterials[0].transmission.points = new List<ONSPPropagationMaterial.Point>(){
-                                    new ONSPPropagationMaterial.Point(125f,  .95f), 
-                        new ONSPPropagationMaterial.Point(250f,  .92f), 
-                        new ONSPPropagationMaterial.Point(500f,  .87f), 
-                        new ONSPPropagationMaterial.Point(1000f, .81f), 
-                        new ONSPPropagationMaterial.Point(2000f, .71f), 
+                                    new ONSPPropagationMaterial.Point(125f,  .95f),
+                        new ONSPPropagationMaterial.Point(250f,  .92f),
+                        new ONSPPropagationMaterial.Point(500f,  .87f),
+                        new ONSPPropagationMaterial.Point(1000f, .81f),
+                        new ONSPPropagationMaterial.Point(2000f, .71f),
                         new ONSPPropagationMaterial.Point(4000f, .67f) };
 #endif
                 }
@@ -398,30 +398,30 @@ public class ONSPPropagationGeometry : MonoBehaviour
 
             // Build vertices and UVs
             for (var y = 0; y < hRes; y++)
-            for (var x = 0; x < wRes; x++)
-            {
-                var offset = (vertexOffset + y * wRes + x) * 3;
-                var v = matrix.MultiplyPoint3x4(Vector3.Scale(meshScale,
-                    new Vector3(y, tData[x * terrainDecimation, y * terrainDecimation], x)));
-                vertices[offset + 0] = v.x;
-                vertices[offset + 1] = v.y;
-                vertices[offset + 2] = v.z;
-            }
+                for (var x = 0; x < wRes; x++)
+                {
+                    var offset = (vertexOffset + y * wRes + x) * 3;
+                    var v = matrix.MultiplyPoint3x4(Vector3.Scale(meshScale,
+                        new Vector3(y, tData[x * terrainDecimation, y * terrainDecimation], x)));
+                    vertices[offset + 0] = v.x;
+                    vertices[offset + 1] = v.y;
+                    vertices[offset + 2] = v.z;
+                }
 
             // Build triangle indices: 3 indices into vertex array for each triangle
             for (var y = 0; y < hRes - 1; y++)
-            for (var x = 0; x < wRes - 1; x++)
-            {
-                // For each grid cell output two triangles
-                indices[indexOffset + 0] = vertexOffset + y * wRes + x;
-                indices[indexOffset + 1] = vertexOffset + (y + 1) * wRes + x;
-                indices[indexOffset + 2] = vertexOffset + y * wRes + x + 1;
+                for (var x = 0; x < wRes - 1; x++)
+                {
+                    // For each grid cell output two triangles
+                    indices[indexOffset + 0] = vertexOffset + y * wRes + x;
+                    indices[indexOffset + 1] = vertexOffset + (y + 1) * wRes + x;
+                    indices[indexOffset + 2] = vertexOffset + y * wRes + x + 1;
 
-                indices[indexOffset + 3] = vertexOffset + (y + 1) * wRes + x;
-                indices[indexOffset + 4] = vertexOffset + (y + 1) * wRes + x + 1;
-                indices[indexOffset + 5] = vertexOffset + y * wRes + x + 1;
-                indexOffset += 6;
-            }
+                    indices[indexOffset + 3] = vertexOffset + (y + 1) * wRes + x;
+                    indices[indexOffset + 4] = vertexOffset + (y + 1) * wRes + x + 1;
+                    indices[indexOffset + 5] = vertexOffset + y * wRes + x + 1;
+                    indexOffset += 6;
+                }
 
             vertexOffset += vertexCount;
             groupOffset++;

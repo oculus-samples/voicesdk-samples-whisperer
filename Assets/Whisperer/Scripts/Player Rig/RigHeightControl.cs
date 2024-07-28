@@ -10,10 +10,10 @@ using UnityEngine.InputSystem;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Allows user control of XR Rig height offset
-        /// </summary>
-        public class RigHeightControl : MonoBehaviour
+    /// <summary>
+    ///     Allows user control of XR Rig height offset
+    /// </summary>
+    public class RigHeightControl : MonoBehaviour
     {
         [SerializeField] private Transform _offsetTransform;
         [SerializeField] private InputActionReference _inputAxis;

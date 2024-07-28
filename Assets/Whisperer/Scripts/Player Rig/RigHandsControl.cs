@@ -11,10 +11,10 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Control visibility and manage switching between hands controller types
-        /// </summary>
-        public class RigHandsControl : MonoBehaviour
+    /// <summary>
+    ///     Control visibility and manage switching between hands controller types
+    /// </summary>
+    public class RigHandsControl : MonoBehaviour
     {
         [SerializeField] private List<GameObject> _rayHands;
         [SerializeField] private List<GameObject> _speakHands;

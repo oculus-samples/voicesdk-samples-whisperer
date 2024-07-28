@@ -88,7 +88,7 @@ namespace Whisperer
 
         private void Update()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 LoadLevel(1, false);
@@ -105,7 +105,7 @@ namespace Whisperer
             {
                 LoadLevel(4, false);
             }
-            #endif
+#endif
         }
 
         private void LoadLogos()

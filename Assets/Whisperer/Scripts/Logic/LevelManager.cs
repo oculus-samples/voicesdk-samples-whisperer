@@ -20,7 +20,8 @@ namespace Whisperer
         [SerializeField] protected bool _levelLogicEnabled = true;
         [SerializeField] protected Vector3 _rigStartPosition;
 
-        [Header("References")] [SerializeField]
+        [Header("References")]
+        [SerializeField]
         protected GameObject _transcriptionUIPrefab;
 
         [SerializeField] protected AppVoiceExperience _appVoiceExperience;

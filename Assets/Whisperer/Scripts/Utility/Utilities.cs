@@ -12,22 +12,22 @@ namespace Whisperer
 {
     public static class Utilities
     {
-            /// <summary>
-            ///     Casts overlap spheres of increasing radius over distance to simulate a conical cast.<br></br>
-            ///     If hit(s) detected, out colliders will provide all overlapped colliders at first collided sphere.
-            /// </summary>
-            /// <param name="origin"></param>
-            /// <param name="direction"></param>
-            /// <param name="distance"></param>
-            /// <param name="minRadius"></param>
-            /// <param name="maxRadius"></param>
-            /// <param name="colliders"></param>
-            /// <param name="layerMask"></param>
-            /// <param name="queryTriggerInteraction"></param>
-            /// <returns></returns>
-            public static bool ConeCast(Vector3 origin, Vector3 direction, float distance, float minRadius, float maxRadius,
-            out List<Collider> colliders, LayerMask layerMask,
-            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        /// <summary>
+        ///     Casts overlap spheres of increasing radius over distance to simulate a conical cast.<br></br>
+        ///     If hit(s) detected, out colliders will provide all overlapped colliders at first collided sphere.
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="direction"></param>
+        /// <param name="distance"></param>
+        /// <param name="minRadius"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="colliders"></param>
+        /// <param name="layerMask"></param>
+        /// <param name="queryTriggerInteraction"></param>
+        /// <returns></returns>
+        public static bool ConeCast(Vector3 origin, Vector3 direction, float distance, float minRadius, float maxRadius,
+        out List<Collider> colliders, LayerMask layerMask,
+        QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             colliders = new List<Collider>();
             minRadius = Mathf.Max(minRadius, 0.01f);
@@ -47,22 +47,22 @@ namespace Whisperer
             return colliders.Count > 0;
         }
 
-            /// <summary>
-            ///     Casts overlap spheres of increasing radius over distance to simulate a conical cast.<br></br>
-            ///     If hit(s) detected, out collider will be the center-most object at first collided sphere.
-            /// </summary>
-            /// <param name="origin"></param>
-            /// <param name="direction"></param>
-            /// <param name="distance"></param>
-            /// <param name="minRadius"></param>
-            /// <param name="maxRadius"></param>
-            /// <param name="collider"></param>
-            /// <param name="layerMask"></param>
-            /// <param name="queryTriggerInteraction"></param>
-            /// <returns></returns>
-            public static bool ConeCast(Vector3 origin, Vector3 direction, float distance, float minRadius, float maxRadius,
-            out Collider collider, LayerMask layerMask,
-            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        /// <summary>
+        ///     Casts overlap spheres of increasing radius over distance to simulate a conical cast.<br></br>
+        ///     If hit(s) detected, out collider will be the center-most object at first collided sphere.
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="direction"></param>
+        /// <param name="distance"></param>
+        /// <param name="minRadius"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="collider"></param>
+        /// <param name="layerMask"></param>
+        /// <param name="queryTriggerInteraction"></param>
+        /// <returns></returns>
+        public static bool ConeCast(Vector3 origin, Vector3 direction, float distance, float minRadius, float maxRadius,
+        out Collider collider, LayerMask layerMask,
+        QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             var hit = false;
             collider = null;
@@ -101,12 +101,12 @@ namespace Whisperer
             return hit;
         }
 
-            /// <summary>
-            ///     Returns a randomized list
-            /// </summary>
-            /// <param name="randList"></param>
-            /// <returns></returns>
-            public static List<string> RandomizeList(List<string> randList)
+        /// <summary>
+        ///     Returns a randomized list
+        /// </summary>
+        /// <param name="randList"></param>
+        /// <returns></returns>
+        public static List<string> RandomizeList(List<string> randList)
         {
             for (var i = 0; i < randList.Count; i++)
             {

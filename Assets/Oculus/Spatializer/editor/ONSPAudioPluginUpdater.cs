@@ -112,7 +112,7 @@ internal class ONSPAudioPluginUpdater
             var index = 0;
             string targetPluginPath;
             string targetPluginMetaPath;
-            for (;;)
+            for (; ; )
             {
                 targetPluginPath = currentPluginPath + ".old" + index;
                 targetPluginMetaPath = targetPluginPath + ".meta";

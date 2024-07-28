@@ -166,7 +166,7 @@ namespace Whisperer
                 ProcessComplete(SELECT_COLOR_INTENT, false);
                 return;
             }
-            
+
             StartCoroutine(DelayThenSetSpeechText(color.ToString().ToUpper() + "!!", 0, 2f));
             ProcessComplete(color.ToString(), true);
         }
@@ -247,9 +247,10 @@ namespace Whisperer
         [MatchIntent(PRETTY_BIRD_INTENT)]
         public void PrettyBird()
         {
-            if (_randomizedPrettyBirdResponses.Count == 0)  {
+            if (_randomizedPrettyBirdResponses.Count == 0)
+            {
                 ProcessComplete(PRETTY_BIRD_INTENT, false);
-                return ;
+                return;
             }
 
             HaroldResponds(_randomizedPrettyBirdResponses[_prettyBirdIndex].Phrases);
@@ -264,7 +265,7 @@ namespace Whisperer
             if (_randomizedGenericResponses.Count == 0)
             {
                 ProcessComplete(GENERIC_RESPONSE_INTENT, false);
-                return ;
+                return;
             }
 
             HaroldResponds(_randomizedGenericResponses[_genericResponseIndex].Phrases);
@@ -279,7 +280,7 @@ namespace Whisperer
             if (_randomizedHelloResponses.Count == 0)
             {
                 ProcessComplete(HELLO_INTENT, false);
-                return ;
+                return;
             }
 
             HaroldResponds(_randomizedHelloResponses[_helloThereResponseIndex].Phrases);
@@ -294,7 +295,7 @@ namespace Whisperer
             if (_randomizedPollyCrackerResponse.Count == 0)
             {
                 ProcessComplete(POLLY_WANT_CRACKER_INTENT, false);
-                return ;
+                return;
             }
 
             HaroldResponds(_randomizedPollyCrackerResponse[_pollyCrackerIndex].Phrases);

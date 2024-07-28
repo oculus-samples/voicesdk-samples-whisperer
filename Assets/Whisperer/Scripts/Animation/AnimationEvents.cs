@@ -10,10 +10,10 @@ using UnityEngine.Events;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Unity event wrapper for animation events
-        /// </summary>
-        public class AnimationEvents : MonoBehaviour
+    /// <summary>
+    ///     Unity event wrapper for animation events
+    /// </summary>
+    public class AnimationEvents : MonoBehaviour
     {
         public UnityEvent<string> OnAnimationEvent;
 

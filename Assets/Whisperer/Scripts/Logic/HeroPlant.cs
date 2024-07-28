@@ -19,11 +19,12 @@ namespace Whisperer
         private const string JUMP_INTENT = "jump";
         private const string PULL_INTENT = "pull";
         private const string PUSH_INTENT = "push";
-        
+
         /// <summary>
         ///     Hero Move Setup
         /// </summary>
-        [Header("Hero Move Setup")] [SerializeField]
+        [Header("Hero Move Setup")]
+        [SerializeField]
         private Transform _targetSpotTransform;
 
         [SerializeField] private float _distanceThreshold = 0.35f;
@@ -32,7 +33,8 @@ namespace Whisperer
         /// <summary>
         ///     Rigidbody Move Settings
         /// </summary>
-        [Header("Rigidbody Move Settings")] [SerializeField]
+        [Header("Rigidbody Move Settings")]
+        [SerializeField]
         private float _moveDistance = .25f;
 
         [SerializeField] private float _moveTime = .4f;
@@ -89,10 +91,10 @@ namespace Whisperer
         {
             ForceMove(direction, node);
         }
-        
+
         public override void ForceMove(ForceDirection direction, WitResponseNode node)
         {
-            if(!IsSelected || !_actionState)
+            if (!IsSelected || !_actionState)
             {
                 return;
             }

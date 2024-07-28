@@ -10,10 +10,10 @@ using UnityEngine.InputSystem;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     For tracking/animating UI panels bound to the XR Rig
-        /// </summary>
-        public class UXTrackedDisplay : MonoBehaviour
+    /// <summary>
+    ///     For tracking/animating UI panels bound to the XR Rig
+    /// </summary>
+    public class UXTrackedDisplay : MonoBehaviour
     {
         public enum TrackNode
         {
@@ -25,7 +25,8 @@ namespace Whisperer
         [SerializeField] protected InputActionReference _inputToggleButton;
         [SerializeField] protected bool _usesHandsRaycast;
 
-        [Header("Position Settings")] [SerializeField]
+        [Header("Position Settings")]
+        [SerializeField]
         protected bool _continuousHeightTrack = true;
 
         [SerializeField] protected bool _continuousPositionTrack;
@@ -35,7 +36,8 @@ namespace Whisperer
         [SerializeField] protected float _minHeight = 0.5f;
         [SerializeField] protected float _forwardOffset = 1.25f;
 
-        [Header("Rotation Settings")] [SerializeField]
+        [Header("Rotation Settings")]
+        [SerializeField]
         protected bool _continuousRotationTrack = true;
 
         [SerializeField] protected TrackNode _rotationTrack;

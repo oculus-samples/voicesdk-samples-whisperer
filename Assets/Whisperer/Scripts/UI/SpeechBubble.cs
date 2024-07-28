@@ -13,7 +13,8 @@ namespace Whisperer
 {
     public class SpeechBubble : FollowUI
     {
-        [Header("References")] [SerializeField]
+        [Header("References")]
+        [SerializeField]
         protected CanvasGroup _canvasGroup;
 
         [SerializeField] protected TMP_Text textField;

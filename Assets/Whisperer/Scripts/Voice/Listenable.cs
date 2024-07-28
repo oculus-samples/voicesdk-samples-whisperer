@@ -322,12 +322,12 @@ namespace Whisperer
         {
             var renderers = GetComponentsInChildren<Renderer>();
             foreach (var rend in renderers)
-            foreach (var mat in rend.materials)
-                if (mat.shader.name == "Shader Graphs/Shimmer" ||
-                    mat.shader.name == "Shader Graphs/Toon_Projection_Shimmer" ||
-                    mat.shader.name == "Shader Graphs/Toon_AnimatedPlants"
-                   )
-                    _shimmerRends.Add(rend);
+                foreach (var mat in rend.materials)
+                    if (mat.shader.name == "Shader Graphs/Shimmer" ||
+                        mat.shader.name == "Shader Graphs/Toon_Projection_Shimmer" ||
+                        mat.shader.name == "Shader Graphs/Toon_AnimatedPlants"
+                       )
+                        _shimmerRends.Add(rend);
 
             foreach (var rend in _shimmerRends)
                 InitShimmer(rend);

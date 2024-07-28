@@ -12,10 +12,10 @@ using UnityEngine.Events;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Manages XR Rig tracked UI panels.
-        /// </summary>
-        public class UXManager : MonoBehaviour
+    /// <summary>
+    ///     Manages XR Rig tracked UI panels.
+    /// </summary>
+    public class UXManager : MonoBehaviour
     {
         public static UXManager Instance;
 

@@ -9,10 +9,10 @@ using UnityEngine;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Simple object rotation animation
-        /// </summary>
-        public class Rotate : MonoBehaviour
+    /// <summary>
+    ///     Simple object rotation animation
+    /// </summary>
+    public class Rotate : MonoBehaviour
     {
         [SerializeField] private Vector3 amount;
 

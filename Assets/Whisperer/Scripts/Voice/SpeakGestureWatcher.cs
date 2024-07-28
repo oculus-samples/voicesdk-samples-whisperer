@@ -11,13 +11,14 @@ using UnityEngine;
 
 namespace Whisperer
 {
-        /// <summary>
-        ///     Watches tracked hands controllers for valid "speak pose"
-        ///     Raycasts for & selects Listenable objects
-        /// </summary>
-        public class SpeakGestureWatcher : MonoBehaviour
+    /// <summary>
+    ///     Watches tracked hands controllers for valid "speak pose"
+    ///     Raycasts for & selects Listenable objects
+    /// </summary>
+    public class SpeakGestureWatcher : MonoBehaviour
     {
-        [Header("References")] [SerializeField]
+        [Header("References")]
+        [SerializeField]
         private Transform _head;
 
         [SerializeField] private Transform _leftHand;
@@ -27,18 +28,19 @@ namespace Whisperer
         [SerializeField] private AppVoiceExperience _appVoiceExperience;
         [SerializeField] private RigHandsControl _hands;
 
-        [Header("Settings")] [SerializeField] private float _sphereCastRadius = 0.1f;
+        [Header("Settings")][SerializeField] private float _sphereCastRadius = 0.1f;
 
         [SerializeField] private float _sphereCastRadiusMax = 0.25f;
         [SerializeField] private float _distance = 6;
         [SerializeField] private float _handsDistThresh = 0.1f;
         [SerializeField] private Vector3 _handsMidPointOffset;
 
-        [Header("Raycast")] [SerializeField] private LayerMask _layerMask;
+        [Header("Raycast")][SerializeField] private LayerMask _layerMask;
 
         [SerializeField] private Listenable _selectedListenable;
 
-        [SerializeField] private bool _selectActivated,
+        [SerializeField]
+        private bool _selectActivated,
             _allowSpeak,
             _haveSpeakPose,
             _selectLocked,
@@ -80,14 +82,14 @@ namespace Whisperer
 
             var havePose = leftDist < _handsDistThresh && rightDist < _handsDistThresh;
             if (!_allowSpeak || !_hands.SpeakHandsReady) havePose = false;
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             var isSpaceDown = Input.GetKey(KeyCode.Space);
             havePose = havePose || isSpaceDown;
             if (isSpaceDown)
             {
                 RaycastDirection = _head.forward.normalized;
             }
-            #endif
+#endif
             /// Set pose state
             if (havePose != _haveSpeakPose)
             {
@@ -122,9 +124,9 @@ namespace Whisperer
         private void LookForListenables()
         {
             var isEditorDebugKey = false;
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             isEditorDebugKey = Input.GetKey(KeyCode.Space);
-            #endif
+#endif
             if ((_haveSpeakPose || isEditorDebugKey) &&
                 Utilities.ConeCast(_head.transform.position,
                     RaycastDirection,
@@ -264,7 +266,7 @@ namespace Whisperer
             /// we can select a new listenable object.
             if (_haveSpeakPose)
                 LookForListenables();
-            
+
             if (!_haveListenable)
             {
                 // show raycast
