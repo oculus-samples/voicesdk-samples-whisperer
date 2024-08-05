@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "com.meta.xr.sdk.voice": "65.0.0",
+    "com.meta.xr.sdk.interaction": "66.0.0",
+    "com.meta.xr.sdk.voice": "66.0.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "1.1.4",
     "com.unity.animation.rigging": "1.2.1",
