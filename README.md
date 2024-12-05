@@ -4,7 +4,7 @@
 Whisperer is a Unity VR game experience using the *[Voice SDK](https://developer.oculus.com/documentation/unity/voice-sdk-overview/)* for interactions. This repository includes the complete buildable Unity project.
 
 ## Requirements
-- Unity [2022.3.8f1](https://unity3d.com/unity/whats-new/2022.3.8)
+- Unity [2022.3.8f1](https://unity3d.com/unity/whats-new/2022.3.8) or newer
 - Windows or Mac
 - Meta Quest 2, Quest Pro (standalone) or Rift (PCVR)
 
@@ -19,17 +19,22 @@ git lfs install
 
 Clone this repo or download it as a zip file.
 
+```
+git clone https://github.com/oculus-samples/voicesdk-samples-whisperer.git
+```
+
 All of the project files can be found in `Assets/Whisperer`. This folder includes all scripts and assets to run the experience. This project depends on [Voice SDK v59](https://developer.oculus.com/downloads/package/meta-voice-sdk/).
 
 ### Configuring Wit.ai
 
 Using *Whisperer* reqiures a [Wit.ai](https://wit.ai) account.
 
-1. Once logged in, on [wit.ai/apps](https://wit.ai/apps), click *New App* and import the [zipped app backup](https://github.com/wit-ai/voicesdk_samples_whisperer/blob/main/Assets/whisperer-wit-app.zip) included in this repo.
+1. Once logged in, on [wit.ai/apps](https://wit.ai/apps), click *New App* and import the [zipped app backup](https://github.com/wit-ai/voicesdk_samples_whisperer/blob/main/Assets/whisperer-wit-app.zip) included in this repo. The GitHub sample will be listed on the My Apps page.
 
-2. Then find the `Server Access Token` in your wit.ai app setup under `Managment > Settings`. Go to Unity Editor, in the toolbar find `Oculus > Voice SDK > Get Started`, select `Custom App`, and paste in your `Server Access Token`, click `Create` and choose a location to store the new app configuration, and wait until the Wit Configurations tab in the Voice Hub is fully populated.
+2. Then find the `Server Access Token` in your wit.ai app setup under `Managment > Settings` from the left navigation panel. Go to Unity Editor, in the toolbar find `Meta > Voice SDK > Get Started`, select `Custom App`, and paste in your `Server Access Token`, click `Create` and choose a location to store the new app configuration, and wait until the Wit Configurations tab in the Voice Hub is fully populated.
 
-3. Now to go the `Assets/Whisperer/Scenes/Loader` scene, find the `Management` game object.
+3. Now go to the `Assets/Whisperer/Scenes/Loader` scene, find the `Management` game object under Hierarchy. Click on the `Management` game object under Inspector and find the `App Voice Experience (Script)` and  `TTS Wit (Script)`.
+
     * Expand `App Voice Experience (Script) > Wit Runtime Configuration`, select the wit.ai app configuration you just created.
     * Expand `TTS Wit (Script) > Request Settings`, select the same wit.ai app configuration.
 
@@ -65,7 +70,7 @@ The `Loader` scene contains two game objects that persist throughout the entire 
 
 The `Player Rig` is the XR Origin, and contains the necessary components for Unity's XR Interaction Toolkit, as well as the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component and any UI canvases.
 
-Attached to the Management game object are `AppVoiceExperience.cs` (part of Voice SDK) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
+Attached to the Management game object are [`AppVoiceExperience.cs`](Assets/Whisperer/Scripts/Voice) (part of Voice SDK) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
 
 #### Level Loader
 
@@ -87,7 +92,7 @@ The `AppVoiceExperience` class itself is initated in the [`LevelManager.cs`](Ass
 
 If an object derived from [`Listenable.cs`](Assets/Whisperer/Scripts/Voice/Listenable.cs) is selected and the player says something, the *Whisperer* will wait for a response from Wit.ai, then read the ```WitResponseNode``` to determine the action to be taken.
 
-> Example: If a [`ForceMovable.cs`](Assets/Whisperer/Scripts/Voice/Listenable Objects/ForceMovable.cs) is selected and the utterance "*Move right a lot*" is detected by Wit.ai, we read the intent and entities from the `WitResponseNode` to determine the direction and strength of move force applied. *Whisperer* reads the returned intent (`move`), direction entity (`right`) and strength entity (`strong`) and performs an appropriate action.
+> Example: If a [`ForceMovable.cs`](Assets/Whisperer/Scripts/Voice/Listenable%20Objects/ForceMovable.cs) is selected and the utterance "*Move right a lot*" is detected by Wit.ai, we read the intent and entities from the `WitResponseNode` to determine the direction and strength of move force applied. *Whisperer* reads the returned intent (`move`), direction entity (`right`) and strength entity (`strong`) and performs an appropriate action.
 
 ## Conduit Implementation
 
