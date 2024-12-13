@@ -70,7 +70,7 @@ The `Loader` scene contains two game objects that persist throughout the entire 
 
 The `Player Rig` is the XR Origin, and contains the necessary components for Unity's XR Interaction Toolkit, as well as the [`SpeakGestureWatcher.cs` ](Assets/Whisperer/Scripts/Voice/SpeakGestureWatcher.cs) component and any UI canvases.
 
-Attached to the Management game object are [`AppVoiceExperience.cs`](Assets/Whisperer/Scripts/Voice) (part of Voice SDK) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
+Attached to the Management game object are [`AppVoiceExperience.cs`](https://developers.meta.com/horizon/reference/voice/latest/class_oculus_voice_app_voice_experience/) (part of Voice SDK) and [`LevelLoader.cs`](Assets/Whisperer/Scripts/Logic/LevelLoader.cs). LevelLoader additively loads the necessary Unity scenes for each level, unloading them when a level is completed.
 
 #### Level Loader
 
