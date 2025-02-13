@@ -164,8 +164,8 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.oculus.samples.whisperer
-    Standalone: com.BuckDesignLLC.TemplateProject
+    Android: com.samples.whisperer
+    Standalone: com.samples.whisperer
   buildNumber:
     Standalone: 0
     VisionOS: 0
