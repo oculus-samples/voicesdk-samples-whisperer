@@ -164,3 +164,21 @@ The entity `color` is used to identify when the user has communicated a color se
 [The Oculus License](https://developer.oculus.com/licenses/oculussdk) applies to the SDK and supporting material.
 The MIT licence applies to the files and assets in the Assets/Whisperer folder.
 Otherwise, if an individual file does not indicate which license it is subject to, then the Oculus License applies.
+
+## Agent-ready development
+
+This sample is configured for AI coding agents.
+
+For the best experience in VS Code or Cursor, install the Meta Horizon extension:
+
+https://marketplace.visualstudio.com/items?itemName=meta.meta-vr-dev
+
+This repository also includes agent instructions and MCP configuration for Meta Quest Agentic Tools:
+
+https://github.com/meta-quest/agentic-tools
+
+Suggested first prompt:
+
+```text
+Read AGENTS.md, detect what type of Meta Quest sample this is, enable the hzdb MCP server if available, and explain how to build, run, and debug this sample on a Quest device.
+```
